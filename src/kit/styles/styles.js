@@ -4,8 +4,8 @@ import flexStyles from './flex';
 
 
 const base = 16;
-const space = base * .75;
-const spaceSection = base * 1.5;
+const space = base;
+const spaceSection = base * 2;
 
 const styles = StyleSheet.create({
 

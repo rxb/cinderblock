@@ -9,7 +9,7 @@ import Chunk from '../kit/components/Chunk';
 import Flex from '../kit/components/Flex';
 import FlexItem from '../kit/components/FlexItem';
 import List from '../kit/components/List';
-
+import styles from '../kit/styles/styles';
 
 const PortfolioData = [
 	{title: 'Meetup Recipes', subtitle: 'Lorem ipsum vitae at risus lacus ad lorem'},
@@ -34,7 +34,7 @@ const PortfolioItem = (props)=>(
 				}}
 				/>
 			<h2>{props.title}</h2>
-			<p>{props.subtitle}</p>
+			<Text style={styles.text}>{props.subtitle}</Text>
 		</View>
 	</Chunk>
 );
