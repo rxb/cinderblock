@@ -49,8 +49,22 @@ const IndexPage = () => (
 							<h1>Richard Boenigk</h1>
 							<p>Well here we are</p>
 						</Chunk>
+					</Section>
+					<Section>
 						<Chunk>
-							<Link to="/page-2/">Go to page 2</Link>
+							<p>Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae.</p>
+						</Chunk>
+					</Section>
+					<Section>
+						<Chunk>
+							<View
+								style={{
+									backgroundColor: 'aqua',
+									width: 64,
+									height: 64,
+									borderRadius: 32
+								}}
+								/>
 						</Chunk>
 					</Section>
 				</Bounds>
