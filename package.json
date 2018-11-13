@@ -7,11 +7,12 @@
     "babel-plugin-react-native-web": "^0.9.7",
     "cinderblock": "file:../cinderblock",
     "gatsby": "^2.0.48",
-    "gatsby-plugin-react-helmet": "^1.0.8",
+    "gatsby-plugin-react-helmet": "^3.0.2",
     "gatsby-plugin-react-native-web": "^2.0.0-alpha.0",
     "react": "^16.6.1",
     "react-dom": "^16.6.1",
     "react-feather": "^1.1.4",
+    "react-helmet": "^5.2.0",
     "react-native-web": "^0.9.6"
   },
   "keywords": [

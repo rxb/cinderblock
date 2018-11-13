@@ -1,10 +1,13 @@
 import React, {Fragment} from 'react'
+import {Helmet} from "react-helmet";
 import {Link} from 'gatsby'
 
 import {
 	Bounds,
 	Button,
 	Chunk,
+	Icon,
+	Inline,
 	Image,
 	Flex,
 	FlexItem,
@@ -15,6 +18,7 @@ import {
 	View
 } from 'cinderblock';
 import swatches from 'cinderblock/styles/swatches';
+import styles from 'cinderblock/styles/styles';
 
 
 const PortfolioData = [
@@ -35,11 +39,14 @@ const PortfolioItem = (props)=>(
 		<Chunk>
 			<View>
 				<View
-					style={{
-						backgroundColor: 'pink',
-						height: 240,
-						borderRadius: 5
-					}}
+					style={[
+						{
+							backgroundColor: 'pink',
+							height: 240,
+							borderRadius: 5,
+						},
+						styles.pseudoLineHeight
+					]}
 					/>
 				<Text weight="strong">{props.title}</Text>
 				<Text>{props.subtitle}</Text>
@@ -50,6 +57,9 @@ const PortfolioItem = (props)=>(
 
 const IndexPage = () => (
 		<View>
+			<Helmet>
+				<title>rgb.work | Richard Boenigk</title>
+			</Helmet>
 			<Stripe style={{backgroundColor: '#FF2C00', minHeight: '75vh'}}>
 				<Bounds style={{justifyContent: 'center', flex: 1}}>
 				<Flex direction="column" switchDirection="large" noGutters>
@@ -61,25 +71,15 @@ const IndexPage = () => (
 									accessibilityRole="heading"
 									accessibilityLevel="1"
 									type="hero"
-									style={{fontSize: 96, lineHeight: 96, marginTop: -12}}
+									style={{fontSize: 96, lineHeight: 96, marginTop: -16}}
 									>rgb.&#8203;work</Text>
 							</Chunk>
+						</Section>
+						<Section>
 							<Chunk>
 								<Text inverted type="big">Richard Boenigk</Text>
 								<Text inverted type="big" color="secondary">Designer, Hacker</Text>
 							</Chunk>
-							{/*
-							<Chunk>
-								<View
-									style={{
-										backgroundColor: 'aqua',
-										width: 24,
-										height: 24,
-										borderRadius: 12
-									}}
-									/>
-							</Chunk>
-							*/}
 						</Section>
 					</FlexItem>
 					<FlexItem>
@@ -88,7 +88,18 @@ const IndexPage = () => (
 								<Text inverted>Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae. Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae.</Text>
 							</Chunk>
 							<Chunk>
-								<Text inverted>hello@rgb.work</Text>
+								<Flex direction="row">
+									<FlexItem>
+										<Text inverted weight="strong" style={{textDecorationLine: 'underline'}}>hello@rgb.work</Text>
+									</FlexItem>
+									<FlexItem style={{justifyContent: 'center'}}>
+										<Inline>
+											<Icon shape="Instagram" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 3}} />
+											<Icon shape="Twitter" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 3}} />
+											<Icon shape="Linkedin" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 3}} />
+										</Inline>
+									</FlexItem>
+								</Flex>
 							</Chunk>
 						</Section>
 					</FlexItem>
@@ -101,8 +112,14 @@ const IndexPage = () => (
 					<Section>
 						<List
 							variant="grid"
-							items={PortfolioData}
+							itemsInRow={{
+								small: 1,
+								medium: 2,
+								large: 2
+							}}
 							renderItem={PortfolioItem}
+							scrollItemWidth={300}
+							items={PortfolioData}
 							/>
 					</Section>
 				</Bounds>
