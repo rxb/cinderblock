@@ -12,10 +12,11 @@ const styles = StyleSheet.create({
 
 	// LAYOUT
 	stripe: {
-		backgroundColor: 'white'
+		backgroundColor: 'white',
 	},
 	bounds: {
 		maxWidth: 1000,
+		alignSelf: 'center'
 	},
 	section: {
 		paddingTop: spaceSection,
@@ -243,6 +244,11 @@ const styles = StyleSheet.create({
 	textPageHead: {
 		fontSize: base * 2,
 		fontWeight: '600'
+	},
+	textLink: {
+		color: swatches.textLink,
+		borderBottomWidth: 1,
+		borderBottomColor: swatches.textLink
 	}
 });
 

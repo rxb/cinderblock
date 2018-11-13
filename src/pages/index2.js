@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Fragment} from 'react'
 import Link from 'gatsby-link'
 import { View, Text, Image, StyleSheet } from '../kit/components/Primitives';
 import DumbButton from '../kit/components/DumbButton';
@@ -43,40 +43,48 @@ const PortfolioItem = (props)=>(
 );
 
 const IndexPage = () => (
-	<Flex direction="column" switchDirection="atMedium" noGutters>
-		<FlexItem growFactor={1}>
-			<Stripe>
-				<Bounds>
-					<Section>
-						<Chunk>
-							<h1 id="h1-welcome">Richard Boenigk</h1>
-						</Chunk>
-						<Chunk>
-							<p>Well here we are</p>
-						</Chunk>
-					</Section>
-					<Section>
-						<Chunk>
-							<p>Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae.</p>
-						</Chunk>
-					</Section>
-					<Section>
-						<Chunk>
-							<View
-								style={{
-									backgroundColor: 'aqua',
-									width: 64,
-									height: 64,
-									borderRadius: 32
-								}}
-								/>
-						</Chunk>
-					</Section>
+		<View>
+			<Stripe style={{backgroundColor: '#FF2C00', minHeight: '75vh'}}>
+				<Bounds style={{justifyContent: 'center', flex: 1}}>
+				<Flex direction="column" switchDirection="atMedium" noGutters>
+					<FlexItem>
+						<Section>
+							<Chunk>
+								<h1 id="h1-welcome" style={{fontSize: 100, color: 'white', lineHeight: 1}}>rgb.&#8203;work</h1>
+							</Chunk>
+							<Chunk>
+								<p style={{color: 'white', fontWeight: 700, fontSize: 24}}>Richard Boenigk</p>
+								<p style={{color: 'white', fontSize: 24, opacity: .85}}>Designer, Hacker</p>
+							</Chunk>
+							{/*
+							<Chunk>
+								<View
+									style={{
+										backgroundColor: 'aqua',
+										width: 24,
+										height: 24,
+										borderRadius: 12
+									}}
+									/>
+							</Chunk>
+							*/}
+						</Section>
+					</FlexItem>
+					<FlexItem>
+						<Section>
+							<Chunk>
+								<p style={{color: 'white', fontSize: 18, marginTop: 22}}>Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae. Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae.</p>
+							</Chunk>
+							<Chunk>
+								<p style={{color: 'white', fontSize: 18, textDecoration: 'underline'}}>hello@rgb.work</p>
+							</Chunk>
+						</Section>
+					</FlexItem>
+				</Flex>
 				</Bounds>
 			</Stripe>
-		</FlexItem>
-		<FlexItem growFactor={2}>
-			<Stripe style={{backgroundColor: '#fafafa', flex: 1}}>
+
+			<Stripe style={{ flex: 1}}>
 				<Bounds>
 					<Section>
 						<List
@@ -87,8 +95,7 @@ const IndexPage = () => (
 					</Section>
 				</Bounds>
 			</Stripe>
-		</FlexItem>
-	</Flex>
+		</View>
 )
 
 export default IndexPage

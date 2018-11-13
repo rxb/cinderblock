@@ -158,6 +158,7 @@ Class                            | Description
 
 'flex--noGutters__flex-item': {
 	padding: 0,
+	paddingLeft: 0,
 },
 
 'flex--wrap': {
