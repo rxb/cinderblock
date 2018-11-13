@@ -1,15 +1,21 @@
 import React, {Fragment} from 'react'
-import Link from 'gatsby-link'
-import { View, Text, Image, StyleSheet } from '../kit/components/Primitives';
-import DumbButton from '../kit/components/DumbButton';
-import Stripe from '../kit/components/Stripe';
-import Bounds from '../kit/components/Bounds';
-import Section from '../kit/components/Section';
-import Chunk from '../kit/components/Chunk';
-import Flex from '../kit/components/Flex';
-import FlexItem from '../kit/components/FlexItem';
-import List from '../kit/components/List';
-import styles from '../kit/styles/styles';
+import {Link} from 'gatsby'
+
+import {
+	Bounds,
+	Button,
+	Chunk,
+	Image,
+	Flex,
+	FlexItem,
+	List,
+	Section,
+	Stripe,
+	Text,
+	View
+} from 'cinderblock';
+import swatches from 'cinderblock/styles/swatches';
+
 
 const PortfolioData = [
 	{title: 'Meetup Recipes', subtitle: 'Lorem ipsum vitae at risus lacus ad lorem'},
@@ -35,8 +41,8 @@ const PortfolioItem = (props)=>(
 						borderRadius: 5
 					}}
 					/>
-				<h3>{props.title}</h3>
-				<Text style={styles.text}>{props.subtitle}</Text>
+				<Text weight="strong">{props.title}</Text>
+				<Text>{props.subtitle}</Text>
 			</View>
 		</Chunk>
 	</Link>
@@ -46,15 +52,21 @@ const IndexPage = () => (
 		<View>
 			<Stripe style={{backgroundColor: '#FF2C00', minHeight: '75vh'}}>
 				<Bounds style={{justifyContent: 'center', flex: 1}}>
-				<Flex direction="column" switchDirection="atMedium" noGutters>
+				<Flex direction="column" switchDirection="large" noGutters>
 					<FlexItem>
 						<Section>
 							<Chunk>
-								<h1 id="h1-welcome" style={{fontSize: 100, color: 'white', lineHeight: 1}}>rgb.&#8203;work</h1>
+								<Text
+									inverted
+									accessibilityRole="heading"
+									accessibilityLevel="1"
+									type="hero"
+									style={{fontSize: 96, lineHeight: 96, marginTop: -12}}
+									>rgb.&#8203;work</Text>
 							</Chunk>
 							<Chunk>
-								<p style={{color: 'white', fontWeight: 700, fontSize: 24}}>Richard Boenigk</p>
-								<p style={{color: 'white', fontSize: 24, opacity: .85}}>Designer, Hacker</p>
+								<Text inverted type="big">Richard Boenigk</Text>
+								<Text inverted type="big" color="secondary">Designer, Hacker</Text>
 							</Chunk>
 							{/*
 							<Chunk>
@@ -73,10 +85,10 @@ const IndexPage = () => (
 					<FlexItem>
 						<Section>
 							<Chunk>
-								<p style={{color: 'white', fontSize: 18, marginTop: 22}}>Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae. Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae.</p>
+								<Text inverted>Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae. Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae.</Text>
 							</Chunk>
 							<Chunk>
-								<p style={{color: 'white', fontSize: 18, textDecoration: 'underline'}}>hello@rgb.work</p>
+								<Text inverted>hello@rgb.work</Text>
 							</Chunk>
 						</Section>
 					</FlexItem>
