@@ -35,10 +35,10 @@ const PortfolioData = [
 
 
 const PortfolioItem = (props)=>(
-	<Link to="page-2">
+	<Link to="project" style={{textDecorationLine: 'none'}}>
 		<Chunk>
 			<View>
-				<View
+				<Image
 					style={[
 						{
 							backgroundColor: 'pink',
@@ -47,6 +47,7 @@ const PortfolioItem = (props)=>(
 						},
 						styles.pseudoLineHeight
 					]}
+					source={{uri: 'https://file.mockplus.com/image/2018/06/6ae1974b-3202-4646-a1f4-a4dcdaca2fec.png'}}
 					/>
 				<Text weight="strong">{props.title}</Text>
 				<Text>{props.subtitle}</Text>
@@ -110,6 +111,11 @@ const IndexPage = () => (
 			<Stripe style={{ flex: 1}}>
 				<Bounds>
 					<Section>
+						<Chunk>
+							<Text type="sectionHead">Featured projects</Text>
+						</Chunk>
+					</Section>
+					<Section>
 						<List
 							variant="grid"
 							itemsInRow={{
@@ -121,6 +127,16 @@ const IndexPage = () => (
 							scrollItemWidth={300}
 							items={PortfolioData}
 							/>
+					</Section>
+				</Bounds>
+			</Stripe>
+
+			<Stripe style={{backgroundColor: '#FF2C00'}}>
+				<Bounds>
+					<Section>
+						<Chunk>
+							<Text inverted>Footer stuff</Text>
+						</Chunk>
 					</Section>
 				</Bounds>
 			</Stripe>
