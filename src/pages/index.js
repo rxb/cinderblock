@@ -5,6 +5,7 @@ import {Link} from 'gatsby'
 import {
 	Bounds,
 	Button,
+	Card,
 	Chunk,
 	Icon,
 	Inline,
@@ -13,6 +14,7 @@ import {
 	FlexItem,
 	List,
 	Section,
+	Sectionless,
 	Stripe,
 	Text,
 	View
@@ -20,6 +22,7 @@ import {
 import swatches from 'cinderblock/styles/swatches';
 import styles from 'cinderblock/styles/styles';
 
+import Footer from '../components/Footer';
 
 const PortfolioData = [
 	{title: 'Meetup Recipes', subtitle: 'Lorem ipsum vitae at risus lacus ad lorem'},
@@ -37,6 +40,7 @@ const PortfolioData = [
 const PortfolioItem = (props)=>(
 	<Link to="project" style={{textDecorationLine: 'none'}}>
 		<Chunk>
+			<Card>
 			<View>
 				<Image
 					style={[
@@ -45,13 +49,17 @@ const PortfolioItem = (props)=>(
 							height: 240,
 							borderRadius: 5,
 						},
-						styles.pseudoLineHeight
 					]}
 					source={{uri: 'https://file.mockplus.com/image/2018/06/6ae1974b-3202-4646-a1f4-a4dcdaca2fec.png'}}
 					/>
-				<Text weight="strong">{props.title}</Text>
-				<Text>{props.subtitle}</Text>
+				<Sectionless>
+					<Chunk>
+						<Text weight="strong">{props.title}</Text>
+						<Text color="secondary">{props.subtitle}</Text>
+				</Chunk>
+				</Sectionless>
 			</View>
+			</Card>
 		</Chunk>
 	</Link>
 );
@@ -114,8 +122,7 @@ const IndexPage = () => (
 						<Chunk>
 							<Text type="sectionHead">Featured projects</Text>
 						</Chunk>
-					</Section>
-					<Section>
+
 						<List
 							variant="grid"
 							itemsInRow={{
@@ -131,15 +138,7 @@ const IndexPage = () => (
 				</Bounds>
 			</Stripe>
 
-			<Stripe style={{backgroundColor: '#FF2C00'}}>
-				<Bounds>
-					<Section>
-						<Chunk>
-							<Text inverted>Footer stuff</Text>
-						</Chunk>
-					</Section>
-				</Bounds>
-			</Stripe>
+			<Footer />
 		</View>
 )
 

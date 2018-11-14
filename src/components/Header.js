@@ -1,0 +1,35 @@
+import React, {Fragment} from 'react'
+import {Link} from 'gatsby'
+
+import {
+	Bounds,
+	Button,
+	Chunk,
+	Icon,
+	Inline,
+	Image,
+	Flex,
+	FlexItem,
+	List,
+	Section,
+	Stripe,
+	Text,
+	View
+} from 'cinderblock';
+import swatches from 'cinderblock/styles/swatches';
+
+const Header = (props) => {
+	return(
+		<Stripe style={{backgroundColor: '#FF2C00'}}>
+			<Bounds style={{justifyContent: 'center', flex: 1}}>
+				<Section style={{paddingTop: 0, paddingBottom: 0}}>
+					<Chunk style={{paddingBottom: 0}}>
+						<Link to="/" style={{textDecorationLine: 'none'}}><Text inverted type="big">rgb.work</Text></Link>
+					</Chunk>
+				</Section>
+			</Bounds>
+		</Stripe>
+	);
+}
+
+export default Header;

@@ -20,6 +20,8 @@ import {
 import swatches from 'cinderblock/styles/swatches';
 import styles from 'cinderblock/styles/styles';
 
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 
 const IndexPage = () => (
@@ -29,15 +31,8 @@ const IndexPage = () => (
 				<title>Project: Translation Party Installation</title>
 			</Helmet>
 
-			<Stripe style={{backgroundColor: '#FF2C00'}}>
-				<Bounds style={{justifyContent: 'center', flex: 1}}>
-					<Section>
-						<Chunk>
-							<Link to="/"><Text inverted>rgb.work</Text></Link>
-						</Chunk>
-					</Section>
-				</Bounds>
-			</Stripe>
+			<Header />
+
 			<Stripe style={{minHeight: '100vh'}}>
 				<Bounds>
 					<Section>
@@ -99,16 +94,8 @@ const IndexPage = () => (
 			</Stripe>
 
 
+			<Footer />
 
-			<Stripe style={{backgroundColor: '#FF2C00'}}>
-				<Bounds>
-					<Section>
-						<Chunk>
-							<Text inverted>Footer stuff</Text>
-						</Chunk>
-					</Section>
-				</Bounds>
-			</Stripe>
 		</View>
 )
 
