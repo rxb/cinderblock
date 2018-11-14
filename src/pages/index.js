@@ -38,18 +38,20 @@ const PortfolioData = [
 
 
 const PortfolioItem = (props)=>(
-	<Link to="project" style={{textDecorationLine: 'none'}}>
+	<Link to="project_2" style={{textDecorationLine: 'none'}}>
 		<Chunk>
-			<Card>
-			<View>
+			<Card style={{
+				borderWidth: 0,
+				shadowColor: 'rgba(0,0,0,.1)',
+				shadowRadius: 10
+			}}>
 				<Image
-					style={[
-						{
-							backgroundColor: 'pink',
-							height: 240,
-							borderRadius: 5,
-						},
-					]}
+					style={{
+						backgroundColor: 'pink',
+						height: 240,
+						borderTopLeftRadius: 5,
+						borderTopRightRadius: 5,
+					}}
 					source={{uri: 'https://file.mockplus.com/image/2018/06/6ae1974b-3202-4646-a1f4-a4dcdaca2fec.png'}}
 					/>
 				<Sectionless>
@@ -58,7 +60,6 @@ const PortfolioItem = (props)=>(
 						<Text color="secondary">{props.subtitle}</Text>
 				</Chunk>
 				</Sectionless>
-			</View>
 			</Card>
 		</Chunk>
 	</Link>

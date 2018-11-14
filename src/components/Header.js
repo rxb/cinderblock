@@ -24,7 +24,7 @@ const Header = (props) => {
 			<Bounds style={{justifyContent: 'center', flex: 1}}>
 				<Section style={{paddingTop: 0, paddingBottom: 0}}>
 					<Chunk style={{paddingBottom: 0}}>
-						<Link to="/" style={{textDecorationLine: 'none'}}><Text inverted type="big">rgb.work</Text></Link>
+						<Link to="/" style={{textDecorationLine: 'none'}}><Text inverted type="big" style={{fontWeight: 800}}>rgb.work</Text></Link>
 					</Chunk>
 				</Section>
 			</Bounds>
