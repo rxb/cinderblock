@@ -69,9 +69,7 @@ const IndexPage = () => (
 								source={{uri: 'https://file.mockplus.com/image/2018/06/6ae1974b-3202-4646-a1f4-a4dcdaca2fec.png'}}
 								/>
 						</Chunk>
-					</Section>
 
-					<Section>
 						<Chunk>
 
 							<Text
