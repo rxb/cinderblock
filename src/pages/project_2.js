@@ -1,4 +1,5 @@
 import React, {Fragment} from 'react'
+import {Text as RNText} from 'react-native';
 import {Helmet} from "react-helmet";
 import {Link} from 'gatsby'
 
@@ -85,13 +86,34 @@ const IndexPage = () => (
 								accessibilityRole="heading"
 								accessibilityLevel="1"
 								type="pageHead"
-								>Translation Party (Art Installation)</Text>
+								>Translation Party <Text type="pageHead" color="hint">(Art Installation)</Text></Text>
 						</Chunk>
 					</Section>
 
 
 
-					<Flex direction="column"  switchDirection="large">
+					<Flex direction="column"  switchDirection="large" rowReverse="large">
+
+						<FlexItem growFactor={firstCols[0]}>
+
+								<Section>
+
+									<Chunk>
+										<Text type="small" weight="strong">Project</Text>
+										<Text type="small" color="secondary">Interactive installation art</Text>
+									</Chunk>
+									<Chunk>
+										<Text type="small"  weight="strong">Role</Text>
+										<Text color="secondary" type="small">Lead: Product, UX, UI</Text>
+										<Text color="secondary" type="small">Assisted: Research</Text>
+									</Chunk>
+									<Chunk>
+										<Text type="small"  weight="strong">Client</Text>
+										<Text type="small" color="secondary">Museum of the Moving Image</Text>
+									</Chunk>
+								</Section>
+							<Hr />
+						</FlexItem>
 
 						<FlexItem growFactor={firstCols[1]}>
 
@@ -184,30 +206,7 @@ const IndexPage = () => (
 							</Section>
 
 						</FlexItem>
-						<FlexItem growFactor={firstCols[0]}>
 
-
-
-							<Section>
-								<Card>
-									<Sectionless>
-										<Chunk>
-											<Text type="small">Project</Text>
-											<Text type="small" color="secondary">Interactive installation art</Text>
-										</Chunk>
-										<Chunk>
-											<Text type="small">Role</Text>
-											<Text color="secondary" type="small">Lead: Product, UX, UI</Text>
-											<Text color="secondary" type="small">Assisted: Research</Text>
-										</Chunk>
-										<Chunk>
-											<Text type="small">Client</Text>
-											<Text type="small" color="secondary">Museum of the Moving Image</Text>
-										</Chunk>
-									</Sectionless>
-								</Card>
-							</Section>
-						</FlexItem>
 					</Flex>
 
 				</Bounds>
