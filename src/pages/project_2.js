@@ -5,6 +5,7 @@ import {Link} from 'gatsby'
 import {
 	Bounds,
 	Button,
+	Card,
 	Chunk,
 	Icon,
 	Inline,
@@ -13,6 +14,7 @@ import {
 	FlexItem,
 	List,
 	Section,
+	Sectionless,
 	Stripe,
 	Text,
 	View
@@ -26,7 +28,7 @@ import Footer from '../components/Footer';
 
 
 const Kicker = (props) => (
-	<Text type="micro" color="secondary" weight="strong">{props.children.toUpperCase()}</Text>
+	<Text type="small" color="secondary">{props.children.toUpperCase()}</Text>
 );
 
 const Hr = (props) => (
@@ -34,8 +36,9 @@ const Hr = (props) => (
 			marginVertical: METRICS.space / 2,
 			marginHorizontal: METRICS.spaceSection,
 			height: 0,
-			borderTopWidth: 1,
-			borderTopColor: swatches.border
+			borderTopWidth: 2,
+			borderTopColor: swatches.border,
+			borderTopStyle: 'dotted'
 		}}
 		/>
 )
@@ -53,9 +56,14 @@ const IndexPage = () => (
 
 			<Header />
 
-			<Stripe style={{minHeight: '100vh'}}>
+			<Stripe
+				image={'https://file.mockplus.com/image/2018/06/6ae1974b-3202-4646-a1f4-a4dcdaca2fec.png'}
+				/>
+
+			<Stripe>
 				<Bounds>
 					<Section>
+						{/*
 						<Chunk>
 							<Image
 								style={[
@@ -69,6 +77,7 @@ const IndexPage = () => (
 								source={{uri: 'https://file.mockplus.com/image/2018/06/6ae1974b-3202-4646-a1f4-a4dcdaca2fec.png'}}
 								/>
 						</Chunk>
+						*/}
 
 						<Chunk>
 
@@ -76,19 +85,20 @@ const IndexPage = () => (
 								accessibilityRole="heading"
 								accessibilityLevel="1"
 								type="pageHead"
-								>Translation Party Installation</Text>
+								>Translation Party (Art Installation)</Text>
 						</Chunk>
 					</Section>
+
+
 
 					<Flex direction="column"  switchDirection="large">
 
 						<FlexItem growFactor={firstCols[1]}>
 
-
 							<Section>
 								<Chunk>
-									<Kicker>Intro</Kicker>
-									<Text type="sectionHead">It was the best of times, it was the worst of times</Text>
+									<Kicker>Overview</Kicker>
+									<Text type="sectionHead">It was the best of times, but like, not</Text>
 								</Chunk>
 								<Chunk>
 									<Text>Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae. Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae.</Text>
@@ -104,7 +114,7 @@ const IndexPage = () => (
 
 								<Chunk>
 									<Kicker>Process</Kicker>
-									<Text type="sectionHead">This is an interesting story</Text>
+									<Text type="sectionHead">Make hay while the sun shines</Text>
 								</Chunk>
 								<Chunk>
 									<Text>Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae. Lorem ipsum vitae at risus lacus ad lorem, Curabitur facilisis. Nunc eu vulputate vel ornare. Mi quis, condimentum luctus id Sed vitae.</Text>
@@ -175,14 +185,27 @@ const IndexPage = () => (
 
 						</FlexItem>
 						<FlexItem growFactor={firstCols[0]}>
+
+
+
 							<Section>
-								<Chunk>
-									<Text>Web app feature</Text>
-								</Chunk>
-								<Chunk>
-									<Text color="secondary">Lead: Product, UX, UI</Text>
-									<Text color="secondary">Assisted: Research</Text>
-								</Chunk>
+								<Card>
+									<Sectionless>
+										<Chunk>
+											<Text type="small">Project</Text>
+											<Text type="small" color="secondary">Interactive installation art</Text>
+										</Chunk>
+										<Chunk>
+											<Text type="small">Role</Text>
+											<Text color="secondary" type="small">Lead: Product, UX, UI</Text>
+											<Text color="secondary" type="small">Assisted: Research</Text>
+										</Chunk>
+										<Chunk>
+											<Text type="small">Client</Text>
+											<Text type="small" color="secondary">Museum of the Moving Image</Text>
+										</Chunk>
+									</Sectionless>
+								</Card>
 							</Section>
 						</FlexItem>
 					</Flex>

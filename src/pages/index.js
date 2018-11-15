@@ -21,6 +21,7 @@ import {
 } from 'cinderblock';
 import swatches from 'cinderblock/styles/swatches';
 import styles from 'cinderblock/styles/styles';
+import { WithMatchMedia } from 'cinderblock/components/WithMatchMedia';
 
 import Footer from '../components/Footer';
 
@@ -65,13 +66,19 @@ const PortfolioItem = (props)=>(
 	</Link>
 );
 
-const IndexPage = () => (
-		<View>
-			<Helmet>
-				<title>rgb.work | Richard Boenigk</title>
-			</Helmet>
-			<Stripe style={{backgroundColor: '#FF2C00', minHeight: '75vh'}}>
-				<Bounds style={{justifyContent: 'center', flex: 1}}>
+
+const HeroStripe = WithMatchMedia((props) => {
+	const {
+		media
+	} = props;
+
+
+	const heroFontSize = (media && media.medium) ? 96 : 76;
+	const heroMarginTop = (media && media.large) ? -16 : 6; // the "lowercaseness" requires some special treatment
+
+	return(
+		<Stripe style={{backgroundColor: '#FF2C00', minHeight: '75vh'}}>
+			<Bounds style={{justifyContent: 'center', flex: 1}}>
 				<Flex direction="column" switchDirection="large" noGutters>
 					<FlexItem>
 						<Section>
@@ -81,7 +88,7 @@ const IndexPage = () => (
 									accessibilityRole="heading"
 									accessibilityLevel="1"
 									type="hero"
-									style={{fontSize: 96, lineHeight: 96, marginTop: -16}}
+									style={{fontSize: heroFontSize, lineHeight: heroFontSize, marginTop: heroMarginTop}}
 									>rgb.&#8203;work</Text>
 							</Chunk>
 						</Section>
@@ -104,9 +111,9 @@ const IndexPage = () => (
 									</FlexItem>
 									<FlexItem style={{justifyContent: 'center'}}>
 										<Inline>
-											<Icon shape="Instagram" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 3}} />
-											<Icon shape="Twitter" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 3}} />
-											<Icon shape="Linkedin" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 3}} />
+											<Icon shape="Instagram" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
+											<Icon shape="Twitter" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
+											<Icon shape="Linkedin" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
 										</Inline>
 									</FlexItem>
 								</Flex>
@@ -116,6 +123,16 @@ const IndexPage = () => (
 				</Flex>
 				</Bounds>
 			</Stripe>
+	);
+});
+
+const IndexPage = (props) => (
+		<View>
+			<Helmet>
+				<title>rgb.work | Richard Boenigk</title>
+			</Helmet>
+
+			<HeroStripe />
 
 			<Stripe style={{ flex: 1}}>
 				<Bounds>
