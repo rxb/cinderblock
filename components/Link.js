@@ -1,6 +1,5 @@
 import React from 'react';
 import Touch from './Touch';
-import Router from 'next/router'
 
 
 /*
@@ -27,9 +26,10 @@ class Link extends React.Component {
 					accessibilityRole="link"
 					href={href}
 					onPress={(event)=>{
-						event.preventDefault();
 						if(!this.props.target){ // if opening new window, don't use router
-							Router.push(href).then(()=>{window.scroll(0,0)}); // TODO: maybe use next/Link ?
+							event.preventDefault();
+							Link.routingFn();
+							//Router.push(href).then(()=>{window.scroll(0,0)});
 						}
 					}}
 					{...other}
@@ -39,6 +39,10 @@ class Link extends React.Component {
 		);
 	}
 }
+
+Link.routingFn = (href) => {
+	console.error("Link.routingFn not configured.");
+};
 
 
 export default Link;

@@ -16,7 +16,7 @@ const styles = StyleSheet.create({
 
 	// LAYOUT
 	stripe: {
-		paddingVertical: space*.75,
+		paddingVertical: spaceSection, // 2 spaceSections between each section (two sections will stack)
 		flex: 1,
 	},
 	'stripe--atMedium': {

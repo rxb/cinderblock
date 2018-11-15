@@ -7,7 +7,6 @@ import Icon from './Icon';
 import {WithMatchMedia} from './WithMatchMedia';
 import Link from './Link';
 import Touch from './Touch';
-import Router from 'next/router'
 
 const Button = (props) => {
 
