@@ -1,6 +1,5 @@
 import React, {Fragment} from 'react'
 import {Helmet} from "react-helmet";
-import {Link} from 'gatsby'
 
 import {
 	Bounds,
@@ -24,6 +23,8 @@ import styles from 'cinderblock/styles/styles';
 import { WithMatchMedia } from 'cinderblock/components/WithMatchMedia';
 
 import Footer from '../components/Footer';
+import Link from '../components/Link';
+
 
 const PortfolioData = [
 	{title: 'Meetup Recipes', subtitle: 'Lorem ipsum vitae at risus lacus ad lorem'},
@@ -39,7 +40,7 @@ const PortfolioData = [
 
 
 const PortfolioItem = (props)=>(
-	<Link to="project_2" style={{textDecorationLine: 'none'}}>
+	<Link href="project_2" style={{textDecorationLine: 'none'}}>
 		<Chunk>
 			<Card style={{
 				borderWidth: 0,
@@ -111,9 +112,18 @@ const HeroStripe = WithMatchMedia((props) => {
 									</FlexItem>
 									<FlexItem style={{justifyContent: 'center'}}>
 										<Inline>
-											<Icon shape="Instagram" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
-											<Icon shape="Twitter" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
-											<Icon shape="Linkedin" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
+											<Link href="https://instagram.com/rbgk">
+												<Icon shape="Instagram" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
+											</Link>
+											<Link href="https://twitter.com/richardboenigk">
+												<Icon shape="Twitter" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
+											</Link>
+											<Link href="https://github.com/rxb">
+												<Icon shape="GitHub" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
+											</Link>
+											<Link href="https://linkedin.com/in/rgb-work">
+												<Icon shape="Linkedin" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />
+											</Link>
 										</Inline>
 									</FlexItem>
 								</Flex>

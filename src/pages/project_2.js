@@ -1,7 +1,6 @@
 import React, {Fragment} from 'react'
 import {Text as RNText} from 'react-native';
 import {Helmet} from "react-helmet";
-import {Link} from 'gatsby'
 
 import {
 	Bounds,
@@ -26,6 +25,7 @@ import { METRICS } from 'cinderblock/designConstants';
 
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import Link from '../components/Link';
 
 
 const Kicker = (props) => (
@@ -95,9 +95,7 @@ const IndexPage = () => (
 					<Flex direction="column"  switchDirection="large" rowReverse="large">
 
 						<FlexItem growFactor={firstCols[0]}>
-
 								<Section>
-
 									<Chunk>
 										<Text type="small" weight="strong">Project type</Text>
 										<Text type="small" color="secondary">Interactive installation art</Text>
