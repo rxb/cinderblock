@@ -11,6 +11,7 @@ const swatches = {
 	focus: 'rgba(0,122,255,.25)',
 	error: 'red',
 	border: 'rgba(0,0,0,.15)',
+	borderInverted: 'rgba(255,255,255,.3)',
 	backgroundDark: '#222',
 	backgroundShade: '#fafafa'
 }
