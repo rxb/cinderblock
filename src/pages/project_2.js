@@ -29,7 +29,7 @@ import Footer from '../components/Footer';
 
 
 const Kicker = (props) => (
-	<Text type="small" color="secondary">{props.children.toUpperCase()}</Text>
+	<Text type="small" color="secondary" style={{fontSize: METRICS.smallSize * .9}}>{props.children.toUpperCase()}</Text>
 );
 
 const Hr = (props) => (
@@ -86,11 +86,11 @@ const IndexPage = () => (
 								accessibilityRole="heading"
 								accessibilityLevel="1"
 								type="pageHead"
-								>Translation Party <Text type="pageHead" color="hint">(Art Installation)</Text></Text>
+								>Translation Party</Text>
 						</Chunk>
 					</Section>
 
-
+					<Hr />
 
 					<Flex direction="column"  switchDirection="large" rowReverse="large">
 
@@ -99,7 +99,7 @@ const IndexPage = () => (
 								<Section>
 
 									<Chunk>
-										<Text type="small" weight="strong">Project</Text>
+										<Text type="small" weight="strong">Project type</Text>
 										<Text type="small" color="secondary">Interactive installation art</Text>
 									</Chunk>
 									<Chunk>
@@ -112,7 +112,7 @@ const IndexPage = () => (
 										<Text type="small" color="secondary">Museum of the Moving Image</Text>
 									</Chunk>
 								</Section>
-							<Hr />
+								<Hr />
 						</FlexItem>
 
 						<FlexItem growFactor={firstCols[1]}>
