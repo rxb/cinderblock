@@ -18,6 +18,7 @@ class Link extends React.Component {
 		const {
 			href,
 			children,
+			routingFn = () => { console.log('need to implement routingFn for Link') },
 			...other
 		} = this.props;
 
@@ -28,8 +29,7 @@ class Link extends React.Component {
 					onPress={(event)=>{
 						if(!this.props.target){ // if opening new window, don't use router
 							event.preventDefault();
-							Link.routingFn();
-							//Router.push(href).then(()=>{window.scroll(0,0)});
+							routingFn(href);
 						}
 					}}
 					{...other}
@@ -39,10 +39,6 @@ class Link extends React.Component {
 		);
 	}
 }
-
-Link.routingFn = (href) => {
-	console.error("Link.routingFn not configured.");
-};
 
 
 export default Link;
