@@ -34,7 +34,7 @@ const Kicker = (props) => (
 
 const Hr = (props) => (
 	<View style={{
-			marginVertical: METRICS.space / 2,
+			marginVertical: METRICS.space * .66,
 			marginHorizontal: METRICS.spaceSection,
 			height: 0,
 			borderTopWidth: 2,
