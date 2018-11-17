@@ -5,6 +5,7 @@
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
     "babel-plugin-react-native-web": "^0.9.7",
+    "body-scroll-lock": "^2.5.10",
     "cinderblock": "file:../cinderblock",
     "gatsby": "^2.0.48",
     "gatsby-plugin-react-helmet": "^3.0.2",

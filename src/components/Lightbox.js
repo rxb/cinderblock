@@ -19,43 +19,15 @@ import { METRICS, EASE } from 'cinderblock/designConstants';
 import styles from 'cinderblock//styles/styles';
 import swatches from 'cinderblock//styles/swatches';
 
-/*
 
-know that there is an input bug in ios versions < 11.3
-fixed positioning gets weird
-
-*/
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 
 
-/*
+class Lightbox extends React.Component{
 
-/////////////////////////
-potential redux version
-
-// state shape
-modals: [
-	{id: id, content: content, status: showing / hiding }
-]
-
-const id = id;
-dispatch(showModal(id, content));
-// mounts modal hidden then triggers animation to reveal
-
-dispatch(hideModal(id));
-// animates hiding, then triggers
-
-dispatch(removeModal(id));
-
-
-/////////////////////////
-alternate way is to have a skeleton modal just hanging out and waiting to be popped
-
-*/
-
-
-
-class Modal extends React.Component{
+	targetRef = React.createRef();
+   	targetElement = null;
 
 	static defaultProps = {
     	onPressEnter: ()=>{},
@@ -81,9 +53,11 @@ class Modal extends React.Component{
 				this.open();
 			}, 1);
 		}
+		this.targetElement = this.targetRef.current;
 	}
 	componentWillUnmount(){
 		document.removeEventListener("keydown", this.onKeyPress, false);
+		clearAllBodyScrollLocks();
 	}
 
 	onKeyPress(event){
@@ -105,6 +79,9 @@ class Modal extends React.Component{
 	}
 
 	open(){
+
+		disableBodyScroll(this.targetElement);
+
 		const duration = 250;
 		this.setState({display: 'flex'})
 		Animated.timing(
@@ -117,6 +94,8 @@ class Modal extends React.Component{
 	}
 
 	close(){
+		enableBodyScroll(this.targetElement);
+
 		const duration = 250;
 		Animated.timing(
 			this.state.visibilityValue,{
@@ -157,7 +136,7 @@ class Modal extends React.Component{
 						onPress={onRequestClose}
 						noFeedback
 						>
-							<View style={[ styles['modal-backdrop'], {backgroundColor: 'rgba(0,0,0,.925)', backdropFilter: 'blur(6px)'} ]} />
+							<View style={[ styles['modal-backdrop'], {backgroundColor: 'rgba(0,0,0,.9)', backdropFilter: 'blur(6px)'} ]} />
 					</Touch>
 				}
 				<Animated.View style={[
@@ -181,7 +160,7 @@ class Modal extends React.Component{
 										>
 										<Icon
 											shape='X'
-											color="white"
+											color={swatches.textSecondaryInverted}
 											size="large"
 											/>
 									</Touch>
@@ -193,7 +172,7 @@ class Modal extends React.Component{
 										>
 										<Icon
 											shape='ArrowLeft'
-											color="white"
+											color={swatches.textSecondaryInverted}
 											size="large"
 											/>
 									</Touch>
@@ -202,7 +181,7 @@ class Modal extends React.Component{
 										>
 										<Icon
 											shape='ArrowRight'
-											color="white"
+											color={swatches.textSecondaryInverted}
 											size="large"
 											/>
 									</Touch>
@@ -210,20 +189,26 @@ class Modal extends React.Component{
 								</FlexItem>
 							</Flex>
 						</Section>
-						<View style={{flex: 1, padding: METRICS.space}}>
+						<View style={{flex: 1}}>
 							<Flex direction="column" switchDirection="large">
 								<FlexItem>
-									{children}
+									<Section style={{flex: 1}}>
+										{children}
+									</Section>
 								</FlexItem>
 								<FlexItem shrink>
-									<View style={{
-										borderTopColor: swatches.borderInverted,
-										borderTopWidth: 1,
-										minWidth: 300,
-										paddingTop: METRICS.space
-									}}>
-										<Text inverted>Some stuff</Text>
-									</View>
+									<Section>
+										<View style={{
+											borderTopColor: swatches.borderInverted,
+											borderTopWidth: 2,
+											borderTopStyle: 'dotted',
+											minWidth: 300,
+											paddingTop: METRICS.space
+										}}>
+											<Text inverted>Look at this stuff</Text>
+											<Text inverted color="secondary">Isn't it neat?</Text>
+										</View>
+									</Section>
 								</FlexItem>
 							</Flex>
 						</View>
@@ -245,4 +230,4 @@ const LightboxStyles = StyleSheet.create({
 });
 
 
-export default WithMatchMedia(Modal);
+export default WithMatchMedia(Lightbox);
