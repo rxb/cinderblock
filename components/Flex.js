@@ -92,7 +92,7 @@ const Flex = (props) => {
 
 		return (
 			<View
-				style={combinedStyles}
+				style={[combinedStyles, style]}
 				media={media}
 				{...other}
 			>
