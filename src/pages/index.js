@@ -109,9 +109,11 @@ const HeroStripe = WithMatchMedia((props) => {
 							<Chunk>
 								<Flex direction="row">
 									<FlexItem>
-										<Text inverted weight="strong" style={{textDecorationLine: 'underline'}}>hello@rgb.work</Text>
+										<Link href="mailto:hello@rgb.work">
+											<Text inverted weight="strong" style={{textDecorationLine: 'underline'}}>hello@rgb.work</Text>
+										</Link>
 									</FlexItem>
-									<FlexItem style={{justifyContent: 'center'}}>
+									<FlexItem style={{justifyContent: 'center', alignItems: 'flex-end'}}>
 										<Inline>
 											<Link href="https://instagram.com/rbgk">
 												<Icon shape="Instagram" color={swatches.textPrimaryInverted} size="medium" style={{marginLeft: 6}} />

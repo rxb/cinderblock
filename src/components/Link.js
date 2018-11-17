@@ -5,7 +5,7 @@ import { Link } from 'cinderblock';
 export default (props) => (
 	<Link
 		routingFn={(href) => {
-			if(href.includes('://')){
+			if(href.includes(':')){
 				// is a full url
 				window.location = href;
 			}

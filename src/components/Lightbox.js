@@ -1,6 +1,5 @@
 import React from 'react';
-import { Animated, Easing, Touchable, View, ScrollView, StyleSheet } from 'react-native';
-
+import { ActivityIndicator, Animated, Easing, Touchable, View, ScrollView, StyleSheet } from 'react-native';
 import {
 	Card,
 	Chunk,
@@ -44,7 +43,8 @@ class Lightbox extends React.Component{
 		this.state = {
 			display: 'none',
 			visibilityValue: new Animated.Value(0),
-			cursor: 0
+			cursor: 0,
+			imageLoading: false
 		}
 		this.onKeyPress = this.onKeyPress.bind(this);
 
@@ -61,7 +61,7 @@ class Lightbox extends React.Component{
 	}
 	componentWillUnmount(){
 		document.removeEventListener("keydown", this.onKeyPress, false);
-		clearAllBodyScrollLocks();
+		//clearAllBodyScrollLocks();
 	}
 
 	onKeyPress(event){
@@ -180,7 +180,7 @@ class Lightbox extends React.Component{
 												<Inline>
 													<Touch
 														onPress={()=>{
-															const cursor = Math.abs((this.state.cursor - 1) % (this.props.items.length))
+															const cursor = (this.state.cursor - 1 >= 0) ? this.state.cursor - 1 : this.props.items.length - 1;
 															this.setState({cursor: cursor});
 														}}
 														>
@@ -192,7 +192,7 @@ class Lightbox extends React.Component{
 													</Touch>
 													<Touch
 														onPress={()=>{
-															const cursor = Math.abs((this.state.cursor + 1) % (this.props.items.length))
+															const cursor = (this.state.cursor + 1 < this.props.items.length) ? this.state.cursor + 1 : 0;
 															this.setState({cursor: cursor});
 														}}
 														>
@@ -214,7 +214,21 @@ class Lightbox extends React.Component{
 											resizeMode="contain"
 											style={{flex: 1}}
 											source={{uri: item.image}}
+											onLoadStart={()=>{
+												this.setState({imageLoading: true})
+											}}
+											onLoadEnd={()=>{
+												this.setState({imageLoading: false})
+											}}
 											/>
+										{ this.state.imageLoading &&
+											<View style={{position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, justifyContent: 'center', alignItems: 'center'}}>
+												<ActivityIndicator
+													color="white"
+													size="large"
+													/>
+											</View>
+										}
 									</Chunk>
 								</Section>
 							</Stripe>
