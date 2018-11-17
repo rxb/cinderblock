@@ -10,7 +10,7 @@ const Card = (props) => {
 	} = props;
 
 	return(
-		<View style={[styles.card, styles.pseudoLineHeight, style]}>
+		<View style={[styles.card, styles.pseudoLineHeight, style]} {...other}>
 			{children}
 		</View>
 	);
