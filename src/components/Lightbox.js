@@ -171,9 +171,9 @@ class Modal extends React.Component{
 					    }]
 					}
 				]}>
-					<Stripe style={{backgroundColor: 'yellow'}}>
-						<Section style={{backgroundColor: 'green'}}>
-							<Flex direction="row" style={{backgroundColor: 'purple'}}>
+					<Stripe>
+						<Section>
+							<Flex direction="row">
 								<FlexItem shrink>
 									<Touch
 										onPress={onRequestClose}
@@ -186,7 +186,7 @@ class Modal extends React.Component{
 											/>
 									</Touch>
 								</FlexItem>
-								<FlexItem style={{backgroundColor: 'red'}}>
+								<FlexItem style={{alignItems: 'flex-end'}}>
 									<Inline>
 									<Touch
 										onPress={onRequestClose}
