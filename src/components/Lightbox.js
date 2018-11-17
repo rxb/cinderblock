@@ -7,6 +7,7 @@ import {
 	Flex,
 	FlexItem,
 	Inline,
+	Image,
 	Touch,
 	Icon,
 	Header,
@@ -14,11 +15,12 @@ import {
 	Stripe,
 	Text
 } from 'cinderblock';
+import Hr from './Hr';
+
 import { WithMatchMedia } from 'cinderblock/components/WithMatchMedia';
 import { METRICS, EASE } from 'cinderblock/designConstants';
 import styles from 'cinderblock//styles/styles';
 import swatches from 'cinderblock//styles/swatches';
-
 
 import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
@@ -32,7 +34,8 @@ class Lightbox extends React.Component{
 	static defaultProps = {
     	onPressEnter: ()=>{},
     	onRequestClose: ()=>{ console.log('onRequestClose not implemented') },
-    	onCompleteClose: ()=>{ },
+    	onCompleteClose: ()=>{},
+    	items: [],
     	visible: false
   	}
 
@@ -40,7 +43,8 @@ class Lightbox extends React.Component{
 		super(props);
 		this.state = {
 			display: 'none',
-			visibilityValue: new Animated.Value(0)
+			visibilityValue: new Animated.Value(0),
+			cursor: 0
 		}
 		this.onKeyPress = this.onKeyPress.bind(this);
 
@@ -116,12 +120,15 @@ class Lightbox extends React.Component{
 			children,
 			onRequestClose,
 			media,
+			items,
 			visible,
 			...other
 		} = this.props;
 
 		const isFull = !media['medium'];
 		const modalStyle = (isFull) ? styles['modal--full'] : styles['modal'];
+
+		const item = items[this.state.cursor];
 
 		return(
 			<Animated.View style={[
@@ -136,7 +143,7 @@ class Lightbox extends React.Component{
 						onPress={onRequestClose}
 						noFeedback
 						>
-							<View style={[ styles['modal-backdrop'], {backgroundColor: 'rgba(0,0,0,.9)', backdropFilter: 'blur(6px)'} ]} />
+							<View style={[ styles['modal-backdrop'] ]} />
 					</Touch>
 				}
 				<Animated.View style={[
@@ -150,69 +157,80 @@ class Lightbox extends React.Component{
 					    }]
 					}
 				]}>
-					<Stripe>
-						<Section>
-							<Flex direction="row">
-								<FlexItem shrink>
-									<Touch
-										onPress={onRequestClose}
-										style={{position: 'relative', left: -5}}
-										>
-										<Icon
-											shape='X'
-											color={swatches.textSecondaryInverted}
-											size="large"
+
+					<Flex direction="column" switchDirection="large" noGutters>
+						<FlexItem>
+							<Stripe style={{backgroundColor: 'black'}}>
+								<Section>
+									<Chunk>
+										<Flex direction="row">
+											<FlexItem shrink>
+												<Touch
+													onPress={onRequestClose}
+													style={{position: 'relative', left: -5}}
+													>
+													<Icon
+														shape='X'
+														color={swatches.textSecondaryInverted}
+														size="large"
+														/>
+												</Touch>
+											</FlexItem>
+											<FlexItem style={{alignItems: 'flex-end'}}>
+												<Inline>
+													<Touch
+														onPress={()=>{
+															const cursor = Math.abs((this.state.cursor - 1) % (this.props.items.length))
+															this.setState({cursor: cursor});
+														}}
+														>
+														<Icon
+															shape='ArrowLeft'
+															color={swatches.textSecondaryInverted}
+															size="large"
+															/>
+													</Touch>
+													<Touch
+														onPress={()=>{
+															const cursor = Math.abs((this.state.cursor + 1) % (this.props.items.length))
+															this.setState({cursor: cursor});
+														}}
+														>
+														<Icon
+															shape='ArrowRight'
+															color={swatches.textSecondaryInverted}
+															size="large"
+															/>
+													</Touch>
+												</Inline>
+											</FlexItem>
+										</Flex>
+									</Chunk>
+								</Section>
+
+								<Section style={{flex: 1}}>
+									<Chunk style={{flex: 1}}>
+										<Image
+											resizeMode="contain"
+											style={{flex: 1}}
+											source={{uri: item.image}}
 											/>
-									</Touch>
-								</FlexItem>
-								<FlexItem style={{alignItems: 'flex-end'}}>
-									<Inline>
-									<Touch
-										onPress={onRequestClose}
-										>
-										<Icon
-											shape='ArrowLeft'
-											color={swatches.textSecondaryInverted}
-											size="large"
-											/>
-									</Touch>
-									<Touch
-										onPress={onRequestClose}
-										>
-										<Icon
-											shape='ArrowRight'
-											color={swatches.textSecondaryInverted}
-											size="large"
-											/>
-									</Touch>
-									</Inline>
-								</FlexItem>
-							</Flex>
-						</Section>
-						<View style={{flex: 1}}>
-							<Flex direction="column" switchDirection="large">
-								<FlexItem>
-									<Section style={{flex: 1}}>
-										{children}
-									</Section>
-								</FlexItem>
-								<FlexItem shrink>
-									<Section>
-										<View style={{
-											borderTopColor: swatches.borderInverted,
-											borderTopWidth: 2,
-											borderTopStyle: 'dotted',
-											minWidth: 300,
-											paddingTop: METRICS.space
-										}}>
-											<Text inverted>Look at this stuff</Text>
-											<Text inverted color="secondary">Isn't it neat?</Text>
-										</View>
-									</Section>
-								</FlexItem>
-							</Flex>
-						</View>
-					</Stripe>
+									</Chunk>
+								</Section>
+							</Stripe>
+						</FlexItem>
+						<FlexItem shrink>
+							<Stripe style={{backgroundColor: '#0f0f0f'}}>
+								<Section style={{minWidth: 300}}>
+									<Chunk>
+										<Text inverted>{item.title}</Text>
+										<Text inverted color="secondary">{item.description}</Text>
+									</Chunk>
+								</Section>
+							</Stripe>
+						</FlexItem>
+					</Flex>
+
 				</Animated.View>
 			</Animated.View>
 		);

@@ -42,11 +42,12 @@ const PortfolioData = [
 const PortfolioItem = (props)=>(
 	<Link href="project_2" style={{textDecorationLine: 'none'}}>
 		<Chunk>
-			<Card style={{
-				borderWidth: 0,
-				shadowColor: 'rgba(0,0,0,.1)',
-				shadowRadius: 10
-			}}>
+			<Card
+				style={{
+					borderWidth: 0,
+					shadowColor: 'rgba(0,0,0,.1)',
+					shadowRadius: 10
+				}}>
 				<Image
 					style={{
 						backgroundColor: 'pink',
@@ -60,7 +61,7 @@ const PortfolioItem = (props)=>(
 					<Chunk>
 						<Text weight="strong">{props.title}</Text>
 						<Text color="secondary">{props.subtitle}</Text>
-				</Chunk>
+					</Chunk>
 				</Sectionless>
 			</Card>
 		</Chunk>
@@ -136,38 +137,43 @@ const HeroStripe = WithMatchMedia((props) => {
 	);
 });
 
-const IndexPage = (props) => (
-		<View>
-			<Helmet>
-				<title>rgb.work | Richard Boenigk</title>
-			</Helmet>
+class IndexPage extends React.Component {
 
-			<HeroStripe />
+	render(){
+		return (
+			<View>
+				<Helmet>
+					<title>rgb.work | Richard Boenigk</title>
+				</Helmet>
 
-			<Stripe style={{ flex: 1}}>
-				<Bounds>
-					<Section>
-						<Chunk>
-							<Text type="sectionHead">Featured projects</Text>
-						</Chunk>
+				<HeroStripe />
 
-						<List
-							variant="grid"
-							itemsInRow={{
-								small: 1,
-								medium: 2,
-								large: 2
-							}}
-							renderItem={PortfolioItem}
-							scrollItemWidth={300}
-							items={PortfolioData}
-							/>
-					</Section>
-				</Bounds>
-			</Stripe>
+				<Stripe style={{ flex: 1}}>
+					<Bounds>
+						<Section>
+							<Chunk>
+								<Text type="sectionHead">Featured projects</Text>
+							</Chunk>
 
-			<Footer />
-		</View>
-)
+							<List
+								variant="grid"
+								itemsInRow={{
+									small: 1,
+									medium: 2,
+									large: 2
+								}}
+								renderItem={PortfolioItem}
+								scrollItemWidth={300}
+								items={PortfolioData}
+								/>
+						</Section>
+					</Bounds>
+				</Stripe>
+
+				<Footer />
+			</View>
+		)
+	}
+}
 
 export default IndexPage

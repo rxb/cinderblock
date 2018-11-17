@@ -28,26 +28,17 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import Link from '../components/Link';
 import Lightbox from '../components/Lightbox';
+import Hr from '../components/Hr';
 
 
 const Kicker = (props) => (
 	<Text type="small" color="secondary" style={{fontSize: METRICS.smallSize * .9}}>{props.children.toUpperCase()}</Text>
 );
 
-const Hr = (props) => (
-	<View style={{
-			marginVertical: METRICS.space * .5,
-			marginHorizontal: METRICS.spaceSection,
-			height: 0,
-			borderTopWidth: 2,
-			borderTopColor: swatches.border,
-			borderTopStyle: 'dotted'
-		}}
-		/>
-)
+
 
 const ExpandIcon = () => (
-	<View style={{backgroundColor: 'white', position: 'absolute', bottom: 8, right: 8, width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center'}}>
+	<View style={{backgroundColor: 'white', position: 'absolute', bottom: 8, right: 8, width: 32, height: 32, borderRadius: 16, alignItems: 'center', justifyContent: 'center', shadowRadius: 12, shadowColor: 'rgba(0,0,0,.05)'}}>
 		<Icon
 			shape="Maximize2"
 			color={swatches.textPrimary}
@@ -256,13 +247,24 @@ class ProjectPage extends React.Component {
 						onRequestClose={()=>{
 							this.setState({lightboxVisible: false});
 						}}
-						>
-							<Image
-								resizeMode="contain"
-								style={{flex: 1,}}
-								source={{uri: 'https://file.mockplus.com/image/2018/06/6ae1974b-3202-4646-a1f4-a4dcdaca2fec.png'}}
-								/>
-					</Lightbox>
+						items={[
+				    		{
+				    			image: "https://file.mockplus.com/image/2018/06/6ae1974b-3202-4646-a1f4-a4dcdaca2fec.png",
+				    			title: "Look at this stuff",
+				    			description: "Isn't it neat?"
+				    		},
+				    		{
+				    			image: "https://www.tvovermind.com/wp-content/uploads/2016/12/episode-12-bojack-roof-640x428.png",
+				    			title: "Hollywoo Celebrities and Stars",
+				    			description: "Do they know things?"
+				    		},
+				    		{
+				    			image: "http://49.media.tumblr.com/d249d248c5952623a2c210d3f31593ef/tumblr_mk7i8vYdn91qbabvao1_500.gif",
+				    			title: "Is this a crossover episode?",
+				    			description: "I'm out of quotes"
+				    		}
+						]}
+						/>
 
 			</View>
 		)
