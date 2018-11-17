@@ -75,7 +75,7 @@ const HeroStripe = WithMatchMedia((props) => {
 	} = props;
 
 
-	const heroFontSize = (media && media.medium) ? 96 : 76;
+	const heroFontSize = (media && media.medium) ? 96 : 72;
 	const heroMarginTop = (media && media.large) ? -16 : 6; // the "lowercaseness" requires some special treatment
 
 	return(

@@ -17,7 +17,7 @@ import {
 import Hr from './Hr';
 
 import { WithMatchMedia } from 'cinderblock/components/WithMatchMedia';
-import { METRICS, EASE } from 'cinderblock/designConstants';
+import { METRICS, EASE, MEDIA_SIZES } from 'cinderblock/designConstants';
 import styles from 'cinderblock//styles/styles';
 import swatches from 'cinderblock//styles/swatches';
 
@@ -186,10 +186,11 @@ class Lightbox extends React.Component{
 														>
 														<Icon
 															shape='ArrowLeft'
-															color={swatches.textSecondaryInverted}
+															color={swatches.textHintInverted}
 															size="large"
 															/>
 													</Touch>
+
 													<Touch
 														onPress={()=>{
 															const cursor = (this.state.cursor + 1 < this.props.items.length) ? this.state.cursor + 1 : 0;
@@ -198,7 +199,7 @@ class Lightbox extends React.Component{
 														>
 														<Icon
 															shape='ArrowRight'
-															color={swatches.textSecondaryInverted}
+															color={swatches.textHintInverted}
 															size="large"
 															/>
 													</Touch>
@@ -234,12 +235,21 @@ class Lightbox extends React.Component{
 							</Stripe>
 						</FlexItem>
 						<FlexItem shrink>
-							<Stripe style={{backgroundColor: '#0f0f0f'}}>
+							<Stripe style={{backgroundColor: '#111'}}>
 								<Section style={{minWidth: 300}}>
-									<Chunk>
-										<Text inverted>{item.title}</Text>
-										<Text inverted color="secondary">{item.description}</Text>
-									</Chunk>
+									<Flex>
+										<FlexItem>
+											<Chunk>
+												<Text inverted>{item.title}</Text>
+												<Text inverted color="secondary">{item.description}</Text>
+											</Chunk>
+										</FlexItem>
+										<FlexItem shrink>
+											<Chunk>
+												<Text inverted type="small" color="hint" style={{whiteSpace: 'nowrap'}}>{this.state.cursor + 1} of {this.props.items.length}</Text>
+											</Chunk>
+										</FlexItem>
+									</Flex>
 								</Section>
 							</Stripe>
 						</FlexItem>

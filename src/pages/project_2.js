@@ -167,7 +167,7 @@ class ProjectPage extends React.Component {
 												style={[
 													{
 														backgroundColor: 'pink',
-														height: 200,
+														height: 240,
 														borderRadius: 5,
 													},
 
@@ -206,7 +206,7 @@ class ProjectPage extends React.Component {
 												style={[
 													{
 														backgroundColor: 'pink',
-														height: 200,
+														height: 240,
 														borderRadius: 5,
 													},
 												]}
