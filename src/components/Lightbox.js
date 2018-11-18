@@ -28,7 +28,7 @@ import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'bo
 class Lightbox extends React.Component{
 
 	targetRef = React.createRef();
-   	targetElement = null;
+	targetElement = null;
 
 	static defaultProps = {
     	onPressEnter: ()=>{},
@@ -47,7 +47,8 @@ class Lightbox extends React.Component{
 			imageLoading: false
 		}
 		this.onKeyPress = this.onKeyPress.bind(this);
-
+		this.cursorNext = this.cursorNext.bind(this);
+		this.cursorPrevious = this.cursorPrevious.bind(this);
 	}
 
 	componentDidMount(){
@@ -57,18 +58,27 @@ class Lightbox extends React.Component{
 				this.open();
 			}, 1);
 		}
-		this.targetElement = this.targetRef.current;
 	}
 	componentWillUnmount(){
 		document.removeEventListener("keydown", this.onKeyPress, false);
-		//clearAllBodyScrollLocks();
+		clearAllBodyScrollLocks();
 	}
 
 	onKeyPress(event){
 		if(this.props.visible){
-			if(event.keyCode === 27) {
-				event.preventDefault();
-				this.props.onRequestClose();
+			switch(event.keyCode){
+				case 27: // esc
+					event.preventDefault();
+					this.props.onRequestClose();
+					break;
+				case 37: // left
+					event.preventDefault();
+					this.cursorPrevious();
+					break;
+				case 39:
+					event.preventDefault();
+					this.cursorPrevious();
+					break;
 			}
 		}
 	}
@@ -83,6 +93,7 @@ class Lightbox extends React.Component{
 	}
 
 	open(){
+		this.setState({cursor: 0});
 
 		disableBodyScroll(this.targetElement);
 
@@ -113,6 +124,16 @@ class Lightbox extends React.Component{
 		});
 	}
 
+	cursorNext(){
+		const cursor = (this.state.cursor - 1 >= 0) ? this.state.cursor - 1 : this.props.items.length - 1;
+		this.setState({cursor: cursor});
+	}
+
+	cursorPrevious(){
+		const cursor = (this.state.cursor + 1 < this.props.items.length) ? this.state.cursor + 1 : 0;
+		this.setState({cursor: cursor});
+	}
+
 
 	render() {
 
@@ -131,21 +152,20 @@ class Lightbox extends React.Component{
 		const item = items[this.state.cursor];
 
 		return(
-			<Animated.View style={[
-				styles['modal-container'],
-				{
-					display: this.state.display,
-					opacity: this.state.visibilityValue
-				}
-			]}>
-				{ (true || !isFull) &&
-					<Touch
-						onPress={onRequestClose}
-						noFeedback
-						>
-							<View style={[ styles['modal-backdrop'] ]} />
-					</Touch>
-				}
+			<Animated.View
+				style={[
+					styles['modal-container'],
+					{
+						display: this.state.display,
+						opacity: this.state.visibilityValue
+					}
+				]}
+				ref={c => this.targetElement = c && c.getNode()}
+			>
+
+
+				<View style={[ styles['modal-backdrop'] ]} />
+
 				<Animated.View style={[
 					LightboxStyles.lightbox,
 					{
@@ -160,7 +180,7 @@ class Lightbox extends React.Component{
 
 					<Flex direction="column" switchDirection="large" noGutters>
 						<FlexItem>
-							<Stripe style={{backgroundColor: 'black'}}>
+							<Stripe style={{backgroundColor: 'black', minHeight: 400}}>
 								<Section>
 									<Chunk>
 										<Flex direction="row">
@@ -179,10 +199,7 @@ class Lightbox extends React.Component{
 											<FlexItem style={{alignItems: 'flex-end'}}>
 												<Inline>
 													<Touch
-														onPress={()=>{
-															const cursor = (this.state.cursor - 1 >= 0) ? this.state.cursor - 1 : this.props.items.length - 1;
-															this.setState({cursor: cursor});
-														}}
+														onPress={this.cursorNext}
 														>
 														<Icon
 															shape='ArrowLeft'
@@ -192,10 +209,7 @@ class Lightbox extends React.Component{
 													</Touch>
 
 													<Touch
-														onPress={()=>{
-															const cursor = (this.state.cursor + 1 < this.props.items.length) ? this.state.cursor + 1 : 0;
-															this.setState({cursor: cursor});
-														}}
+														onPress={this.cursorPrevious}
 														>
 														<Icon
 															shape='ArrowRight'
@@ -254,7 +268,6 @@ class Lightbox extends React.Component{
 							</Stripe>
 						</FlexItem>
 					</Flex>
-
 				</Animated.View>
 			</Animated.View>
 		);
@@ -266,7 +279,7 @@ const LightboxStyles = StyleSheet.create({
 	lightbox: {
 		position: 'absolute',
 		top: 0, right: 0, bottom: 0, left: 0,
-		overflow: 'hidden',
+		overflow: 'scroll',
 		zIndex: 3
 	}
 });
