@@ -40,7 +40,7 @@ const PortfolioData = [
 
 
 const PortfolioItem = (props)=>(
-	<Link href="project_2" style={{textDecorationLine: 'none'}}>
+	<Link href="project" style={{textDecorationLine: 'none'}}>
 		<Chunk>
 			<Card
 				style={{
