@@ -1,5 +1,5 @@
 import React from 'react';
-import { ActivityIndicator, Animated, Easing, Touchable, View, ScrollView, StyleSheet } from 'react-native';
+import { ActivityIndicator, Animated, Easing, Touchable, View, ScrollView, StyleSheet, PanResponder } from 'react-native';
 import {
 	Card,
 	Chunk,
@@ -21,14 +21,45 @@ import { METRICS, EASE, MEDIA_SIZES } from 'cinderblock/designConstants';
 import styles from 'cinderblock//styles/styles';
 import swatches from 'cinderblock//styles/swatches';
 
+import SwipeRecognizer from 'react-native-swipe-recognizer';
 import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 
 
 class Lightbox extends React.Component{
 
+	// prevent body scrolling
 	targetRef = React.createRef();
 	targetElement = null;
+
+	// panresponder setup
+	translateX = new Animated.Value(0);
+	_panResponder = PanResponder.create({
+		onMoveShouldSetResponderCapture: () => true,
+		onMoveShouldSetPanResponderCapture: () => true,
+		onPanResponderMove: Animated.event([null, {dx: this.translateX}]),
+		onPanResponderRelease: (e, {vx, dx}) => {
+		  const screenWidth = window.innerWidth;
+		  if (Math.abs(vx) >= 0.5 || Math.abs(dx) >= 0.5 * screenWidth) {
+		    Animated.timing(this.translateX, {
+		      toValue: dx > 0 ? screenWidth : -screenWidth,
+		      duration: 200
+		    }).start(()=>{
+		    	if(dx>0){
+			    	this.cursorNext()
+		    	}
+		    	else{
+			    	this.cursorPrevious()
+		    	}
+		    });
+		  } else {
+		    Animated.spring(this.translateX, {
+		      toValue: 0,
+		      bounciness: 10
+		    }).start();
+		  }
+		}
+	});
 
 	static defaultProps = {
     	onPressEnter: ()=>{},
@@ -51,6 +82,9 @@ class Lightbox extends React.Component{
 		this.cursorPrevious = this.cursorPrevious.bind(this);
 	}
 
+
+
+
 	componentDidMount(){
 		document.addEventListener("keydown", this.onKeyPress, false);
 		if(this.props.visible){
@@ -58,6 +92,7 @@ class Lightbox extends React.Component{
 				this.open();
 			}, 1);
 		}
+
 	}
 	componentWillUnmount(){
 		document.removeEventListener("keydown", this.onKeyPress, false);
@@ -124,14 +159,14 @@ class Lightbox extends React.Component{
 		});
 	}
 
-	cursorNext(){
+	cursorPrevious(){
 		const cursor = (this.state.cursor - 1 >= 0) ? this.state.cursor - 1 : this.props.items.length - 1;
-		this.setState({cursor: cursor});
+		this.setState({cursor: cursor}, ()=>{this.translateX.setValue(0)});
 	}
 
-	cursorPrevious(){
+	cursorNext(){
 		const cursor = (this.state.cursor + 1 < this.props.items.length) ? this.state.cursor + 1 : 0;
-		this.setState({cursor: cursor});
+		this.setState({cursor: cursor}, ()=>{this.translateX.setValue(0)});
 	}
 
 
@@ -199,7 +234,8 @@ class Lightbox extends React.Component{
 											<FlexItem style={{alignItems: 'flex-end'}}>
 												<Inline>
 													<Touch
-														onPress={this.cursorNext}
+														onPress={this.cursorPrevious}
+														style={LightboxStyles.expandTouch}
 														>
 														<Icon
 															shape='ArrowLeft'
@@ -209,7 +245,8 @@ class Lightbox extends React.Component{
 													</Touch>
 
 													<Touch
-														onPress={this.cursorPrevious}
+														onPress={this.cursorNext}
+														style={LightboxStyles.expandTouch}
 														>
 														<Icon
 															shape='ArrowRight'
@@ -224,18 +261,23 @@ class Lightbox extends React.Component{
 								</Section>
 
 								<Section style={{flex: 1}}>
-									<Chunk style={{flex: 1}}>
-										<Image
-											resizeMode="contain"
-											style={{flex: 1}}
-											source={{uri: item.image}}
-											onLoadStart={()=>{
-												this.setState({imageLoading: true})
-											}}
-											onLoadEnd={()=>{
-												this.setState({imageLoading: false})
-											}}
-											/>
+									<Chunk
+										style={{flex: 1}}
+										>
+										<Animated.View
+          									style={{flex: 1, transform: [{translateX: this.translateX}]}} {...this._panResponder.panHandlers}>
+											<Image
+												resizeMode="contain"
+												style={{flex: 1}}
+												source={{uri: item.image}}
+												onLoadStart={()=>{
+													this.setState({imageLoading: true})
+												}}
+												onLoadEnd={()=>{
+													this.setState({imageLoading: false})
+												}}
+												/>
+										</Animated.View>
 										{ this.state.imageLoading &&
 											<View style={{position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, justifyContent: 'center', alignItems: 'center'}}>
 												<ActivityIndicator
@@ -281,6 +323,9 @@ const LightboxStyles = StyleSheet.create({
 		top: 0, right: 0, bottom: 0, left: 0,
 		overflow: 'scroll',
 		zIndex: 3
+	},
+	expandTouch: {
+		padding: 8, margin: -8, position: 'relative'
 	}
 });
 

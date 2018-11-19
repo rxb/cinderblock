@@ -16,7 +16,9 @@ import {
 	Sectionless,
 	Stripe,
 	Text,
-	View
+	TextInput,
+	View,
+	withFormState
 } from 'cinderblock';
 import swatches from 'cinderblock/styles/swatches';
 import styles from 'cinderblock/styles/styles';
@@ -73,7 +75,6 @@ const HeroStripe = WithMatchMedia((props) => {
 	const {
 		media
 	} = props;
-
 
 	const heroFontSize = (media && media.medium) ? 96 : 72;
 	const heroMarginTop = (media && media.large) ? -16 : 6; // the "lowercaseness" requires some special treatment
@@ -134,45 +135,88 @@ const HeroStripe = WithMatchMedia((props) => {
 						</Section>
 					</FlexItem>
 				</Flex>
-				</Bounds>
-			</Stripe>
+			</Bounds>
+		</Stripe>
 	);
+});
+
+
+const ProjectsStripe = (props) => {
+	return(
+		<Stripe style={{ flex: 1}}>
+			<Bounds>
+				<Section>
+					<Chunk>
+						<Text type="sectionHead">Featured projects</Text>
+					</Chunk>
+
+					<List
+						variant="grid"
+						itemsInRow={{
+							small: 1,
+							medium: 2,
+							large: 2
+						}}
+						renderItem={PortfolioItem}
+						scrollItemWidth={300}
+						items={PortfolioData}
+						/>
+				</Section>
+			</Bounds>
+		</Stripe>
+	);
+}
+
+
+const PasswordStripe = withFormState((props) => {
+
+	const {
+		fields,
+		setFieldState,
+		handleSubmit,
+		resetFields,
+		fieldErrors = {},
+		tags,
+	} = props;
+
+	return(
+		<Stripe style={{backgroundColor: '#cc1b00', flex: 0}}>
+			<Bounds>
+				<Section style={{alignItems: 'center'}}>
+					<Chunk>
+						<TextInput
+							value={fields.password}
+							onChangeText={text => setFieldState({password: text}) }
+							placeholder="password"
+							style={{textAlign: 'center'}}
+							/>
+					</Chunk>
+				</Section>
+			</Bounds>
+		</Stripe>
+	)
 });
 
 class IndexPage extends React.Component {
 
 	render(){
 		return (
-			<View>
+			<View style={{minHeight: '100vh'}}>
 				<Helmet>
 					<title>rgb.work | Richard Boenigk</title>
 				</Helmet>
 
 				<HeroStripe />
 
-				<Stripe style={{ flex: 1}}>
-					<Bounds>
-						<Section>
-							<Chunk>
-								<Text type="sectionHead">Featured projects</Text>
-							</Chunk>
+				{/*
+				<PasswordStripe />
+				*/}
 
-							<List
-								variant="grid"
-								itemsInRow={{
-									small: 1,
-									medium: 2,
-									large: 2
-								}}
-								renderItem={PortfolioItem}
-								scrollItemWidth={300}
-								items={PortfolioData}
-								/>
-						</Section>
-					</Bounds>
-				</Stripe>
+				<Fragment>
+					<ProjectsStripe />
+					<Footer />
+				</Fragment>
 
-				<Footer />
 			</View>
 		)
 	}
