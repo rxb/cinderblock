@@ -26,6 +26,7 @@ const Stripe = (props) => {
 		imageHeight = {small: 225, medium: 325, large: 400, xlarge: 450},
 		media,
 		style,
+		...other
 	} = props
 
 	const imageHeightStyle = (image) ? {height: findWidestActiveValue(imageHeight, media)} : {};
@@ -44,6 +45,7 @@ const Stripe = (props) => {
 			<Image
 				source={{uri: image}}
 				style={[combinedStyles, {resizeMode: 'cover'}, style, imageHeightStyle]}
+				{...other}
 				>
 				{children}
 			</Image>
@@ -51,7 +53,10 @@ const Stripe = (props) => {
 	}
 	else{
 		return(
-			<View style={[combinedStyles, style]}>
+			<View
+				style={[combinedStyles, style]}
+				{...other}
+				>
 				{children}
 			</View>
 		);

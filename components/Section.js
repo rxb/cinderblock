@@ -26,7 +26,9 @@ const Section = (props) => {
 			(isFirstChild ? styles['section--firstChild'] : undefined),
 			*/
 			style
-		]}>
+		]}
+		{...other}
+		>
 			{children}
 		</View>
 	);

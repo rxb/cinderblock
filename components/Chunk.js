@@ -14,7 +14,7 @@ const Chunk = (props) => {
 	const inlineStyle = (inline) ? styles.inline : {};
 
 	return(
-		<View style={[styles.chunk, inlineStyle, style]}>
+		<View style={[styles.chunk, inlineStyle, style]} {...other}>
 			{children}
 		</View>
 	);
