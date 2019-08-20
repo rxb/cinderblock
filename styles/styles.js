@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
 
 	// INPUT
 	input: {
-		backgroundColor: swatches.notwhite,
+		backgroundColor: swatches.shadeBarely,
 		borderColor: swatches.border,
 		borderWidth: 1,
 		paddingHorizontal: 16,
@@ -420,7 +420,8 @@ const styles = StyleSheet.create({
 	textBig: {
 		fontSize: METRICS.bigSize,
 		lineHeight: METRICS.bigLineHeight,
-		fontWeight: '600'
+		fontWeight: '600',
+		letterSpacing: 0
 	},
 	textSectionHead: {
 		fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
@@ -441,7 +442,7 @@ const styles = StyleSheet.create({
 		fontSize: METRICS.heroSize,
 		lineHeight: METRICS.heroLineHeight,
 		fontWeight: '700',
-		letterSpacing: '-.001em'
+		letterSpacing: '-.005em'
 	},
 	textLabel: {
 		marginTop: 4,
