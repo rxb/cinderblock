@@ -1,35 +1,18 @@
 import { StyleSheet } from '../primitives';
 
-import {
-	METRICS,
-	FLEX_ALIGN_VALUES,
-	FLEX_JUSTIFY_VALUES
-} from '../designConstants';
+import { METRICS } from '../designConstants';
 
 const {
 	base,
 	space,
-	spaceSection
 } = METRICS;
 
 const flexGrowFactors = [1, 2, 3, 4, 5, 6, 7];
 
-
-const upFirst = word =>
-  word[0].toUpperCase() + word.toLowerCase().slice(1)
-
-const camelize = text => {
-  let words = text.split(/[-_]/g) // ok one simple regexp.
-  return words[0].toLowerCase() + words.slice(1).map(upFirst)
-}
-
-const capitalize = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-
-
 const styles = StyleSheet.create({
+
+/*
+// Flex
 
 
 'flex' : {
@@ -37,45 +20,70 @@ const styles = StyleSheet.create({
 	flexDirection: 'row',
 },
 
-'flex-item' : {
-	width: 'auto',
-	flex: 1,
-	flexBasis: 0
-},
-
-'flex-item--firstChild': {
-	//paddingLeft: 0
-},
-
-
 'flex--row' : {
 	flexDirection: 'row',
-	marginLeft: -1*base
+	marginLeft: -1*base,
 },
-
-'flex--row__flex-item': {
-	paddingLeft: base,
-	minHeight: '-webkit-min-content'
-},
-
 
 'flex--column': {
 	flexDirection: 'column',
 	height: '100%'
 },
 
-'flex--column__flex-item': {
-	paddingLeft: 0,
-	minHeight: '-webkit-min-content'
+// FlexItem
+
+'flex-item' : {
+	width: 'auto',
+	flex: 1,
+	flexBasis: 0,
+	minWidth: 0,
 },
 
 
+'flex--row__flex-item': {
+	paddingLeft: base,
+	minHeight: '-webkit-min-content',
+},
 
-/*
 
-FLEX GROW FACTORS
-
+'flex--column__flex-item': {
+	paddingLeft: 0,
+	minHeight: '-webkit-min-content',
+	minWidth: '-webkit-min-content',
+},
 */
+
+// Flex
+
+
+'flex' : {
+	alignItems: 'stretch',
+	flexDirection: 'row',
+	marginLeft: -1*base,
+},
+
+'flex--row' : {
+	flexDirection: 'row',
+},
+
+'flex--column': {
+	flexDirection: 'column',
+	height: '100%'
+},
+
+// FlexItem
+
+'flex-item' : {
+	width: 'auto',
+	flex: 1,
+	flexBasis: 0,
+	minHeight: '-webkit-min-content',
+	minWidth: '-webkit-min-content',
+	paddingLeft: base,
+},
+
+
+// FLEX GROW FACTORS
 
 ...(()=>{
 	const growObj = {};
@@ -85,25 +93,34 @@ FLEX GROW FACTORS
 	return growObj;
 })(),
 
-
 'flex-item--shrink': {
 	flex: 0,
 	minWidth: '-webkit-min-content'
 },
 
-/*
 
-FLEX VARIANTS
-
-*/
-
-'flex--noGutters': {
-	marginLeft: 0
+// FLEX VARIANTS
+'flex--flush': {
+	marginLeft: 0,
+},
+'flex-item--flush': {
+	paddingLeft: 0,
+},
+'flex--nbsp': {
+	marginLeft: -1 * METRICS.pseudoLineHeight * 2,
+},
+'flex-item--nbsp': {
+	paddingLeft: METRICS.pseudoLineHeight * 2,
 },
 
+/*
+'flex--noGutters': {
+	marginLeft: 0,
+},
 'flex--noGutters__flex-item': {
 	paddingLeft: 0,
 },
+*/
 
 'flex--wrap': {
 	flexWrap: 'wrap'
@@ -117,38 +134,28 @@ FLEX VARIANTS
 	flexDirection: 'row-reverse'
 },
 
+// JUSTIFY
+'flex--justify-flex-start': {
+	justifyContent: 'flex-start'
+},
+'flex--justify-center': {
+	justifyContent: 'center'
+},
+'flex--justify-flex-end': {
+	justifyContent: 'flex-end'
+},
 
-/*
+// ALIGN
+'flex--align-flex-start': {
+	alignItems: 'flex-start'
+},
+'flex--align-center': {
+	alignItems: 'center'
+},
+'flex--align-flex-end': {
+	alignItems: 'flex-end'
+},
 
-FLEX JUSTIFY
-ex:
-flex--flexEnd = flexJustify: 'flex-end'
-
-*/
-...(()=>{
-	const justifyObj = {};
-	FLEX_JUSTIFY_VALUES.forEach( (fj) => {
-		justifyObj[`flex--${camelize(fj)}`] = { justifyContent: fj };
-	});
-	return justifyObj;
-})(),
-
-
-
-/*
-
-FLEX ALIGNMENTS
-ex:
-flex--alignTop = flexAlign: 'top'
-
-*/
-...(()=>{
-	const alignObj = {};
-	FLEX_ALIGN_VALUES.forEach( (fa) => {
-		alignObj[`flex--align${capitalize(camelize(fa))}`] = { alignItems: fa };
-	});
-	return alignObj;
-})(),
 
 
 });

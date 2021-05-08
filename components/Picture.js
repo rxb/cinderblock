@@ -3,31 +3,35 @@ import { View, Image, Text } from '../primitives';
 import PropTypes from 'prop-types';
 import styles from '../styles/styles';
 
-const Avatar = (props) => {
+const Picture = (props) => {
+	
 	const {
 		size,
 		source,
 		style
 	} = props;
 
-	const finalStyles = [styles['avatar'], styles[`avatar--${size}`], style];
+	const finalStyles = [
+		styles['picture'], 
+		styles[`picture--${size}`],
+		style
+	];
+
 	return(
-		<>
 		<Image
 			source={source}
 			style={finalStyles}
 			/>
-		</>
 	);
 }
 
-Avatar.defaultProps = {
+Picture.defaultProps = {
 	size: 'medium',
 };
 
-Avatar.propTypes = {
-	size: PropTypes.oneOf(['xsmall', 'small', 'medium', 'large', 'xlarge']),
+Picture.propTypes = {
+	size: PropTypes.oneOf(['xsmall', 'small', 'medium', 'large', 'xlarge', false]),
 	source: PropTypes.object
 }
 
-export default Avatar;
+export default Picture;

@@ -5,11 +5,11 @@ import styles from '../styles/styles';
 const Bounds = (props) => {
 	const {
 		style,
-		children,
-		...other
+		children
 	} = props;
+	const finalStyles = [styles.bounds, style];
 	return(
-		<View style={[styles.bounds, style]} {...other}>
+		<View style={finalStyles}>
 			{children}
 		</View>
 	);

@@ -4,14 +4,18 @@ import { ScrollView } from 'react-native-web';
 import styles from '../styles/styles';
 import swatches from '../styles/swatches';
 import Card from './Card';
+import Flex from './Flex';
+import FlexItem from './FlexItem';
 import Chunk from './Chunk';
 import Touch from './Touch';
 import Icon from './Icon';
 import Header from './Header';
 import Section from './Section';
 import Stripe from './Stripe';
-import { WithMatchMedia } from './WithMatchMedia';
+import { MediaContext } from './UseMediaContext';
 import { METRICS, EASE } from '../designConstants';
+
+import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 /*
 
@@ -48,8 +52,13 @@ alternate way is to have a skeleton modal just hanging out and waiting to be pop
 */
 
 
-
 class Modal extends React.Component{
+
+	static contextType = MediaContext;
+
+	// for body locking
+	targetRef = React.createRef();
+  	targetElement = null;
 
 	static defaultProps = {
     	onPressEnter: ()=>{},
@@ -69,6 +78,11 @@ class Modal extends React.Component{
 	}
 
 	componentDidMount(){
+
+		// if there are problems in ios with body locking
+		// it's probably because of this https://github.com/willmcpo/body-scroll-lock/issues/102#issuecomment-482599456
+		this.targetElement = this.targetRef.current;
+
 		document.addEventListener("keydown", this.onKeyPress, false);
 		if(this.props.visible){
 			setTimeout(()=>{
@@ -78,6 +92,7 @@ class Modal extends React.Component{
 	}
 	componentWillUnmount(){
 		document.removeEventListener("keydown", this.onKeyPress, false);
+		clearAllBodyScrollLocks();
 	}
 
 	onKeyPress(event){
@@ -89,7 +104,8 @@ class Modal extends React.Component{
 		}
 	}
 
-	componentWillReceiveProps(nextProps){
+	/*
+	UNSAFE_componentWillReceiveProps(nextProps){
 		if(nextProps.visible){
 			this.open();
 		}
@@ -97,8 +113,20 @@ class Modal extends React.Component{
 			this.close();
 		}
 	}
+	*/
+	componentDidUpdate(prevProps){
+		if(this.props.visible != prevProps.visible){
+			if(this.props.visible){
+				this.open();
+			}
+			else{
+				this.close();
+			}
+		}
+	}
 
-	open(){
+	open(){		
+		disableBodyScroll(this.targetElement);
 		const duration = 250;
 		this.setState({display: 'flex'})
 		Animated.timing(
@@ -111,6 +139,7 @@ class Modal extends React.Component{
 	}
 
 	close(){
+		enableBodyScroll(this.targetElement);
 		const duration = 250;
 		Animated.timing(
 			this.state.visibilityValue,{
@@ -130,10 +159,11 @@ class Modal extends React.Component{
 		const {
 			children,
 			onRequestClose,
-			media,
 			visible,
 			...other
 		} = this.props;
+
+		const media = this.context;
 
 		const isFull = !media['medium'];
 		const modalStyle = (isFull) ? styles['modal--full'] : styles['modal'];
@@ -160,26 +190,55 @@ class Modal extends React.Component{
 						transform: [{
 					      translateY: this.state.visibilityValue.interpolate({
 					        inputRange: [0, 1],
-					        outputRange: [150, 0]
+					        outputRange: [180, 0]
 					      }),
 					    }]
 					}
 				]}>
-					<Stripe style={{paddingBottom: 0}}>
-						<Section style={{ paddingBottom: 0}}>
-							<Touch
-								onPress={onRequestClose}
-								style={{position: 'relative', left: -5}}
-								>
-								<Icon
-									shape='X'
-									color="gray"
-									size="large"
-									/>
-							</Touch>
+					{/*
+					<Stripe style={{borderBottomWidth: 1, borderBottomColor: swatches.border}}>
+						<Section style={{ paddingVertical: 0}}>
+							<Flex>
+								<FlexItem shrink>
+									<Touch
+										onPress={onRequestClose}
+										style={{backgroundColor: 'lightgray', borderRadius: 32}}
+										>
+										<View>
+										<Icon
+											shape='X'
+											color="white"
+											size="medium"
+											/>
+										</View>
+									</Touch>
+								</FlexItem>
+							</Flex>
 						</Section>
 					</Stripe>
-					<ScrollView>
+					*/}
+
+					<View style={{position: 'absolute', top: 0, right: 0, padding: METRICS.base, zIndex: 5}}>
+						<Touch
+							onPress={onRequestClose}
+							style={{backgroundColor: swatches.shade, borderRadius: 32, padding: 4}}
+							>
+							<View>
+							<Icon
+								shape='X'
+								color={swatches.textHint}
+								size="medium"
+								/>
+							</View>
+						</Touch>
+					</View>
+
+					{/* scrollview is blocking the rest */}
+
+					<ScrollView 
+						style={{/*backgroundColor: 'green'*/}} 
+						ref={this.targetRef}
+						>
 						{children}
 					</ScrollView>
 				</Animated.View>
@@ -189,4 +248,4 @@ class Modal extends React.Component{
 	}
 }
 
-export default WithMatchMedia(Modal);
+export default Modal;

@@ -26,8 +26,7 @@ class TextInput extends React.Component{
 	static defaultProps = {
 		autoExpand: true,
 		onChange: ()=>{},
-		onChangeText: ()=>{},
-		value: ''
+		value: '',
 	}
 
 	constructor(props){
@@ -38,11 +37,13 @@ class TextInput extends React.Component{
 			countColor: 'secondary'
 		}
 		this.onChange = this.onChange.bind(this);
-		this.updateTextInput = this.updateTextInput.bind(this);
+		this.onContentSizeChange = this.onContentSizeChange.bind(this);
+		this.updateCounter = this.updateCounter.bind(this);
 	}
 
 	componentDidMount(){
-		this.updateTextInput(this.props.value);
+
+		this.updateCounter(this.props.value);
 	}
 
 	shouldComponentUpdate(nextProps, nextState){
@@ -55,38 +56,33 @@ class TextInput extends React.Component{
 		return false;
 	}
 
-	updateTextInput(text){
-		let dirty = false;
+	updateCounter(text){
 		let newState = {};
-
-		this._node = this.textinput._node;
-		const height = this._node.scrollHeight;
 
 		// counter
 		if(this.props.showCounter && this.props.maxLength){
-			dirty = true;
 			newState.count = text.length;
 			newState.countColor = 'secondary';
 			const diff = this.props.maxLength - newState.count;
 			if(diff < 10){
 				newState.countColor = 'tint';
 			}
-		}
-
-		// autoexpand
-		if(this.props.multiline && this.props.autoExpand && this.state.height != height){
-			dirty = true;
-			newState.height = height;
-		}
-
-		if(dirty){
 			this.setState(newState);
+		}
+	}
+
+	onContentSizeChange(event){
+		// right now, only expands, not contracts
+		// doesn't fire on ssr
+		const height = event.nativeEvent.contentSize.height;
+		if(this.props.multiline && this.props.autoExpand && this.state.height <= height){
+			this.setState({height: height});
 		}
 	}
 
 	onChange(event){
 		const text = event.target.value;
-		debounce(this.updateTextInput, 100)(text);
+		debounce(this.updateCounter, 100)(text);
 		this.props.onChange(event);
 	}
 
@@ -106,19 +102,23 @@ class TextInput extends React.Component{
 		return (
 			<View style={wrapperStyle}>
 				<TextInputWeb
-					ref={ref => this.textinput = ref}
+					ref={ (ref) => {
+						this.textinput = ref
+					}}
 					accessibilityLabel={placeholder}
 					placeholder={placeholder}
 					placeholderTextColor={swatches.textHint}
 					multiline={multiline}
 					maxLength={maxLength}
 					onChange={this.onChange}
+					onContentSizeChange={this.onContentSizeChange}
 					className='input'
 					style={[
 						styles.input,
 						multiline && styles['input--multiline'],
 						multiline && maxLength && showCounter && styles['input--multilineAndCounter'],
 						styles.text,
+						styles.textBody,
 						{minHeight: this.state.height},
 						style,
 					]}

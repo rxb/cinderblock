@@ -10,18 +10,25 @@ const Icon = (props) => {
 			color,
 			size,
 			shape,
+			style,
 			...other
 		} = props;
 
 		const SIZES = {
+			xsmall: 14,
 			small: 16,
 			medium: 24,
-			large: 36
+			large: 36,
+			xlarge: 64
 		}
 		const pixelSize = SIZES[size];
 
 		const ThisIcon = Icons[shape];
-		return <ThisIcon color={color} size={pixelSize} {...other} />;
+
+
+
+
+		return <ThisIcon color={color} size={pixelSize} style={style} {...other} />;
 
 		//return <View />;
 
@@ -33,7 +40,7 @@ Icon.defaultProps = {
 };
 
 Icon.propTypes = {
-	size: PropTypes.oneOf(['small', 'medium', 'large']),
+	size: PropTypes.oneOf(['xsmall', 'small', 'medium', 'large', 'xlarge']),
 	shape: PropTypes.string,
 	color: PropTypes.string
 }

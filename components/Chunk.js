@@ -7,14 +7,17 @@ const Chunk = (props) => {
 		children,
 		inline,
 		style,
+		border,
 		...other
 	} = props;
 
 	// optimized way to inline layout without explicit <Inline> component
 	const inlineStyle = (inline) ? styles.inline : {};
-
+	const borderStyle = (border) ? styles["chunk--border"] : {};
+	const finalStyles = [styles.chunk, inlineStyle, borderStyle, style];
+	
 	return(
-		<View style={[styles.chunk, inlineStyle, style]} {...other}>
+		<View style={finalStyles}>
 			{children}
 		</View>
 	);

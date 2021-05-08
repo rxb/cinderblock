@@ -5,6 +5,7 @@
 
 import React from 'react';
 import { View } from '../primitives';
+import RevealBlock from './RevealBlock';
 import styles from '../styles/styles';
 import ReactDOM from 'react-dom';
 
@@ -13,16 +14,21 @@ class Menu extends React.Component {
 		super(props);
 		this.state = {
 			visible: false,
+			coords: {x: 0, y: 0}
 		}
 		this.toggle = this.toggle.bind(this);
 	}
 	toggle(){
-		this.setState({visible: !this.state.visible})
+		this.setState({visible: !this.state.visible});
 	}
+	
 	render(){
 		return(
-			<View style={styles['menu-container']}>
-				{ this.state.visible &&
+			<View 
+				ref={ ref => this.menuContainer = ref }
+				style={styles['menu-container']} 
+				>
+				{ this.state.visible && 
 					<MenuComponent
 						{...this.props}
 						onRequestClose={this.toggle}

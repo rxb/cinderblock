@@ -1,12 +1,15 @@
-
+// validator.js + extras
 // for backend / frontend parity
+// sequelize uses validator.js + adds extra validations
 // https://github.com/sequelize/sequelize/lib/utils/validator-extras.js
 
 'use strict';
 
-const _ = require('lodash');
-const validator = _.cloneDeep(require('validator'));
-//const moment = require('moment');
+
+// TODO: do this instead of just extending, but for now let's just go with it: 
+// https://github.com/validatorjs/validator.js/issues/525#issuecomment-213149570
+
+const validator = require('validator');
 import moment from 'dayjs';
 
 export const extensions = {
@@ -80,9 +83,10 @@ validator.notNull = function(val) {
 };
 
 // https://github.com/chriso/validator.js/blob/6.2.0/validator.js
-_.forEach(extensions, (extend, key) => {
+for(const key in extensions){
+  const extend = extensions[key];
   validator[key] = extend;
-});
+};
 
 // map isNull to isEmpty
 // https://github.com/chriso/validator.js/commit/e33d38a26ee2f9666b319adb67c7fc0d3dea7125

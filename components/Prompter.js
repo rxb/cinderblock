@@ -9,7 +9,6 @@ import Stripe from './Stripe';
 import Touch from './Touch';
 import Icon from './Icon';
 import Section from './Section';
-import { WithMatchMedia } from './WithMatchMedia';
 import { METRICS, EASE } from '../designConstants';
 
 /*
@@ -64,12 +63,14 @@ class Prompt extends React.Component{
 		}
 	}
 
-	componentWillReceiveProps(nextProps){
-		if(nextProps.showable){
-			this.open();
-		}
-		else{
-			this.close();
+	componentDidUpdate(prevProps){
+		if(this.props.showable != prevProps.showable){
+			if(this.props.showable){
+				this.open();
+			}
+			else{
+				this.close();
+			}
 		}
 	}
 
@@ -112,7 +113,6 @@ class Prompt extends React.Component{
 
 	render() {
 		const {
-			media,
 			dismissable,
 			content,
 			...other
@@ -187,4 +187,4 @@ class Prompter extends React.Component {
 
 
 
-export default WithMatchMedia(Prompter);
+export default Prompter;

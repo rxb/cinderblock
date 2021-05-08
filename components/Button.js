@@ -1,79 +1,177 @@
-import React, {Fragment} from 'react';
+import React, {useMemo} from 'react';
 import { ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet } from '../primitives';
+import { View, Text } from '../primitives';
 import styles from '../styles/styles';
+import swatches from '../styles/swatches';
+import {TEXT_TYPES, TEXT_COLORS, TEXT_WEIGHTS} from '../designConstants';
 import Icon from './Icon';
-import {WithMatchMedia} from './WithMatchMedia';
+import {useMediaContext} from './UseMediaContext';
+import {findWidestActiveValue} from '../utils';
 import Link from './Link';
 import Touch from './Touch';
 
-const Button = (props) => {
+const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1); 
 
-		const {
-			href,
-			onPress,
-			label,
-			shape,
-			color = 'primary',
-			media,
-			isLoading = false,
-			width = 'snap',
-			...other
-		} = props;
+const getCombinedStyles = (props) => {
 
-		const variantStyle = (width == 'full' || media && !media.medium && width == 'snap') ? styles['button--fullWidth'] : undefined;
+	const {
+		color,
+		inverted,
+		currentVariant,
+		size,
+		textType
+	} = props;
+	const invertedModifier = (inverted) ? 'Inverted' : '';
 
-		let ActionComponent, actionComponentProps;
-		if(href){
-			ActionComponent = Link;
-			actionComponentProps = {
-				href: href,
-				accessibilityRole: 'link'
-			}
-		}
-		else if(onPress){
-			ActionComponent = Touch;
-			actionComponentProps = {
-				onPress: onPress,
-				accessibilityRole: 'button'
-			}
-		}
-		else{
-			// what kind of button is this then?
-			ActionComponent = View
-		}
+	// BUTTON 
+	const buttonStyleKeys = [
+		'button',
+		`button--${currentVariant}`,
+		`button--${size}`,
+		...[color ? `button--${color}${invertedModifier}` : undefined ]
+	];
+	const button = buttonStyleKeys.map((key, i)=>{
+		return styles[key];
+	});
 
-		return(
-			<ActionComponent
-				style={[styles.button, styles[`button--${color}`], variantStyle]}
-				{...actionComponentProps}
-				{...other}
-				>
+	// BUTTON TEXT
+	const textStyleKeys = [
+		'text',
+		...[textType ? `text${TEXT_TYPES[textType]}` : undefined ],
+		'buttonText',
+		...[color ? `buttonText--${color}${invertedModifier}` : undefined ],
+	];
+	const text =  textStyleKeys.map((key, i)=>{
+		return styles[key];
+	});
 
-				<View style={{visibility: (isLoading) ? 'hidden' : 'visible'}}>
-					{ shape &&
-						<Icon shape={shape} color="white" />
-					}
-					<Text style={[styles.text, styles.buttonText, styles[`buttonText--${color}`]]}>{label}</Text>
-				</View>
-
-				{ isLoading &&
-					<View style={{position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center'}}>
-						<ActivityIndicator
-							color={'white'}
-							/>
-					</View>
-				}
-			</ActionComponent>
-		);
+	return { button, text }
 }
 
-Button.propTypes = {
-	width: PropTypes.oneOf([
-		'full',
-		'snap'
-	])
-};
+const Button = (props) => {
 
-export default WithMatchMedia(Button);
+	const {
+		// style props
+		color,
+		size,
+		inverted,
+		// rest
+		href,
+		width,
+		onPress,
+		label,
+		shape,
+		isLoading,
+		style,
+		children,
+		...other
+	} = props
+	const media = useMediaContext();
+
+	// inferred props
+	let textType, iconSize;
+	switch(size){
+		case 'small':
+			textType = "small";
+			iconSize = "small";
+			break;
+		case 'medium':
+			iconSize = "medium";
+			textType = "body";
+			break;
+		case 'large':
+			textType = "big";
+			iconSize = "large";
+			break;
+	}
+
+	// width is shorthand for variants
+	// this is pretty janky
+	// maybe reconsider and do like list
+	let variant;
+	if(!props.variant){
+		switch(width){
+			case 'snap':
+				variant = {small: 'grow', medium: 'shrink'};
+				break;
+			case 'full':
+				variant = {small: 'grow'};
+				break;
+			default:
+				variant = {small: 'shrink'};
+				break;
+		}
+	}
+	else{
+		variant = props.variant
+	}
+	const currentVariant = findWidestActiveValue(variant, media);
+
+	// touchable component and semantics
+	let ActionComponent, actionComponentProps;
+	if(href){
+		ActionComponent = Link;
+		actionComponentProps = {
+			href: href,
+			accessibilityRole: 'link'
+		}
+	}
+	else{
+		ActionComponent = Touch;
+		actionComponentProps = {
+			onPress: onPress,
+			accessibilityRole: 'button'
+		}
+	}
+
+	// styles 
+	const combinedStyles = useMemo(()=>getCombinedStyles({...props, currentVariant, textType}), [color, inverted, currentVariant, size, textType ]);
+	const buttonFinalStyles = [ combinedStyles.button, style];
+	const textFinalStyles = combinedStyles.text;
+	const inkColor = swatches[`button${capitalize(color)}${ inverted ? 'Inverted' : ''}Ink`];
+
+	return(
+		<ActionComponent
+			style={buttonFinalStyles}
+			{...actionComponentProps}
+			{...other}
+			>
+			<View style={isLoading ? styles.visibilityHidden : styles.visibilityVisibile}>
+				<View style={styles.buttonContent}>
+					{ shape &&
+						<Icon 
+							shape={shape} 
+							color={inkColor} 
+							style={{marginLeft: 3, marginRight: 3}} 
+							size={iconSize}
+							/>
+					}
+					{ label && currentVariant != 'iconOnly' &&
+						<Text 
+							style={textFinalStyles}
+							>{label}</Text>
+					}
+				</View>
+				{children}
+			</View>
+			
+			{ isLoading &&
+				<View style={styles.absoluteCenter}>
+					<ActivityIndicator
+						color={inkColor}
+						/>
+				</View>
+			}
+
+		</ActionComponent>
+	);
+}
+
+Button.defaultProps = {
+	size: 'medium',
+	onPress: () => {},
+	color: 'primary'
+}
+
+export default Button;

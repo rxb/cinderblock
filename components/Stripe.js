@@ -1,22 +1,19 @@
-import React from 'react';
-import { View, Image } from '../primitives';
+import React, {useMemo} from 'react';
+import { View, Image, ImageBackground } from '../primitives';
 import styles from '../styles/styles';
-import {WithMatchMedia} from './WithMatchMedia';
-import { BREAKPOINTS } from '../designConstants';
+import {useMediaContext} from './UseMediaContext';
+import { BREAKPOINTS, METRICS } from '../designConstants';
+import {findWidestActiveValue} from '../utils';
 
-// find current values for largest breakpoint with a match in media[*]
-const findWidestActiveValue = (values, media) => {
-	let valuesMap = (typeof values === 'object') ? values : { small: values }
-	let activeValue = valuesMap['small'];
-	BREAKPOINTS.forEach( BP => {
-		if( valuesMap[BP] && media[BP] ){
-			activeValue = valuesMap[BP];
-		}
+const getCombinedStyles = (media) => {	
+	const styleKeys = [
+		'stripe',
+		...[ (media && media.medium) ? 'stripe--atMedium' : undefined],
+	];
+	return styleKeys.map((key, i)=>{
+		return styles[key];
 	});
-	return activeValue;
 }
-
-
 
 const Stripe = (props) => {
 
@@ -24,44 +21,42 @@ const Stripe = (props) => {
 		children,
 		image,
 		imageHeight = {small: 225, medium: 325, large: 400, xlarge: 450},
-		media,
 		style,
+		forwardedRef,
 		...other
 	} = props
 
+	const media = useMediaContext();
+	const combinedStyles = useMemo( ()=>getCombinedStyles(media), [media]);
 	const imageHeightStyle = (image) ? {height: findWidestActiveValue(imageHeight, media)} : {};
-
-	const styleKeys = [
-		'stripe',
-		...[ (media && media.medium) ? 'stripe--atMedium' : undefined]
-	];
-	const combinedStyles = styleKeys.map((key, i)=>{
-		return styles[key];
-	});
-
 
 	if(image){
 		return(
-			<Image
+			<ImageBackground
+				ref={forwardedRef}
 				source={{uri: image}}
-				style={[combinedStyles, {resizeMode: 'cover'}, style, imageHeightStyle]}
+				style={[combinedStyles, style, imageHeightStyle]}
 				{...other}
 				>
 				{children}
-			</Image>
+			</ImageBackground>
 		);
 	}
 	else{
 		return(
-			<View
-				style={[combinedStyles, style]}
+			<View 
+				ref={forwardedRef}
+				style={[combinedStyles, style]} 
 				{...other}
 				>
 				{children}
 			</View>
 		);
 	}
+};
 
-}
+const WrappedComponent = React.forwardRef((props, ref) => {
+	return <Stripe {...props} forwardedRef={ref} />;
+});
 
-export default WithMatchMedia(Stripe);
+export default WrappedComponent;

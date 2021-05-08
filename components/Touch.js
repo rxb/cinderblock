@@ -30,9 +30,10 @@ class Touch extends React.Component {
 			isPressed
 		} = this.state
 
+		const stateStyle = (isPressed || isLoading) ? stateStyles.active : stateStyles.default;
+
 		return(
 				<Touchable
-					className="touch"
 					{...other}
 					onPressIn={()=>{
 						if(!noFeedback){
@@ -45,11 +46,13 @@ class Touch extends React.Component {
 						}
 					}}
 					>
-					<View style={ [
-						(isPressed || isLoading) ? stateStyles.active : stateStyles.default,
-						style
-					]}>
-						<React.Fragment>{children}</React.Fragment>
+					<View
+						style={ [ styles.touch, stateStyle, style ]}
+						{...other}
+						>
+						<React.Fragment>
+							{children}
+						</React.Fragment>
 					</View>
 				</Touchable>
 		);

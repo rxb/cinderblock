@@ -1,26 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { View } from '../primitives';
-import { WithMatchMedia } from './WithMatchMedia';
+import { useMediaContext } from './UseMediaContext';
 import styles from '../styles/styles';
-import { BREAKPOINTS } from '../designConstants';
-
-// find current values for largest breakpoint with a match in media[*]
-const findWidestActiveValue = (values, media) => {
-	let valuesMap = (typeof values === 'object') ? values : { small: values }
-	let activeValue = valuesMap['small'];
-	BREAKPOINTS.forEach( BP => {
-		if( valuesMap[BP] && media[BP] ){
-			activeValue = valuesMap[BP];
-		}
-	});
-	return activeValue;
-}
+import {findWidestActiveValue} from '../utils';
 
 // combine styles
 const combineStyles = (styleKeys) => styleKeys.map((key, i)=>{
 	return styles[key];
 });
+
 
 
 const List = (props) => {
@@ -31,11 +20,14 @@ const List = (props) => {
 		itemsInRow,
 		variant = 'linear',
 		items = [],
-		renderItem = ()=>{},
-		media,
+		renderItem = item => item,
 		style,
+		itemStyle,
+		paginated = false,
 		...other
 	} = props;
+
+	const media = useMediaContext();
 
 	const currentVariant = findWidestActiveValue(variant, media);
 	const currentItemsInRow = findWidestActiveValue(itemsInRow, media);
@@ -56,29 +48,33 @@ const List = (props) => {
 	]);
 	const scrollItemWidthStyle = (currentVariant == 'scroll' && scrollItemWidth) ? {width: scrollItemWidth} : undefined;
 
+	// render items
+	const renderItems = (items, pageKey=0) => (items.map((item, i)=>{
+		const firstChildStyle = (i == 0) ? styles[`${itemBaseClass}--firstChild`] : undefined;
+		return (
+			<View
+				key={`${pageKey}-${i}`}
+				accessibilityRole='listitem'
+				style={[ ...combinedItemStyles, scrollItemWidthStyle, itemStyle, firstChildStyle ]}
+				>
+				{ currentRenderItem(item, i) }
+			</View>
+		);
+	}));
+
+
 	return(
 		<View style={styles[`${baseClass}-wrap`]}>
 			<View
 				accessibilityRole='list'
 				style={[ ...combinedStyles, style ]}
 				>
-				{ items.map((item, i)=>{
-					const firstChildStyle = (i == 0) ? styles[`${itemBaseClass}--firstChild`] : undefined;
-					return (
-						<View
-							key={i}
-							accessibilityRole='listitem'
-							style={[ ...combinedItemStyles, scrollItemWidthStyle, firstChildStyle ]}
-							>
-							{ currentRenderItem(item, i) }
-						</View>
-					);
-				})}
+				{ paginated && items.map( (page, i) => renderItems(page.items, i) )}
+				{ !paginated && renderItems(items) }
 				{children}
 			</View>
 		</View>
 	);
 }
 
-
-export default WithMatchMedia(List);
+export default List;

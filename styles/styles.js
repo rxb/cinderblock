@@ -2,13 +2,13 @@ import { StyleSheet } from '../primitives';
 import swatches from './swatches';
 import flexStyles from './flex';
 
-import { METRICS } from '../designConstants';
+import { METRICS, BREAKPOINT_SIZES, MEDIA_SIZES} from '../designConstants';
 
 const {
 	base,
 	space,
-	spaceSection,
-	borderRadius
+	borderRadius,
+	cardBorderRadius
 } = METRICS;
 
 
@@ -16,48 +16,52 @@ const styles = StyleSheet.create({
 
 	// LAYOUT
 	stripe: {
-		paddingVertical: spaceSection, // 2 spaceSections between each section (two sections will stack)
-		flex: 1,
+		paddingVertical: space,
+		//flex: 1,
 	},
 	'stripe--atMedium': {
-		paddingHorizontal: space*.75,
+		paddingVertical: space,
+		paddingHorizontal: space,
 	},
+	/*
+	'stripe--atLarge': {
+		paddingHorizontal: space*1.5,
+	},
+	*/
 	bounds: {
-		maxWidth: 1000,
+		maxWidth: METRICS.boundsWidth,
 		minWidth: 1,
 		marginHorizontal: 'auto',
 		width: '100%',
 	},
+
 	section: {
-		paddingTop: spaceSection,
-		marginHorizontal: spaceSection,
-		paddingBottom: spaceSection - space,
-		//borderTopWidth: 1,
-		//borderTopColor: swatches.border
+		paddingTop: space,
+		marginHorizontal: space,
+		paddingBottom: 0,
 	},
 
-	/*
-	'section--pageHead': {
-		paddingTop: spaceSection + (space * .33),
-		paddingBottom: 0
+	'section--border': {
+		borderTopWidth: 1,
+		borderTopColor: swatches.border,
+		paddingTop: space  * 1.5,
+		marginTop: space * .5
 	},
-	*/
 
-	/*
-	'section--firstChild': {
-		borderTopWidth: 0
+	imageSnap: {
+		marginHorizontal: 0,
+		marginTop: -1 * space,
+		resizeMode: 'cover',
+		borderRadius: 0,
 	},
-	*/
 
-	/*
-	// removing the border between two sections
-	// often because one of the sections already has a very horizontally-dividing object
-	// not for the first child, use section--firstChild for that
-	'section--noBorder': {
-		borderTopWidth: 0,
-		paddingTop: 0
+	
+	'imageSnap--atMedium': {
+		marginTop: space / 2,
+		marginHorizontal: space,
+		borderRadius: 6
 	},
-	*/
+	
 
 	// for sets of chunks with no possibility of sections
 	// basically, inside simple, small cards
@@ -69,19 +73,33 @@ const styles = StyleSheet.create({
 	chunk: {
 		paddingBottom: space
 	},
+	'chunk--border': {
+		borderTopWidth: 1,
+		borderTopColor: swatches.border,
+		paddingTop: space
+	},
+
 
 	// stacking up some inline
 	inline: {
 		flexDirection: 'row',
 		flexWrap: 'wrap',
-		alignItems: 'center'
+		alignItems: 'center',
+		minWidth: 0,
+		overflow: 'hidden'
+	},
+	'inline--noWrap': {
+		flexWrap: 'nowrap'
 	},
 	inlineItem: {
-		marginLeft: space/3
+		marginLeft: space/3,
+		overflow: 'hidden',
+		minWidth: 0
 	},
 	'inlineItem--firstChild': {
 		marginLeft: 0
 	},
+
 
 	// LISTS
 
@@ -127,8 +145,8 @@ const styles = StyleSheet.create({
 		flexWrap: 'nowrap',
 		overflowX: 'scroll',
 		WebkitOverflowScrolling: 'touch',
-		paddingLeft: spaceSection - space,
-		paddingRight: spaceSection,
+		paddingLeft: space - space,
+		paddingRight: space,
 		paddingBottom: 30,
 		marginBottom: -30,
 		overflow: 'hidden',
@@ -139,12 +157,12 @@ const styles = StyleSheet.create({
 	},
 	'list--scroll-wrap': {
 		overflow: 'hidden',
-		marginHorizontal: -1 * spaceSection,
+		marginHorizontal: -1 * space,
 	},
 
 	// INPUT
 	input: {
-		backgroundColor: swatches.shadeBarely,
+		backgroundColor: swatches.notwhite,
 		borderColor: swatches.border,
 		borderWidth: 1,
 		paddingHorizontal: 16,
@@ -156,7 +174,6 @@ const styles = StyleSheet.create({
 		marginVertical: METRICS.pseudoLineHeight,
 	},
 	'input--focus': {
-        outline: 'none',
         borderColor: swatches.textHint,
         backgroundColor: 'transparent',
         boxShadow: `0 0 0 3px ${swatches.focus}`
@@ -173,35 +190,78 @@ const styles = StyleSheet.create({
 		pointerEvents: 'none'
 	},
 
+	// TOUCH
+	'touch': {
+		cursor: 'pointer'
+	},
+
+
 	// BUTTON
 	button: {
-		paddingHorizontal: 16,
-		paddingVertical: 13, /* this has something to do with lineheight */
 		borderRadius: borderRadius,
-		flexDirection: 'row',
-		justifyContent: 'center',
+		borderRadius: 500,
 		userSelect: 'none',
 		marginVertical: METRICS.pseudoLineHeight,
-		alignSelf: 'flex-start'
+		//flexDirection: 'row',
+		justifyContent: 'center',
+		alignSelf: 'flex-start',
 	},
-	'button--fullWidth': {
-		alignSelf: 'stretch'
+	'button--small': {
+		paddingHorizontal: 9, 
+		paddingVertical: 9,
+	},
+	'button--medium': {
+		paddingHorizontal: 13,
+		paddingVertical: 13,
+	},
+	'button--large': {
+		paddingHorizontal: 16,
+		paddingVertical: 16,
+	},
+	'button--shrink': {},
+	'button--iconOnly': {},
+	'button--grow': {
+		alignSelf: 'stretch',
+		flex: 1
 	},
 	'button--primary': {
-		backgroundColor: swatches.tint,
+		backgroundColor: swatches.buttonPrimaryBackground,
 	},
 	'button--secondary': {
-		backgroundColor: swatches.shade,
+		backgroundColor: swatches.buttonSecondaryBackground,
+	},
+	'button--primaryInverted': {
+		backgroundColor: swatches.textPrimaryInverted,
+	},
+	'button--secondaryInverted': {
+		backgroundColor: swatches.textSecondaryInverted,
+	},
+	buttonContent: {
+		flexDirection: 'row',
+		flexWrap: 'wrap',
+		alignItems: 'center',
+		justifyContent: 'center',
+		minWidth: 0,
+		overflow: 'hidden',
+		flexWrap: 'nowrap'
 	},
 	buttonText: {
 		textAlign: 'center',
-		fontWeight: '600'
+		fontWeight: '600',
+		whiteSpace: 'nowrap',
+		marginHorizontal: 3
 	},
 	'buttonText--primary': {
-		color: '#ffffff',
+		color: swatches.buttonPrimaryInk,
 	},
 	'buttonText--secondary': {
-		color: swatches.tint,
+		color: swatches.buttonSecondaryInk,
+	},
+	'buttonText--primaryInverted': {
+		color: swatches.buttonPrimaryInvertedInk,
+	},
+	'buttonText--secondaryInverted': {
+		color: swatches.buttonSecondaryInvertedInk,
 	},
 
 
@@ -223,13 +283,17 @@ const styles = StyleSheet.create({
 
 	// CARD
 	card: {
-		borderRadius: borderRadius,
-		//shadowRadius: 12,
-		//shadowColor: 'rgba(0,0,0,.25)',
+		borderRadius: cardBorderRadius,
 		backgroundColor: 'white',
 		borderWidth: 1,
 		borderColor: swatches.border,
-		overflow: 'hidden'
+		overflow: 'hidden',
+	},
+
+	'card--shadow': {
+		borderWidth: 0,
+		shadowRadius: 16,
+		shadowColor: 'rgba(0,0,0,.15)'
 	},
 
 	// TABS
@@ -293,7 +357,7 @@ const styles = StyleSheet.create({
 		maxWidth: 600,
 		maxHeight: `95%`,
 		top: '5%',
-		borderRadius: borderRadius,
+		borderRadius: cardBorderRadius,
 		backgroundColor: 'white',
 		overflow: 'hidden',
 		zIndex: 3
@@ -316,23 +380,25 @@ const styles = StyleSheet.create({
 	// bottom sheet
 	'modal--full': {
 		position: 'fixed',
-		maxHeight: '80%',
+		maxHeight: '90%',
 		left: 0,
 		right: 0,
 		bottom: 0,
 		backgroundColor: 'white',
+		borderTopLeftRadius: cardBorderRadius,
+		borderTopRightRadius: cardBorderRadius,
+		overflow: 'hidden',
 		zIndex: 3,
 		minWidth: 'auto',
 		maxWidth: 'auto'
 	},
-
 
 	prompt: {
 		marginHorizontal: '5%',
 		maxWidth: 340,
 		minWidth: 300,
 		maxHeight: `90%`,
-		borderRadius: borderRadius,
+		borderRadius: cardBorderRadius,
 		backgroundColor: 'white',
 		overflow: 'hidden',
 		zIndex: 3
@@ -340,7 +406,8 @@ const styles = StyleSheet.create({
 	'menu-container': {
 		width: '100%',
 		height: 0,
-		backgroundColor: 'red' // shouldn't be able to see this
+		backgroundColor: 'red', // shouldn't be able to see this
+		
 	},
 	menu: {
 		position: 'absolute',
@@ -360,26 +427,61 @@ const styles = StyleSheet.create({
 		resizeMode: 'cover',
 		backgroundColor: swatches.shade
 	},
+	'avatar--xsmall':{
+		width: MEDIA_SIZES.xsmall,
+		height: MEDIA_SIZES.xsmall,
+		borderRadius: MEDIA_SIZES.xsmall
+	},
 	'avatar--small':{
-		width: 24,
-		height: 24,
-		borderRadius: 12
+		width: MEDIA_SIZES.small,
+		height: MEDIA_SIZES.small,
+		borderRadius: MEDIA_SIZES.small
 	},
 	'avatar--medium':{
-		width: 36,
-		height: 36,
-		borderRadius: 18
+		width: MEDIA_SIZES.medium,
+		height: MEDIA_SIZES.medium,
+		borderRadius: MEDIA_SIZES.medium
 	},
 	'avatar--large':{
-		width: 120,
-		height: 120,
-		borderRadius: 60
+		width: MEDIA_SIZES.large,
+		height: MEDIA_SIZES.large,
+		borderRadius: MEDIA_SIZES.large
+	},
+	'avatar--xlarge':{
+		width: MEDIA_SIZES.xlarge,
+		height: MEDIA_SIZES.xlarge,
+		borderRadius: MEDIA_SIZES.xlarge
+	},
+
+	// PICTURE
+	picture: {
+		resizeMode: 'cover',
+		backgroundColor: swatches.shade,
+		borderRadius: METRICS.borderRadius
+	},
+	'picture--xsmall':{
+		width: MEDIA_SIZES.xsmall,
+		height: MEDIA_SIZES.xsmall,
+	},
+	'picture--small':{
+		width: MEDIA_SIZES.small,
+		height: MEDIA_SIZES.small,
+	},
+	'picture--medium':{
+		width: MEDIA_SIZES.medium,
+		height: MEDIA_SIZES.medium,
+	},
+	'picture--large':{
+		width: MEDIA_SIZES.large,
+		height: MEDIA_SIZES.large,
+	},
+	'picture--xlarge':{
+		width: MEDIA_SIZES.xlarge,
+		height: MEDIA_SIZES.xlarge,
 	},
 
 	// TEXT
 	text: {
-		fontSize: METRICS.bodySize,
-		lineHeight: METRICS.bodyLineHeight,
 		fontFamily: METRICS.fontFamily,
 		fontWeight: '400',
 		WebkitFontSmoothing: 'antialiased', // retina/non-retina rendering
@@ -406,6 +508,9 @@ const styles = StyleSheet.create({
 	textTint:{
 		color: swatches.tint,
 	},
+	textStrong: {
+		fontWeight: '600',
+	},
 	textMicro: {
 		fontSize: METRICS.microSize,
 		lineHeight: METRICS.microLineHeight,
@@ -414,61 +519,102 @@ const styles = StyleSheet.create({
 		fontSize: METRICS.smallSize,
 		lineHeight: METRICS.smallLineHeight,
 	},
-	textStrong: {
-		fontWeight: '600',
+	textBody: {
+		fontSize: METRICS.bodySize,
+		lineHeight: METRICS.bodyLineHeight,
 	},
 	textBig: {
 		fontSize: METRICS.bigSize,
 		lineHeight: METRICS.bigLineHeight,
-		fontWeight: '600',
-		letterSpacing: 0
+		fontWeight: '600'
 	},
 	textSectionHead: {
 		fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
 		fontSize: METRICS.sectionHeadSize,
 		lineHeight: METRICS.sectionHeadLineHeight,
 		fontWeight: '600',
-		letterSpacing: '.015em'
+		letterSpacing: '-.001em',
 	},
 	textPageHead: {
 		fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
 		fontSize: METRICS.pageHeadSize,
 		lineHeight: METRICS.pageHeadLineHeight,
 		fontWeight: '700',
-		letterSpacing: '-.001em'
+		letterSpacing: '-.001em',
+	},
+	'textPageHead--atLarge': {
+		fontSize: METRICS.pageHeadAtLargeSize,
+		lineHeight: METRICS.pageHeadAtLargeLineHeight,
 	},
 	textHero: {
 		fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
 		fontSize: METRICS.heroSize,
 		lineHeight: METRICS.heroLineHeight,
 		fontWeight: '700',
-		letterSpacing: '-.005em'
+		letterSpacing: '-.001em',
+	},
+	'textHero--atLarge': {
+		fontSize: METRICS.heroAtLargeSize,
+		lineHeight: METRICS.heroAtLargeLineHeight,
 	},
 	textLabel: {
 		marginTop: 4,
 		marginBottom: 0,
-		fontWeight: '500',
+		fontWeight: '600',
 
 	},
 	textError: {
 		color: swatches.error,
 	},
+	textNowrap: {
+		whiteSpace: 'nowrap'
+	},
 
 	// HEADER
 	header: {
-		position: 'sticky',
 		zIndex: 1,
 		top: 0,
+		left: 0,
+		right: 0,	
 		backgroundColor: 'white',
-		paddingHorizontal: METRICS.spaceSection,
-		paddingVertical: METRICS.space,
 		borderBottomColor: swatches.border,
 		borderBottomWidth: 1,
-		shadowRadius: 3,
-		shadowColor: 'rgba(0,0,0,.15)',
 	},
 	'header--atMedium': {
-		paddingHorizontal: METRICS.spaceSection + (METRICS.space * .66),
+		paddingHorizontal: space*.75,
+	},
+
+	// HEADER SECTION
+	'header-section': {
+		justifyContent: 'center',
+		paddingHorizontal: METRICS.space,
+		height: 56
+	},
+	'header-section--atMedium': {
+		paddingHorizontal: METRICS.space,
+		height: 64,
+	},
+
+	// HEADER TYPES
+	// headerTransparent must be placed inside the first stripe
+	// paddingTop on first stripe needs to be 0
+	// if a pagewrap is used for other pages, might need to hide the standard header
+	'headerTransparent': {
+		backgroundColor: 'transparent',
+		borderBottomWidth: 0,
+	},
+	'headerTransparent--atMedium': {
+		paddingHorizontal: 0,
+	},
+
+
+	// DROPDOWN
+	dropdowner: {
+		position: 'absolute',
+		top: 0,
+		left: 0,
+		right: 0,
+		zIndex: 3,
 	},
 
 	// TOASTER
@@ -502,8 +648,23 @@ const styles = StyleSheet.create({
 
 	// MODIFIERS
 	pseudoLineHeight: {
-		marginVertical: METRICS.pseudoLineHeight
+		marginVertical: METRICS.pseudoLineHeight,
 	},
+	absoluteCenter: {
+		position: 'absolute', 
+		top: 0, 
+		left: 0, 
+		right: 0, 
+		bottom: 0, 
+		alignItems: 'center', 
+		justifyContent: 'center'
+	},
+	visibilityHidden: {
+		visibility: 'hidden'
+	},
+	visibilityVisible: {
+		visibility: 'visible'
+	}
 });
 
 export default {...styles, ...flexStyles};
