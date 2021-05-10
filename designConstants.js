@@ -131,8 +131,6 @@ export const TEXT_WEIGHTS = {
 	strong: 'Strong',
 }
 
-
-
 // Apple Easing https://github.com/expo/react-apple-easing/blob/master/AppleEasing.js
 const EPSILON = 1e-9;
 export const EASE = Easing.bezier(0.25, 0.1, 0.25, 1, EPSILON);

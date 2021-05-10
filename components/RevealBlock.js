@@ -1,6 +1,6 @@
 import React, {Fragment, useState, useEffect, useCallback, useRef } from 'react';
-import { Animated, Text, View } from 'modules/cinderblock/primitives';
-import {METRICS, EASE} from 'modules/cinderblock/designConstants';
+import { Animated, Text, View } from '../primitives';
+import {METRICS, EASE} from '../designConstants';
 
 
 const RevealBlock = (props) => {

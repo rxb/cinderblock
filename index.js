@@ -37,12 +37,17 @@ import Text from './components/Text';
 import TextInput from './components/TextInput';
 import Toaster from './components/Toaster';
 import useFormState from './components/UseFormState';
-import {useMediaContext} from './components/UseMediaContext';
+import {useMediaContext, initMediaProvider} from './components/UseMediaContext';
 
-import { Image, View } from './primitives';
+import { Animated, Image, View } from './primitives';
+import * as DesignConstants from './designConstants';
+import swatches from './styles/swatches';
+import styles from './styles/styles';
+import * as Utils from './utils';
 
 
 export {
+	Animated, 
 	Avatar,
 	Bounds,
 	Button,
@@ -85,5 +90,12 @@ export {
 	Toaster,
 	View,
 	useFormState,
+
+	initMediaProvider,
 	useMediaContext,
+
+	DesignConstants,
+	swatches,
+	styles,
+	Utils
 };
