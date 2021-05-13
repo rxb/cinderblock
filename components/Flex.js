@@ -1,8 +1,8 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useContext} from 'react';
 import { View } from '../primitives';
 import PropTypes from 'prop-types';
-import styles from '../styles/styles';
-import { BREAKPOINTS, FLEX_ALIGN_VALUES, FLEX_JUSTIFY_VALUES} from '../designConstants';
+import styles from '../styles/buildStyles';
+import { BREAKPOINTS, FLEX_ALIGN_VALUES, FLEX_JUSTIFY_VALUES} from '../styles/designConstants';
 import {useMediaContext} from './UseMediaContext';
 
 

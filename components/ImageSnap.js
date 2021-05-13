@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, Image } from '../primitives';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import {useMediaContext} from './UseMediaContext';
-import { METRICS, BREAKPOINTS } from '../designConstants';
+import { METRICS, BREAKPOINTS } from '../styles/designConstants';
 import { findWidestActiveValue } from '../utils';
 
 

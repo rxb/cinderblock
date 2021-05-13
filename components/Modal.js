@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Animated, Easing, Touchable, View } from '../primitives';
 import { ScrollView } from 'react-native-web';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
 import Card from './Card';
 import Flex from './Flex';
@@ -13,7 +13,7 @@ import Header from './Header';
 import Section from './Section';
 import Stripe from './Stripe';
 import { MediaContext } from './UseMediaContext';
-import { METRICS, EASE } from '../designConstants';
+import { METRICS, EASE } from '../styles/designConstants';
 
 import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 

@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { StyleSheet, Touchable } from '../primitives';
 import { CheckBox as CheckBoxWeb } from 'react-native-web';
 import Label from './Label';
 import Text from './Text';
 import Inline from './Inline';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
 
 /*

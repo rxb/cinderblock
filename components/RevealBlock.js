@@ -1,6 +1,6 @@
-import React, {Fragment, useState, useEffect, useCallback, useRef } from 'react';
+import React, {Fragment, useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { Animated, Text, View } from '../primitives';
-import {METRICS, EASE} from '../designConstants';
+import {METRICS, EASE} from '../styles/designConstants';
 
 
 const RevealBlock = (props) => {

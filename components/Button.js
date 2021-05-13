@@ -1,10 +1,10 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useContext} from 'react';
 import { ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { View, Text } from '../primitives';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
-import {TEXT_TYPES, TEXT_COLORS, TEXT_WEIGHTS} from '../designConstants';
+import {TEXT_TYPES, TEXT_COLORS, TEXT_WEIGHTS} from '../styles/designConstants';
 import Icon from './Icon';
 import {useMediaContext} from './UseMediaContext';
 import {findWidestActiveValue} from '../utils';

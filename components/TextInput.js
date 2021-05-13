@@ -1,9 +1,9 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useContext} from 'react';
 import ReactDOM from 'react-dom'
 import { StyleSheet } from '../primitives';
 import { View, TextInput as TextInputWeb } from 'react-native-web';
 import Text from './Text';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
 
 function debounce(callback, time = 60) {

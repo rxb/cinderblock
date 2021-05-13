@@ -3,10 +3,10 @@
 // there's a lot that is counting on DOM stuff
 // but maybe you should be using native components there for menus anyhow
 
-import React from 'react';
+import React, {useContext} from 'react';
 import { View } from '../primitives';
 import RevealBlock from './RevealBlock';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import ReactDOM from 'react-dom';
 
 class Menu extends React.Component {

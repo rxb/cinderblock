@@ -3,15 +3,15 @@
 // there's a lot that is counting on DOM stuff
 // but maybe you should be using native components there for menus anyhow
 
-import React, {useState, useRef, useCallback, useEffect} from 'react';
+import React, {useState, useRef, useCallback, useEffect, useContext} from 'react';
 import { Animated } from '../primitives';
 import { View } from '../primitives';
 import Touch from './Touch';
 import Text from './Text';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import ReactDOM from 'react-dom';
 import swatches from '../styles/swatches';
-import { METRICS, EASE } from '../designConstants';
+import { METRICS, EASE } from '../styles/designConstants';
 import {v4 as uuid} from 'uuid';
 
 export const Dropdowner = (props) => {

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Animated, Easing, Touchable, View } from '../primitives';
 import { ScrollView } from 'react-native-web';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
 import Card from './Card';
 import Chunk from './Chunk';
@@ -9,7 +9,7 @@ import Stripe from './Stripe';
 import Touch from './Touch';
 import Icon from './Icon';
 import Section from './Section';
-import { METRICS, EASE } from '../designConstants';
+import { METRICS, EASE } from '../styles/designConstants';
 
 /*
 

@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Text from './Text';
 import Inline from './Inline';
 import Icon from './Icon';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 
 
 const FieldError = (props) => {

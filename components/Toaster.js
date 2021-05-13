@@ -1,13 +1,13 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Animated, Touchable, View } from '../primitives';
 import Text from './Text';
 import Touch from './Touch';
 import Icon from './Icon';
 import Flex from './Flex';
 import FlexItem from './FlexItem';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
-import { METRICS, EASE } from '../designConstants';
+import { METRICS, EASE } from '../styles/designConstants';
 
 
 const duration = 200;

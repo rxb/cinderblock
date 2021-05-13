@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Text as ReactText } from '../primitives';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import {useMediaContext} from './UseMediaContext';
-import {TEXT_TYPES, TEXT_COLORS, TEXT_WEIGHTS} from '../designConstants';
+import {TEXT_TYPES, TEXT_COLORS, TEXT_WEIGHTS} from '../styles/designConstants';
 
 
 const getCombinedStyles = (props, media) => {

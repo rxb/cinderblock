@@ -34,7 +34,7 @@ const moveItem = useCallback((dragIndex, hoverIndex) => {
 
 */
 
-import React, {Fragment, useState, useCallback, useRef} from 'react';
+import React, {Fragment, useState, useCallback, useRef, useContext} from 'react';
 import { useDrag, useDrop } from 'react-dnd';
 
 const ItemTypes = {

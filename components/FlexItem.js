@@ -1,7 +1,8 @@
+import React, {useMemo, useContext} from 'react';
+
 import PropTypes from 'prop-types';
 import { View } from '../primitives';
-import React, {useMemo} from 'react';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 
 export const FLEX_CLASS = 'flex';
 export const FLEX_ALIGN_CLASS = `${FLEX_CLASS}--align-`;

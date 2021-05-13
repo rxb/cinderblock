@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Touchable, View, } from '../primitives';
 import Text  from './Text';
 import Touch  from './Touch';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 
 const TabItem = (props) => {
   const {

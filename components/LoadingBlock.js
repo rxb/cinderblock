@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet } from '../primitives';
 import { ActivityIndicator } from 'react-native';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
 import Icon from './Icon';
 

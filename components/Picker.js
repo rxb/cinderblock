@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, Picker as PickerWeb } from 'react-native-web';
 import Icon from './Icon';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
 
 /*

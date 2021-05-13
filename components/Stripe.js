@@ -1,8 +1,8 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useContext} from 'react';
 import { View, Image, ImageBackground } from '../primitives';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import {useMediaContext} from './UseMediaContext';
-import { BREAKPOINTS, METRICS } from '../designConstants';
+import { BREAKPOINTS, METRICS } from '../styles/designConstants';
 import {findWidestActiveValue} from '../utils';
 
 const getCombinedStyles = (media) => {	

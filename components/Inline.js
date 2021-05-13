@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View } from '../primitives';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 
 
 /*

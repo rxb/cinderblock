@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useState, useContext} from 'react';
 import Icon from './Icon';
 import Text from './Text';
 import Flex from './Flex';
@@ -6,7 +6,7 @@ import FlexItem from './FlexItem';
 import {View, Image} from '../primitives';
 import FileInput from './FileInput';
 import FakeInput from './FakeInput';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
 
 

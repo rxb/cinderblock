@@ -1,3 +1,4 @@
+import { Animated, Image, View } from './primitives';
 import Avatar from './components/Avatar';
 import Bounds from './components/Bounds';
 import Card from './components/Card';
@@ -36,14 +37,13 @@ import Tabs from './components/Tabs';
 import Text from './components/Text';
 import TextInput from './components/TextInput';
 import Toaster from './components/Toaster';
+
 import useFormState from './components/UseFormState';
 import {useMediaContext, initMediaProvider} from './components/UseMediaContext';
-
-import { Animated, Image, View } from './primitives';
-import * as DesignConstants from './designConstants';
-import swatches from './styles/swatches';
-import styles from './styles/styles';
 import * as Utils from './utils';
+
+import styleConfig from './styles';
+import ThemeContext from './ThemeContext';
 
 
 export {
@@ -89,13 +89,13 @@ export {
 	TextInput,
 	Toaster,
 	View,
+	
 	useFormState,
-
-	initMediaProvider,
 	useMediaContext,
+	initMediaProvider,
 
-	DesignConstants,
-	swatches,
-	styles,
-	Utils
+	Utils,
+
+	ThemeContext,
+	styleConfig
 };

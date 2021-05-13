@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, Image, Platform } from '../primitives';
 import PropTypes from 'prop-types';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
 import * as Icons from 'react-feather';
 

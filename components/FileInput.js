@@ -2,7 +2,7 @@ import React, {Fragment} from 'react';
 import { View, Image } from 'react-native-web';
 import Icon from './Icon';
 import Text from './Text';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import swatches from '../styles/swatches';
 
 

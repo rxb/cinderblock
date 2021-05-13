@@ -1,6 +1,6 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import Text from './Text';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 
 
 const Label = (props) => {

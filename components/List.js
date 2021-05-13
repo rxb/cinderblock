@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import { View } from '../primitives';
 import { useMediaContext } from './UseMediaContext';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 import {findWidestActiveValue} from '../utils';
 
 // combine styles

@@ -39,7 +39,7 @@ export const readFileAsDataUrl = (inputFile) => {
 };
 
 
-import { BREAKPOINTS } from './designConstants';
+import { BREAKPOINTS } from './styles/designConstants';
 export const findWidestActiveValue = (values, media) => {
 	const fwav = (values, media) => {
 		let valuesMap = (typeof values === 'object') ? values : { small: values }

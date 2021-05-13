@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, Image, Text } from '../primitives';
 import PropTypes from 'prop-types';
-import styles from '../styles/styles';
+import styles from '../styles/buildStyles';
 
 const Picture = (props) => {
 	
