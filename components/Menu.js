@@ -6,7 +6,7 @@
 import React, {useContext} from 'react';
 import { View } from '../primitives';
 import RevealBlock from './RevealBlock';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 import ReactDOM from 'react-dom';
 
 class Menu extends React.Component {
@@ -24,6 +24,8 @@ class Menu extends React.Component {
 	
 	render(){
 		return(
+			<ThemeContext.Consumer>
+			{ ({styles}) => (
 			<View 
 				ref={ ref => this.menuContainer = ref }
 				style={styles['menu-container']} 
@@ -35,6 +37,8 @@ class Menu extends React.Component {
 						/>
 				}
 			</View>
+			)}
+			</ThemeContext.Consumer>
 		);
 	}
 };

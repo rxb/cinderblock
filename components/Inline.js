@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import { View } from '../primitives';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 
 /*
@@ -13,6 +13,7 @@ may not work exactly as expected with non-body text sizes
 */
 
 const Inline = (props) => {
+	const { styles } = useContext(ThemeContext);
 	const {
 		children,
 		style,

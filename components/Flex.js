@@ -1,7 +1,7 @@
 import React, {useMemo, useContext} from 'react';
 import { View } from '../primitives';
 import PropTypes from 'prop-types';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 import { BREAKPOINTS, FLEX_ALIGN_VALUES, FLEX_JUSTIFY_VALUES} from '../styles/designConstants';
 import {useMediaContext} from './UseMediaContext';
 
@@ -67,7 +67,7 @@ const getCombinedStyles = (styleKeys) => {
 	});
 }
 
-const getCombinedDescendantStyles = (styleKeys) => {
+const getCombinedDescendantStyles = (styleKeys, styles) => {
 	// assuming that the child of Flex will always be FlexItem or equivalent
 	// if that turns out to not be true, this will need to be rethought
 	return styleKeys.map((key, i)=>{
@@ -78,6 +78,7 @@ const getCombinedDescendantStyles = (styleKeys) => {
 }
 
 const Flex = (props) => {
+	const { styles } = useContext(ThemeContext);
 
 		const { children, style } = props;
 
@@ -85,7 +86,7 @@ const Flex = (props) => {
 		const styleKeys = useMemo(()=> getStyleKeys(props, media), [media]);
 		
 
-		const combinedStyles = useMemo(()=> getCombinedStyles(styleKeys), [styleKeys])
+		const combinedStyles = useMemo(()=> getCombinedStyles(styleKeys, styles), [styleKeys])
 		const finalStyles = [combinedStyles, style];
 
 		/*

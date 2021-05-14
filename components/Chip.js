@@ -1,21 +1,17 @@
 import React, {useContext} from 'react';
 import { View, Text, StyleSheet } from '../primitives';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 
-class Chip extends React.Component {
-	render() {
-		const {
-			shape,
-		} = this.props;
+const Chip = (props) => {
+	const { styles } = useContext(ThemeContext);
 
-
-		return(
-			<View style={styles.chip}>
-				<Text style={[styles.text, styles.textSmall, styles.chipText]}>{this.props.label}</Text>
-			</View>
-		);
-	}
+	return(
+		<View style={styles.chip}>
+			<Text style={[styles.text, styles.textSmall, styles.chipText]}>{props.label}</Text>
+		</View>
+	);
 }
+
 
 export default Chip;

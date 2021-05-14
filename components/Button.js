@@ -2,8 +2,8 @@ import React, {useMemo, useContext} from 'react';
 import { ActivityIndicator } from 'react-native';
 import PropTypes from 'prop-types';
 import { View, Text } from '../primitives';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 import {TEXT_TYPES, TEXT_COLORS, TEXT_WEIGHTS} from '../styles/designConstants';
 import Icon from './Icon';
 import {useMediaContext} from './UseMediaContext';
@@ -20,6 +20,7 @@ const getCombinedStyles = (props) => {
 		inverted,
 		currentVariant,
 		size,
+		styles,
 		textType
 	} = props;
 	const invertedModifier = (inverted) ? 'Inverted' : '';
@@ -50,6 +51,7 @@ const getCombinedStyles = (props) => {
 }
 
 const Button = (props) => {
+	const { styles } = useContext(ThemeContext);
 
 	const {
 		// style props
@@ -126,7 +128,7 @@ const Button = (props) => {
 	}
 
 	// styles 
-	const combinedStyles = useMemo(()=>getCombinedStyles({...props, currentVariant, textType}), [color, inverted, currentVariant, size, textType ]);
+	const combinedStyles = useMemo(()=>getCombinedStyles({...props, currentVariant, textType, styles}), [color, inverted, currentVariant, size, textType ]);
 	const buttonFinalStyles = [ combinedStyles.button, style];
 	const textFinalStyles = combinedStyles.text;
 	const inkColor = swatches[`button${capitalize(color)}${ inverted ? 'Inverted' : ''}Ink`];

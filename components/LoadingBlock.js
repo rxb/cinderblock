@@ -2,11 +2,12 @@ import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import { View, Text, StyleSheet } from '../primitives';
 import { ActivityIndicator } from 'react-native';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 import Icon from './Icon';
 
 const LoadingBlock = (props) => {
+	const { styles, SWATCHES } = useContext(ThemeContext);
 
 		const {
 			isLoading,
@@ -32,7 +33,7 @@ const LoadingBlock = (props) => {
 						<ActivityIndicator
 							style={{marginTop: -16}}
 							size='large'
-							color={swatches.tint}
+							color={SWATCHES.tint}
 							/>
 					</View>
 				}

@@ -5,9 +5,9 @@ import Touch from './Touch';
 import Icon from './Icon';
 import Flex from './Flex';
 import FlexItem from './FlexItem';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
-import { METRICS, EASE } from '../styles/designConstants';
+import ThemeContext from '../ThemeContext';
+
+import {EASE } from '../styles/designConstants';
 
 
 const duration = 200;
@@ -100,6 +100,8 @@ class Toast extends React.Component {
 
 	render(){
 		return(
+			<ThemeContext.Consumer>
+			{ ({styles, SWATCHES}) => (
 			<Animated.View
 				style={{
 					marginBottom: this.state.visibility.interpolate({
@@ -120,7 +122,7 @@ class Toast extends React.Component {
 							}}>
 								<Icon
 									shape='X'
-									color={swatches.textHintInverted}
+									color={SWATCHES.textHintInverted}
 									size="small"
 									/>
 							</Touch>
@@ -128,6 +130,8 @@ class Toast extends React.Component {
 					</Flex>
 				</View>
 			</Animated.View>
+			)}
+			</ThemeContext.Consumer>
 		);
 	}
 }

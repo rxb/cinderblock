@@ -6,11 +6,12 @@ import FlexItem from './FlexItem';
 import {View, Image} from '../primitives';
 import FileInput from './FileInput';
 import FakeInput from './FakeInput';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 
 
 const PhotoInput = (props) => {
+	const { styles } = useContext(ThemeContext);
 
 	const { onChangeFile, fileState, style } = props;
 	const [inputKey, setInputKey] = useState(0); // new key resets/rerenders file input

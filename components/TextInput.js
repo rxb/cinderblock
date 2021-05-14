@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom'
 import { StyleSheet } from '../primitives';
 import { View, TextInput as TextInputWeb } from 'react-native-web';
 import Text from './Text';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 
 function debounce(callback, time = 60) {
 	var timeout;
@@ -100,6 +100,8 @@ class TextInput extends React.Component{
 		} = this.props;
 
 		return (
+			<ThemeContext.Consumer>
+			{ ({styles, SWATCHES}) => (
 			<View style={wrapperStyle}>
 				<TextInputWeb
 					ref={ (ref) => {
@@ -107,7 +109,7 @@ class TextInput extends React.Component{
 					}}
 					accessibilityLabel={placeholder}
 					placeholder={placeholder}
-					placeholderTextColor={swatches.textHint}
+					placeholderTextColor={SWATCHES.textHint}
 					multiline={multiline}
 					maxLength={maxLength}
 					onChange={this.onChange}
@@ -133,6 +135,8 @@ class TextInput extends React.Component{
 						>{this.state.count}/{this.props.maxLength}</Text>
 				}
 			</View>
+			)}
+			</ThemeContext.Consumer>
 		);
 	}
 }

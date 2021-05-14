@@ -1,15 +1,15 @@
 import React, {useContext} from 'react';
 import { Animated, Easing, Touchable, View } from '../primitives';
 import { ScrollView } from 'react-native-web';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 import Card from './Card';
 import Chunk from './Chunk';
 import Stripe from './Stripe';
 import Touch from './Touch';
 import Icon from './Icon';
 import Section from './Section';
-import { METRICS, EASE } from '../styles/designConstants';
+import { EASE } from '../styles/designConstants';
 
 /*
 
@@ -125,6 +125,8 @@ class Prompt extends React.Component{
 		});
 
 		return(
+			<ThemeContext.Consumer>
+			{ ({styles}) => (
 			<Animated.View style={[
 				styles['modal-container'],
 				{
@@ -155,6 +157,8 @@ class Prompt extends React.Component{
 					</Stripe>
 				</Animated.View>
 			</Animated.View>
+			)}
+			</ThemeContext.Consumer>
 		);
 	}
 }

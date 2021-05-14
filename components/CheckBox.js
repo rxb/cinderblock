@@ -4,8 +4,8 @@ import { CheckBox as CheckBoxWeb } from 'react-native-web';
 import Label from './Label';
 import Text from './Text';
 import Inline from './Inline';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 
 /*
 
@@ -71,7 +71,7 @@ class CheckBox extends React.Component {
 					}}
 					fakeControlStyle={{
 						...styles.input,
-						borderColor: (this.state.hasFocus) ? swatches.textPrimary : swatches.border,
+						borderColor: (this.state.hasFocus) ? SWATCHES.textPrimary : SWATCHES.border,
 						borderWidth: 1
 					}}
 					fakeControlClassName={
@@ -84,7 +84,7 @@ class CheckBox extends React.Component {
 						this.setState({hasFocus: false});
 					}}
 					onChange={onChange}
-					color={swatches.tint}
+					color={SWATCHES.tint}
 					{...other}
 					/>
 					<Touchable onPress={()=>{
@@ -141,29 +141,34 @@ class CheckBox extends React.Component {
 		} = this.props;
 
 		return (
-			<Inline style={[styles.pseudoLineHeight, {alignItems: 'center'}]}>
-				<CheckBoxWeb
-					ref={ ref => this.checkbox = ref}
-					style={{
-						width: 24,
-						height: 24,
-					}}
-					onFocus={()=>{
-						this.setState({hasFocus: true});
-					}}
-					onBlur={()=>{
-						this.setState({hasFocus: false});
-					}}
-					onChange={onChange}
-					color={swatches.tint}
-					{...other}
-					/>
-					<Touchable onPress={()=>{
-						this.setState({lastManualUpdate: new Date().getTime() }, this.props.onChange)
-					}}>
-						<Text accessibilityRole="label">{label}</Text>
-					</Touchable>
-			</Inline>
+			<ThemeContext.Consumer>
+				{ ({styles, SWATCHES}) => (
+					<Inline style={[styles.pseudoLineHeight, {alignItems: 'center'}]}>
+						<CheckBoxWeb
+							ref={ ref => this.checkbox = ref}
+							style={{
+								width: 24,
+								height: 24,
+							}}
+							onFocus={()=>{
+								this.setState({hasFocus: true});
+							}}
+							onBlur={()=>{
+								this.setState({hasFocus: false});
+							}}
+							onChange={onChange}
+							color={SWATCHES.tint}
+							{...other}
+							/>
+							<Touchable onPress={()=>{
+								this.setState({lastManualUpdate: new Date().getTime() }, this.props.onChange)
+							}}>
+								<Text accessibilityRole="label">{label}</Text>
+							</Touchable>
+					</Inline>
+				)}
+
+			</ThemeContext.Consumer>
 		);
 	}
 }

@@ -2,10 +2,11 @@ import React, {useContext} from 'react';
 import Text from './Text';
 import Inline from './Inline';
 import Icon from './Icon';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 
 const FieldError = (props) => {
+	const { styles } = useContext(ThemeContext);
 	const {
 		style,
 		error,

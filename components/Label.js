@@ -1,9 +1,10 @@
 import React, {useContext} from 'react';
 import Text from './Text';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 
 const Label = (props) => {
+	const { styles } = useContext(ThemeContext);
 	const {
 		children,
 		color = 'secondary',

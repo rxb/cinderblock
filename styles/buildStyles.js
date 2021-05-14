@@ -1,6 +1,6 @@
 import {StyleSheet} from '../primitives';
 
-import {FLEX_GROW_FACTORS} from './designConstants';
+import {FLEX_GROW_FACTORS, MEDIA_SIZES} from './designConstants';
 
 const buildStyles = (METRICS, SWATCHES) => {
 
@@ -663,7 +663,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 		},
 		visibilityVisible: {
 			visibility: 'visible'
-		}
+		},
 
 		// Flex
 

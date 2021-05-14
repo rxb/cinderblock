@@ -1,6 +1,6 @@
 import React, {useContext} from 'react';
 import { View, Image } from '../primitives';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 import {useMediaContext} from './UseMediaContext';
 
 const VALID_TYPES = {
@@ -15,6 +15,7 @@ const VALID_POSITIONS = {
 }
 
 const Header = (props) => {
+	const { styles } = useContext(ThemeContext);
 
 	const {
 		children,

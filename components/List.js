@@ -2,7 +2,7 @@ import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
 import { View } from '../primitives';
 import { useMediaContext } from './UseMediaContext';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 import {findWidestActiveValue} from '../utils';
 
 // combine styles
@@ -13,6 +13,7 @@ const combineStyles = (styleKeys) => styleKeys.map((key, i)=>{
 
 
 const List = (props) => {
+	const { styles } = useContext(ThemeContext);
 
 	const {
 		children,

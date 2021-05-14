@@ -3,10 +3,10 @@
 // captures the href and turns it into an onPress router push + scroll adjustment
 // the onPress prop is just for additional actions, don't use this for onPress without an href, that's a job for Touch
 
-import React from 'react';
+import React, {useContext} from 'react';
 import Touch from './Touch';
 import Router from 'next/router'
-
+import ThemeContext from '../ThemeContext';
 
 /*
 TODO:
@@ -16,33 +16,33 @@ http://tldr.cards/c/finance
 http://tldr.cards/u/rxb
 */
 
-class Link extends React.Component {
+const Link = (props) => {
+	const { styles } = useContext(ThemeContext);
 
-	render() {
-		const {
-			href,
-			children,
-			onPress = () => {},
-			...other
-		} = this.props;
+	const {
+		href,
+		children,
+		onPress = () => {},
+		...other
+	} = props;
 
-		return(
-				<Touch
-					accessibilityRole="link"
-					href={href}
-					onPress={(event)=>{
-						event.preventDefault();
-						onPress();
-						if(!this.props.target){ // if opening new window, don't use router
-							Router.push(href).then(()=>{window.scroll(0,0)}); // TODO: maybe use next/Link ?
-						}
-					}}
-					{...other}
-					>
-						{children}
-				</Touch>
-		);
-	}
+	return(
+		<Touch
+			accessibilityRole="link"
+			href={href}
+			onPress={(event)=>{
+				event.preventDefault();
+				onPress();
+				if(!props.target){ // if opening new window, don't use router
+					Router.push(href).then(()=>{window.scroll(0,0)}); // TODO: maybe use next/Link ?
+				}
+			}}
+			{...other}
+			>
+				{children}
+		</Touch>
+	);
+
 }
 
 

@@ -1,9 +1,10 @@
 import React, {useContext} from 'react';
 import { View, Image, Text } from '../primitives';
 import PropTypes from 'prop-types';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 const Picture = (props) => {
+	const { styles } = useContext(ThemeContext);
 	
 	const {
 		size,

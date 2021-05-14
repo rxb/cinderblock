@@ -1,62 +1,54 @@
-import React, {Fragment, useContext} from 'react';
+import React, {Fragment, useContext, useState} from 'react';
 import { View, Image } from 'react-native-web';
 import Icon from './Icon';
 import Text from './Text';
 import Touch from './Touch';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
 
 
-class FakeInput extends React.Component {
-	static defaultProps = {
-		onPress: ()=>{},
-		onFocus: ()=>{},
-		onBlur: ()=>{},
-	}
 
-	constructor(props){
-		super(props);
-		this.state ={}
-	}
+const FakeInput = (props) => {
+	const { styles, SWATCHES } = useContext(ThemeContext);
+	
+	const {
+		onPress = ()=>{},
+		onFocus = ()=>{},
+		onBlur = ()=>{},
+		label,
+		shape,
+		style,
+		...other
+	} = props;
 
-	render() {
-		const {
-			label,
-			onPress,
-			onFocus,
-			onBlur,
-			shape,
-			style,
-			...other
-		} = this.props;
+	const [hasFocus, setHasFocus] = useState();
 
 		return (
 			<Touch
 				accessibilityRole="button"
 				onPress={onPress}
 				onFocus={()=>{
-					this.setState({hasFocus: true});
+					setHasFocus(true);
 					onFocus();
 				}}
 				onBlur={()=>{
-					this.setState({hasFocus: false});
+					setHasFocus(false);
 					onBlur();
 				}}
 				style={[
 					styles.input,
-					(this.state.hasFocus) ? styles['input--focus'] : {},
+					(hasFocus) ? styles['input--focus'] : {},
 					style,
 				]}
 				>
 				<Text color="hint">{label}</Text>
 				{shape &&
 					<View style={styles['input-icon']}>
-						<Icon shape={shape} color={swatches.textHint} />
+						<Icon shape={shape} color={SWATCHES.textHint} />
 					</View>
 				}
 			</Touch>
 		);
-	}
+	
 }
 
 export default FakeInput;

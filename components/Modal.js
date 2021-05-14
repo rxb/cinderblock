@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
 import { Animated, Easing, Touchable, View } from '../primitives';
 import { ScrollView } from 'react-native-web';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 import Card from './Card';
 import Flex from './Flex';
 import FlexItem from './FlexItem';
@@ -13,7 +13,7 @@ import Header from './Header';
 import Section from './Section';
 import Stripe from './Stripe';
 import { MediaContext } from './UseMediaContext';
-import { METRICS, EASE } from '../styles/designConstants';
+import { EASE } from '../styles/designConstants';
 
 import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
@@ -166,9 +166,10 @@ class Modal extends React.Component{
 		const media = this.context;
 
 		const isFull = !media['medium'];
-		const modalStyle = (isFull) ? styles['modal--full'] : styles['modal'];
 
 		return(
+			<ThemeContext.Consumer>
+			{ ({styles, METRICS, SWATCHES}) => (
 			<Animated.View style={[
 				styles['modal-container'],
 				{
@@ -185,7 +186,7 @@ class Modal extends React.Component{
 					</Touch>
 				}
 				<Animated.View style={[
-					modalStyle,
+					(isFull) ? styles['modal--full'] : styles['modal'],
 					{
 						transform: [{
 					      translateY: this.state.visibilityValue.interpolate({
@@ -196,7 +197,7 @@ class Modal extends React.Component{
 					}
 				]}>
 					{/*
-					<Stripe style={{borderBottomWidth: 1, borderBottomColor: swatches.border}}>
+					<Stripe style={{borderBottomWidth: 1, borderBottomColor: SWATCHES.border}}>
 						<Section style={{ paddingVertical: 0}}>
 							<Flex>
 								<FlexItem shrink>
@@ -221,12 +222,12 @@ class Modal extends React.Component{
 					<View style={{position: 'absolute', top: 0, right: 0, padding: METRICS.base, zIndex: 5}}>
 						<Touch
 							onPress={onRequestClose}
-							style={{backgroundColor: swatches.shade, borderRadius: 32, padding: 4}}
+							style={{backgroundColor: SWATCHES.shade, borderRadius: 32, padding: 4}}
 							>
 							<View>
 							<Icon
 								shape='X'
-								color={swatches.textHint}
+								color={SWATCHES.textHint}
 								size="medium"
 								/>
 							</View>
@@ -243,6 +244,8 @@ class Modal extends React.Component{
 					</ScrollView>
 				</Animated.View>
 			</Animated.View>
+				)}
+				</ThemeContext.Consumer>
 		);
 
 	}

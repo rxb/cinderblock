@@ -2,7 +2,7 @@ import React, {useMemo, useContext} from 'react';
 
 import PropTypes from 'prop-types';
 import { View } from '../primitives';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 export const FLEX_CLASS = 'flex';
 export const FLEX_ALIGN_CLASS = `${FLEX_CLASS}--align-`;
@@ -37,7 +37,7 @@ const getStyleKeys = (props) => {
 	];
 }
 
-const getItemStyles = (styleKeys) => {
+const getItemStyles = (styleKeys, styles) => {
 	return styleKeys.map((key, i)=>{
 		return styles[key];
 	}).filter(function(item){
@@ -46,6 +46,7 @@ const getItemStyles = (styleKeys) => {
 }
 
 const FlexItem = (props) => {
+	const { styles } = useContext(ThemeContext);
 		const {
 			children,
 			shrink,
@@ -63,7 +64,7 @@ const FlexItem = (props) => {
 
 		// memoized for perf
 		const styleKeys = useMemo(() => getStyleKeys(props), [shrink, growFactor, isFirstChild, justify, align, flush, nbsp]);
-		const itemStyles = useMemo(()=> getItemStyles(styleKeys), [styleKeys])
+		const itemStyles = useMemo(()=> getItemStyles(styleKeys, styles), [styleKeys])
 		const finalStyles = [styles[FLEX_ITEM_CLASS], /* ...descendantStyles,*/ itemStyles, style];
 
 		return (

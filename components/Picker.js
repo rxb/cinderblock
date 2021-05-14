@@ -1,8 +1,8 @@
 import React, {useContext} from 'react';
 import { View, Picker as PickerWeb } from 'react-native-web';
 import Icon from './Icon';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 
 /*
 Have to use inheritance
@@ -28,7 +28,7 @@ class Picker extends PickerWeb{
             	<View style={{position: 'relative'}}>
             		{elementsTree}
             		<View style={styles['input-icon']}>
-            			<Icon shape="ChevronDown" color={swatches.textHint} />
+            			<Icon shape="ChevronDown" color={SWATCHES.textHint} />
             		</View>
             	</View>
             );
@@ -44,6 +44,8 @@ class Picker extends React.Component {
 		} = this.props;
 	
 		return (
+			<ThemeContext.Consumer>
+			{ ({styles, SWATCHES}) => (
 			<View style={{position: 'relative'}}>
 				<PickerWeb 
 					style={[{appearance: 'none'}, styles.input, styles.text, style]} 
@@ -52,9 +54,11 @@ class Picker extends React.Component {
 					{children}
 				</PickerWeb>
 				<View style={styles['input-icon']}>
-					<Icon shape="ChevronDown" color={swatches.textHint} />
+					<Icon shape="ChevronDown" color={SWATCHES.textHint} />
 				</View>
 			</View>
+			)}
+			</ThemeContext.Consumer>
 		)
 	}
 }

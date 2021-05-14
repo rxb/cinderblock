@@ -1,8 +1,9 @@
 import React, {useContext} from 'react';
 import { View } from '../primitives';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 const Bounds = (props) => {
+	const { styles } = useContext(ThemeContext);
 	const {
 		style,
 		children

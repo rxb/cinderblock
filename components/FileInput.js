@@ -1,9 +1,9 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useContext} from 'react';
 import { View, Image } from 'react-native-web';
 import Icon from './Icon';
 import Text from './Text';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 
 
 class FileInput extends React.Component {
@@ -65,6 +65,9 @@ class FileInput extends React.Component {
             } = this.props;
 
             return (
+                  <ThemeContext.Consumer>
+                  { ({styles, SWATCHES}) => (
+
             	<View style={[
                               styles.input,
                               (this.state.hasFocus) ? styles['input--focus'] : {},
@@ -75,7 +78,7 @@ class FileInput extends React.Component {
                               <Fragment>
                                     <Text color="hint">{placeholder}</Text>
                                     <View style={styles['input-icon']}>
-                                          <Icon shape={shape} color={swatches.textHint} />
+                                          <Icon shape={shape} color={SWATCHES.textHint} />
                                     </View>
                               </Fragment>
                         }
@@ -83,7 +86,7 @@ class FileInput extends React.Component {
                               <Fragment>
                                     <Text color="primary">{this.state.filename}</Text>
                                     <View style={styles['input-icon']}>
-                                          <Icon shape={shape} color={swatches.textHint} />
+                                          <Icon shape={shape} color={SWATCHES.textHint} />
                                     </View>
                               </Fragment>
                         }
@@ -108,6 +111,9 @@ class FileInput extends React.Component {
                               }}
                               />
                   </View>
+                  )}
+
+			</ThemeContext.Consumer>
             );
       }
 }

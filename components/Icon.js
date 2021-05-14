@@ -1,14 +1,15 @@
 import React, {useContext} from 'react';
 import { View, Image, Platform } from '../primitives';
 import PropTypes from 'prop-types';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 import * as Icons from 'react-feather';
 
 const Icon = (props) => {
+	const { styles, SWATCHES } = useContext(ThemeContext);
 		const {
-			color,
-			size,
+			color = SWATCHES.textSecondary,
+			size = 'medium',
 			shape,
 			style,
 			...other
@@ -34,10 +35,6 @@ const Icon = (props) => {
 
 }
 
-Icon.defaultProps = {
-	size: 'medium',
-	color: swatches.textSecondary
-};
 
 Icon.propTypes = {
 	size: PropTypes.oneOf(['xsmall', 'small', 'medium', 'large', 'xlarge']),

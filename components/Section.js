@@ -1,10 +1,11 @@
 import React, {useMemo, useContext} from 'react';
 import { View } from '../primitives';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 const getCombinedStyles = (props) => {
 	const {
-		border
+		border,
+		styles
 	} = props	
 	
 	const styleKeys = [
@@ -17,6 +18,7 @@ const getCombinedStyles = (props) => {
 }
 
 const Section = (props) => {
+	const { styles } = useContext(ThemeContext);
 
 	const {
 		children,
@@ -26,7 +28,7 @@ const Section = (props) => {
 		...other
 	} = props
 
-	const combinedStyles = useMemo( ()=>getCombinedStyles(props), [border]);
+	const combinedStyles = useMemo( ()=>getCombinedStyles({...props, styles}), [border]);
 	const finalStyles = [ combinedStyles, style ];
 
 	return(

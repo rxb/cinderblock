@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import { Touchable, View } from '../primitives';
 import Text from './Text';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 
 const stateStyles = {
@@ -33,6 +33,8 @@ class Touch extends React.Component {
 		const stateStyle = (isPressed || isLoading) ? stateStyles.active : stateStyles.default;
 
 		return(
+			<ThemeContext.Consumer>
+			{ ({styles}) => (
 				<Touchable
 					{...other}
 					onPressIn={()=>{
@@ -55,6 +57,9 @@ class Touch extends React.Component {
 						</React.Fragment>
 					</View>
 				</Touchable>
+				)}
+
+				</ThemeContext.Consumer>
 		);
 	}
 }

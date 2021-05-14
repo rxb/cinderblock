@@ -1,12 +1,12 @@
 import React, {useContext} from 'react';
 import { View, Image } from '../primitives';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 import {useMediaContext} from './UseMediaContext';
-import { METRICS, BREAKPOINTS } from '../styles/designConstants';
 import { findWidestActiveValue } from '../utils';
 
 
 const ImageSnap = (props) => {
+	const { styles } = useContext(ThemeContext);
 
 	const {
 		children,

@@ -1,9 +1,10 @@
 import React, {Fragment, useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { Animated, Text, View } from '../primitives';
-import {METRICS, EASE} from '../styles/designConstants';
+import {EASE} from '../styles/designConstants';
 
 
 const RevealBlock = (props) => {
+	const { styles } = useContext(ThemeContext);
 
    const { 
       delay = 0, 

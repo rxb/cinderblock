@@ -1,11 +1,11 @@
 import React, {useMemo, useContext} from 'react';
 import { View, Image, ImageBackground } from '../primitives';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 import {useMediaContext} from './UseMediaContext';
 import { BREAKPOINTS, METRICS } from '../styles/designConstants';
 import {findWidestActiveValue} from '../utils';
 
-const getCombinedStyles = (media) => {	
+const getCombinedStyles = (media, styles) => {	
 	const styleKeys = [
 		'stripe',
 		...[ (media && media.medium) ? 'stripe--atMedium' : undefined],
@@ -16,6 +16,7 @@ const getCombinedStyles = (media) => {
 }
 
 const Stripe = (props) => {
+	const { styles } = useContext(ThemeContext);
 
 	const {
 		children,
@@ -27,7 +28,7 @@ const Stripe = (props) => {
 	} = props
 
 	const media = useMediaContext();
-	const combinedStyles = useMemo( ()=>getCombinedStyles(media), [media]);
+	const combinedStyles = useMemo( ()=>getCombinedStyles(media, styles), [media]);
 	const imageHeightStyle = (image) ? {height: findWidestActiveValue(imageHeight, media)} : {};
 
 	if(image){

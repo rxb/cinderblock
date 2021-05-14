@@ -8,13 +8,14 @@ import { Animated } from '../primitives';
 import { View } from '../primitives';
 import Touch from './Touch';
 import Text from './Text';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 import ReactDOM from 'react-dom';
-import swatches from '../styles/swatches';
-import { METRICS, EASE } from '../styles/designConstants';
+
+import { EASE } from '../styles/designConstants';
 import {v4 as uuid} from 'uuid';
 
 export const Dropdowner = (props) => {
+	const { styles } = useContext(ThemeContext);
 	const {dropdowns, ...other} = props;
 	return(
 		<View style={styles.dropdowner}>
@@ -35,6 +36,7 @@ export const Dropdowner = (props) => {
 }
 
 export const DropdownTouch = (props) => {
+	const { styles } = useContext(ThemeContext);
 	const {
 		children,
 		dropdown,
@@ -85,6 +87,7 @@ export const DropdownTouch = (props) => {
 
 
 export const Dropdown = (props) => {
+	const { styles } = useContext(ThemeContext);
 	
 	const { 
 		hideDropdown,
@@ -171,7 +174,7 @@ export const Dropdown = (props) => {
 				zIndex: 100,
 				backgroundColor: 'white',
 				borderWidth: 1,
-				borderColor: swatches.border,
+				borderColor: SWATCHES.border,
 				borderRadius: METRICS.borderRadius,
 				opacity: visibilityValue,
             transform: [{

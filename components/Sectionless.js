@@ -1,9 +1,10 @@
 import React, {useContext} from 'react';
 import { View } from '../primitives';
-import styles from '../styles/buildStyles';
-import swatches from '../styles/swatches';
+import ThemeContext from '../ThemeContext';
+
 
 const Sectionless = (props) => {
+	const { styles } = useContext(ThemeContext);
 
 	const {
 		children,

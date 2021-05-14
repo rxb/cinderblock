@@ -2,9 +2,10 @@ import React, {useContext} from 'react';
 import { Touchable, View, } from '../primitives';
 import Text  from './Text';
 import Touch  from './Touch';
-import styles from '../styles/buildStyles';
+import ThemeContext from '../ThemeContext';
 
 const TabItem = (props) => {
+	const { styles } = useContext(ThemeContext);
   const {
   	value,
   	label,
@@ -56,13 +57,16 @@ class Tabs extends React.Component {
 	    });
 
 		return(
-			<View
-				style={[styles.tabs]}
-				{...other}
-				>
-				{childrenWithProps}
-			</View>
-
+			<ThemeContext.Consumer>
+				{ ({styles}) => (
+					<View
+						style={[styles.tabs]}
+						{...other}
+						>
+						{childrenWithProps}
+					</View>
+				)}
+			</ThemeContext.Consumer>
 		);
 	}
 }
