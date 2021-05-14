@@ -528,14 +528,14 @@ const buildStyles = (METRICS, SWATCHES) => {
 			fontWeight: '600'
 		},
 		textSectionHead: {
-			fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.sectionHeadSize,
 			lineHeight: METRICS.sectionHeadLineHeight,
 			fontWeight: '600',
 			letterSpacing: '-.001em',
 		},
 		textPageHead: {
-			fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.pageHeadSize,
 			lineHeight: METRICS.pageHeadLineHeight,
 			fontWeight: '700',
@@ -546,7 +546,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			lineHeight: METRICS.pageHeadAtLargeLineHeight,
 		},
 		textHero: {
-			fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
+			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.heroSize,
 			lineHeight: METRICS.heroLineHeight,
 			fontWeight: '700',
