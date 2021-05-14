@@ -1,7 +1,7 @@
 import React, {Fragment, useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { Animated, Text, View } from '../primitives';
 import {EASE} from '../styles/designConstants';
-
+import ThemeContext from '../ThemeContext';
 
 const RevealBlock = (props) => {
 	const { styles } = useContext(ThemeContext);

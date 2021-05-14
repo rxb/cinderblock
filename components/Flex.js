@@ -61,7 +61,7 @@ const getStyleKeys = (props, media) => {
 	]
 }
 
-const getCombinedStyles = (styleKeys) => {
+const getCombinedStyles = (styleKeys, styles) => {
 	return styleKeys.map((key, i)=>{
 		return styles[key];
 	});

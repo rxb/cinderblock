@@ -44,7 +44,7 @@ import * as Utils from './utils';
 
 import styleConfig from './styles';
 import ThemeContext from './ThemeContext';
-
+import * as designConstants from './styles/designConstants';
 
 export {
 	Animated, 
@@ -97,5 +97,7 @@ export {
 	Utils,
 
 	ThemeContext,
-	styleConfig
+	styleConfig,
+
+	designConstants
 };

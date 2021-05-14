@@ -2,7 +2,7 @@ import React, {useMemo, useContext} from 'react';
 import { View } from '../primitives';
 import ThemeContext from '../ThemeContext';
 
-const getCombinedStyles = (props) => {
+const getCombinedStyles = (props, styles) => {
 	const { shadow } = props	
 	
 	const styleKeys = [
@@ -25,7 +25,7 @@ const Card = (props) => {
 		...other
 	} = props;
 
-	const combinedStyles = useMemo(() => getCombinedStyles({...props, styles}), [shadow])
+	const combinedStyles = useMemo(() => getCombinedStyles(props, styles), [shadow])
 	const finalStyles = [combinedStyles, style];
 
 	return(

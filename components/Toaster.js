@@ -146,6 +146,8 @@ class Toaster extends React.Component {
 		} = this.props;
 
 		return(
+			<ThemeContext.Consumer>
+			{ ({styles, SWATCHES}) => (
 			<View style={styles.toaster}>
 				<View style={styles['toaster-inner']}>
 					{toasts.map((toast, i)=>{
@@ -158,6 +160,8 @@ class Toaster extends React.Component {
 					})}
 				</View>
 			</View>
+			)}
+			</ThemeContext.Consumer>
 		);
 	}
 }

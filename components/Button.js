@@ -51,7 +51,7 @@ const getCombinedStyles = (props) => {
 }
 
 const Button = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, SWATCHES } = useContext(ThemeContext);
 
 	const {
 		// style props
@@ -131,7 +131,7 @@ const Button = (props) => {
 	const combinedStyles = useMemo(()=>getCombinedStyles({...props, currentVariant, textType, styles}), [color, inverted, currentVariant, size, textType ]);
 	const buttonFinalStyles = [ combinedStyles.button, style];
 	const textFinalStyles = combinedStyles.text;
-	const inkColor = swatches[`button${capitalize(color)}${ inverted ? 'Inverted' : ''}Ink`];
+	const inkColor = SWATCHES[`button${capitalize(color)}${ inverted ? 'Inverted' : ''}Ink`];
 
 	return(
 		<ActionComponent

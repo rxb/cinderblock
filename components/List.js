@@ -6,7 +6,7 @@ import ThemeContext from '../ThemeContext';
 import {findWidestActiveValue} from '../utils';
 
 // combine styles
-const combineStyles = (styleKeys) => styleKeys.map((key, i)=>{
+const combineStyles = (styleKeys, styles) => styleKeys.map((key, i)=>{
 	return styles[key];
 });
 
@@ -39,14 +39,14 @@ const List = (props) => {
 	const baseClass = `list--${currentVariant}`;
 	const combinedStyles = combineStyles([
 		baseClass
-	]);
+	], styles);
 
 	// list-item styles
 	const itemBaseClass = `list-item--${currentVariant}`;
 	const combinedItemStyles = combineStyles([
 		itemBaseClass,
 		...[ (currentVariant == 'grid') ? `${itemBaseClass}--${currentItemsInRow}` : undefined ]
-	]);
+	], styles);
 	const scrollItemWidthStyle = (currentVariant == 'scroll' && scrollItemWidth) ? {width: scrollItemWidth} : undefined;
 
 	// render items
