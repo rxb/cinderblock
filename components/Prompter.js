@@ -118,7 +118,7 @@ class Prompt extends React.Component{
 			...other
 		} = this.props;
 
-		const promptStyle = styles['prompt'];
+	
 		const promptContent = React.cloneElement(content, {
 			onRequestClose: this.onRequestClose,
 			onCompleteClose: this.onCompleteClose
@@ -142,7 +142,7 @@ class Prompt extends React.Component{
 						<View style={[ styles['modal-backdrop'] ]} />
 				</Touch>
 				<Animated.View style={[
-					promptStyle,
+					styles['prompt'],
 					{
 						transform: [{
 					      translateY: this.state.visibilityValue.interpolate({
