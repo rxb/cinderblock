@@ -767,15 +767,3 @@ const buildStyles = (METRICS, SWATCHES) => {
 
 export default buildStyles;
 
-
-/*
-PLAUSIBLE THEMING
-export design constants and a function that returns styles
-this can be used to generate a new constanted styles object
-and has the opportunity to add overrides
-this entire thing gets passed into context and overrides the default context
-which is base styles with default designcontstants
-objects pull styles from context 
-OR maybe there's no default context and each component falls back to the default within itself.
-not really sure
-*/

@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import { Animated, Easing, Touchable, View } from '../primitives';
 import { ScrollView } from 'react-native-web';
 import ThemeContext from '../ThemeContext';
@@ -19,15 +19,15 @@ fixed positioning gets weird
 */
 
 
-class Prompt extends React.Component{
+class Prompt extends React.Component {
 
 	static defaultProps = {
-    	onPressEnter: ()=>{},
-    	onRequestClose: ()=>{},
-    	onCompleteClose: ()=>{},
-    	dismissable: true,
-    	visible: false
-  	}
+		onPressEnter: () => { },
+		onRequestClose: () => { },
+		onCompleteClose: () => { },
+		dismissable: true,
+		visible: false
+	}
 
 	constructor(props) {
 		super(props);
@@ -40,72 +40,72 @@ class Prompt extends React.Component{
 		this.onCompleteClose = this.onCompleteClose.bind(this);
 	}
 
-	componentDidMount(){
+	componentDidMount() {
 		document.addEventListener("keydown", this.onKeyPress, false);
-		if(this.props.showable){
-			setTimeout(()=>{
+		if (this.props.showable) {
+			setTimeout(() => {
 				this.open();
 			}, 1);
 		}
 	}
-	componentWillUnmount(){
+	componentWillUnmount() {
 		document.removeEventListener("keydown", this.onKeyPress, false);
 	}
 
-	onKeyPress(event){
-		if(this.props.showable){
-			if(event.keyCode === 27 && this.props.dismissable) {
+	onKeyPress(event) {
+		if (this.props.showable) {
+			if (event.keyCode === 27 && this.props.dismissable) {
 				this.props.onRequestClose();
 			}
-			else if(event.keyCode === 13){
+			else if (event.keyCode === 13) {
 				this.props.onPressEnter();
 			}
 		}
 	}
 
-	componentDidUpdate(prevProps){
-		if(this.props.showable != prevProps.showable){
-			if(this.props.showable){
+	componentDidUpdate(prevProps) {
+		if (this.props.showable != prevProps.showable) {
+			if (this.props.showable) {
 				this.open();
 			}
-			else{
+			else {
 				this.close();
 			}
 		}
 	}
 
-	onRequestClose(){
+	onRequestClose() {
 		this.props.hidePrompt(this.props.id);
 		this.props.onRequestClose();
 	}
 
-	onCompleteClose(){
+	onCompleteClose() {
 		this.props.removePrompt(this.props.id)
 		this.props.onCompleteClose();
 	}
 
-	open(){
+	open() {
 		const duration = 250;
-		this.setState({display: 'flex'})
+		this.setState({ display: 'flex' })
 		Animated.timing(
-			this.state.visibilityValue,{
-				toValue: 1,
-				easing: EASE,
-				duration
-			}
+			this.state.visibilityValue, {
+			toValue: 1,
+			easing: EASE,
+			duration
+		}
 		).start();
 	}
 
-	close(){
+	close() {
 		const duration = 250;
 		Animated.timing(
-			this.state.visibilityValue,{
-				toValue: 0,
-				easing: EASE,
-				duration
-			}
-		).start(()=>{
-			this.setState({display: 'none'});
+			this.state.visibilityValue, {
+			toValue: 0,
+			easing: EASE,
+			duration
+		}
+		).start(() => {
+			this.setState({ display: 'none' });
 			this.onCompleteClose();
 		});
 	}
@@ -118,46 +118,46 @@ class Prompt extends React.Component{
 			...other
 		} = this.props;
 
-	
+
 		const promptContent = React.cloneElement(content, {
 			onRequestClose: this.onRequestClose,
 			onCompleteClose: this.onCompleteClose
 		});
 
-		return(
+		return (
 			<ThemeContext.Consumer>
-			{ ({styles}) => (
-			<Animated.View style={[
-				styles['modal-container'],
-				{
-					display: this.state.display,
-					opacity: this.state.visibilityValue
-				}
-			]}>
+				{ ({ styles }) => (
+					<Animated.View style={[
+						styles['modal-container'],
+						{
+							display: this.state.display,
+							opacity: this.state.visibilityValue
+						}
+					]}>
 
-				<Touch
-					onPress={(dismissable) ? this.onRequestClose : ()=>{} }
-					noFeedback
-					>
-						<View style={[ styles['modal-backdrop'] ]} />
-				</Touch>
-				<Animated.View style={[
-					styles['prompt'],
-					{
-						transform: [{
-					      translateY: this.state.visibilityValue.interpolate({
-					        inputRange: [0, 1],
-					        outputRange: [150, 0]
-					      }),
-					    }]
-					}
-				]}>
-					<Stripe>
-						{promptContent}
-					</Stripe>
-				</Animated.View>
-			</Animated.View>
-			)}
+						<Touch
+							onPress={(dismissable) ? this.onRequestClose : () => { }}
+							noFeedback
+						>
+							<View style={[styles['modal-backdrop']]} />
+						</Touch>
+						<Animated.View style={[
+							styles['prompt'],
+							{
+								transform: [{
+									translateY: this.state.visibilityValue.interpolate({
+										inputRange: [0, 1],
+										outputRange: [150, 0]
+									}),
+								}]
+							}
+						]}>
+							<Stripe>
+								{promptContent}
+							</Stripe>
+						</Animated.View>
+					</Animated.View>
+				)}
 			</ThemeContext.Consumer>
 		);
 	}
@@ -173,16 +173,16 @@ class Prompter extends React.Component {
 			...other
 		} = this.props;
 		const thisPrompt = this.props.prompts[0];
-		if(thisPrompt){
-			return(
+		if (thisPrompt) {
+			return (
 				<Prompt
 					showable={thisPrompt.showable}
 					{...thisPrompt}
 					{...other}
-					/>
+				/>
 			);
 		}
-		else{
+		else {
 			return false;
 		}
 	}

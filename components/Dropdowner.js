@@ -87,7 +87,7 @@ export const DropdownTouch = (props) => {
 
 
 export const Dropdown = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, METRICS, SWATCHES } = useContext(ThemeContext);
 	
 	const { 
 		hideDropdown,
