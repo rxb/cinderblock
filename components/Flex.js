@@ -1,6 +1,5 @@
 import React, {useMemo, useContext} from 'react';
 import { View } from '../primitives';
-import PropTypes from 'prop-types';
 import ThemeContext from '../ThemeContext';
 import { BREAKPOINT_SIZES, FLEX_ALIGN_VALUES, FLEX_JUSTIFY_VALUES} from '../styles/designConstants';
 import {useMediaContext} from './UseMediaContext';
@@ -13,7 +12,6 @@ export const FLEX_CLASS = 'flex';
 export const FLEX_ROW_CLASS = `${FLEX_CLASS}--${DIRECTION_ROW}`;
 export const FLEX_COLUMN_CLASS = `${FLEX_CLASS}--${DIRECTION_COLUMN}`;
 export const FLEX_WRAP_CLASS = `${FLEX_CLASS}--wrap`;
-//export const FLEX_NOGUTTER_CLASS = `${FLEX_CLASS}--noGutters`;
 export const FLEX_ALIGN_CLASS = `${FLEX_CLASS}--align`;
 export const FLEX_FLUSH_CLASS = `${FLEX_CLASS}--flush`;
 export const FLEX_NBSP_CLASS = `${FLEX_CLASS}--nbsp`;
@@ -24,7 +22,6 @@ const getStyleKeys = (props, media) => {
 		direction,
 		switchDirection,
 		wrap,
-		noGutters,
 		justify,
 		align,
 		rowReverse,
@@ -40,11 +37,14 @@ const getStyleKeys = (props, media) => {
 
 		// horizontal default
 		...[!isColumn ? FLEX_ROW_CLASS : undefined],
-		...[!isColumn && switchDirection && media[switchDirection] ? FLEX_COLUMN_CLASS : undefined],
+		...[!isColumn && switchDirection ? `${FLEX_COLUMN_CLASS}__${switchDirection}`: undefined],
+		//...[!isColumn && switchDirection && media[switchDirection] ? FLEX_COLUMN_CLASS : undefined],
+		
 
 		// vertical default
 		...[isColumn ? FLEX_COLUMN_CLASS : undefined],
-		...[isColumn && switchDirection && media[switchDirection] ? FLEX_ROW_CLASS : undefined],
+		...[isColumn && switchDirection ? `${FLEX_ROW_CLASS}__${switchDirection}` : undefined],
+		//...[isColumn && switchDirection && media[switchDirection] ? FLEX_ROW_CLASS : undefined],
 		
 		// reverse breakpoint modifiers
 		...[rowReverse && media[rowReverse] ? 'flex--rowReverse' : undefined],
@@ -52,62 +52,40 @@ const getStyleKeys = (props, media) => {
 
 		// other
 		...[wrap ? FLEX_WRAP_CLASS : undefined],
-		//...[noGutters ? FLEX_NOGUTTER_CLASS : undefined],
 		...[flush ? FLEX_FLUSH_CLASS : undefined],
 		...[nbsp ? FLEX_NBSP_CLASS : undefined],
-
-		
 
 	]
 }
 
-const getCombinedStyles = (styleKeys, styles) => {
-	return styleKeys.map((key, i)=>{
-		return styles[key];
-	});
-}
-
-const getCombinedDescendantStyles = (styleKeys, styles) => {
-	// assuming that the child of Flex will always be FlexItem or equivalent
-	// if that turns out to not be true, this will need to be rethought
-	return styleKeys.map((key, i)=>{
-		// making up a thing here
-		// two dashes "__" is for direct descendants of the first part
-		return styles[`${key}__flex-item`];
-	});
+const getActiveStyles = (styleKeys, styles, ids) => {
+	return{ 
+		activeStyles: styleKeys.map((key, i)=>{
+			return styles[key];
+		}),
+		activeIds: styleKeys.map((key, i)=>{
+			return ids[key];
+		}).join(' ')
+	};
 }
 
 const Flex = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 
 		const { children, style } = props;
 
 		const media = useMediaContext();
 		const styleKeys = useMemo(()=> getStyleKeys(props, media), [media]);
 		
+		const {activeStyles, activeIds} = useMemo(()=> getActiveStyles(styleKeys, styles, ids), [styleKeys])
 
-		const combinedStyles = useMemo(()=> getCombinedStyles(styleKeys, styles), [styleKeys])
-		const finalStyles = [combinedStyles, style];
-
-		/*
-		const combinedDescendantStyles = useMemo(()=> getCombinedDescendantStyles(styleKeys), [styleKeys])
-
-		// TODO: I really dislike this cloning stuff
-		const childrenWithProps = React.Children.map(children,
-			(child, i) => {
-				if(child){
-					const additionalProps = {
-						descendantStyles: combinedDescendantStyles,
-						isFirstChild: (i==0)
-					};
-					return React.cloneElement(child, additionalProps);
-				}
-			}
-		);
-		*/
+		console.log(activeIds)
 
 		return (
-			<View style={finalStyles}>
+			<View 
+				style={[activeStyles, style]}
+				dataSet={{ media: activeIds }}
+				>
 				{children}
 			</View>
 		);
@@ -116,25 +94,6 @@ const Flex = (props) => {
 
 const BREAKPOINTS = Object.keys(BREAKPOINT_SIZES);
 
-Flex.propTypes = {
-	align: PropTypes.oneOf(FLEX_ALIGN_VALUES),
-	justify: PropTypes.oneOf(FLEX_JUSTIFY_VALUES),
-	wrap: PropTypes.bool,
-	noGutters: PropTypes.bool,
-	direction: PropTypes.oneOf([
-		DIRECTION_ROW,
-		DIRECTION_COLUMN,
-	]),
-	switchDirection: PropTypes.oneOf(BREAKPOINTS),
-	rowReverse: PropTypes.oneOfType([
-		PropTypes.bool,
-		PropTypes.oneOf(BREAKPOINTS)
-	]),
-	columnReverse: PropTypes.oneOfType([
-		PropTypes.bool,
-		PropTypes.oneOf(BREAKPOINTS)
-	]),
-};
 
 Flex.defaultProps = {
 	direction: DIRECTION_ROW,

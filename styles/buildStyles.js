@@ -3,6 +3,17 @@ import StyleSheet from 'react-native-media-query';
 
 import {FLEX_GROW_FACTORS, MEDIA_SIZES, MEDIA_QUERIES} from './designConstants';
 
+const stylesForBreakpoints = (baseKey, styles) => {
+	const defs = {};
+	for (let [mqKey, mqValue] of Object.entries(MEDIA_QUERIES)) {
+		defs[`${baseKey}__${mqKey}`] = {
+			[mqValue] : styles
+		}
+	}
+	return defs;
+}
+
+
 const buildStyles = (METRICS, SWATCHES) => {
 
 	const {
@@ -679,10 +690,22 @@ const buildStyles = (METRICS, SWATCHES) => {
 			flexDirection: 'row',
 		},
 
+		// flex--row__small, flex--row__medium, flex--row__large, flex--row__xlarge
+		...stylesForBreakpoints('flex--row', {
+			flexDirection: 'row' 
+		}),
+
 		'flex--column': {
 			flexDirection: 'column',
 			height: '100%'
 		},
+
+		// flex--column__small, flex--column__medium, flex--column__large, flex--column__xlarge
+		...stylesForBreakpoints('flex--column', {
+			flexDirection: 'column',
+			height: '100%'
+		}),
+
 
 		// FlexItem
 
@@ -759,8 +782,6 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'flex--align-flex-end': {
 			alignItems: 'flex-end'
 		},
-
-
 
 
 	});
