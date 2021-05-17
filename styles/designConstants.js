@@ -138,14 +138,18 @@ export const BREAKPOINT_SIZES = {
 	"xlarge": 1024
 }
 
-export const BREAKPOINTS = Object.keys(BREAKPOINT_SIZES);
-
+export const MEDIA_QUERY_PARAMS = {
+	small: 	`screen`,
+	medium: 	`screen and (min-width: ${BREAKPOINT_SIZES.medium}px)`,
+	large: 	`screen and (min-width: ${BREAKPOINT_SIZES.large}px)`,
+	xlarge: 	`screen and (min-width: ${BREAKPOINT_SIZES.xlarge}px)`
+}
 
 export const MEDIA_QUERIES = {
-	small: `screen`,
-	medium: `screen and (min-width: 480px)`,
-	large: `screen and (min-width: 840px)`,
-	xlarge: `screen and (min-width: 1024px)`,
+	small: `@media ${MEDIA_QUERY_PARAMS.small}`,
+	medium: `@media ${MEDIA_QUERY_PARAMS.medium}`,
+	large: `@media ${MEDIA_QUERY_PARAMS.large}`,
+	xlarge: `@media ${MEDIA_QUERY_PARAMS.xlarge}`
 };
 
 export const MEDIA_SIZES = {

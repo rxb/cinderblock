@@ -1,11 +1,10 @@
 import React, {useContext} from 'react';
 import { Text as ReactText } from '../primitives';
 import ThemeContext from '../ThemeContext';
-import {useMediaContext} from './UseMediaContext';
 import {TEXT_TYPES, TEXT_COLORS, TEXT_WEIGHTS} from '../styles/designConstants';
 
 
-const getCombinedStyles = (props, media, styles) => {
+const getActiveStyles = (props, styles, ids) => {
 
 	const {
 		inverted,
@@ -21,27 +20,36 @@ const getCombinedStyles = (props, media, styles) => {
 		...[type ? `text${TEXT_TYPES[type]}` : undefined ],
 		...[color ? `text${TEXT_COLORS[color]}${invertedModifier}` : undefined ],
 		...[weight ? `text${TEXT_WEIGHTS[weight]}` : undefined ],
-		...[media.large ? `text${TEXT_TYPES[type]}--atLarge` : undefined],
 		...[nowrap ? `textNowrap` : undefined],
 	];
 
-	return styleKeys.map((key, i)=>{
-		return styles[key];
-	});
+	return {
+		activeStyles: styleKeys.map((key, i)=>{
+			return styles[key];
+		}),
+		activeIds: styleKeys.map((key, i)=>{
+			return ids[key];
+		}).join(' ')
+	}
 	
 }
 
 
 const Text = (props) => {
-	const { styles } = useContext(ThemeContext);
+	
+	const { 
+		children, 
+		style, 
+		...other 
+	} = props;
 
-	const { children, style, ...other } = props;
-	const media = useMediaContext();
-	const combinedStyles = getCombinedStyles(props, media, styles);
+	const { styles, ids } = useContext(ThemeContext);
+	const {activeStyles, activeIds} = getActiveStyles(props, styles, ids);
 
 	return(
 		<ReactText
-			style={[combinedStyles, style]}
+			style={[activeStyles, style]}
+			dataSet={{ media: activeIds }}
 			{...other}
 			>
 			{children}

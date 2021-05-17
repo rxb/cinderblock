@@ -5,7 +5,7 @@ const styleConfig = {
 	METRICS,
 	SWATCHES,
 	buildStyles,
-	styles: buildStyles(METRICS, SWATCHES)
+	...buildStyles(METRICS, SWATCHES) // media query styles adds {styles, ids}
 };
 
 export default styleConfig;

@@ -1,6 +1,7 @@
-import {StyleSheet} from '../primitives';
+//import {StyleSheet} from '../primitives';
+import StyleSheet from 'react-native-media-query';
 
-import {FLEX_GROW_FACTORS, MEDIA_SIZES} from './designConstants';
+import {FLEX_GROW_FACTORS, MEDIA_SIZES, MEDIA_QUERIES} from './designConstants';
 
 const buildStyles = (METRICS, SWATCHES) => {
 
@@ -540,13 +541,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 			lineHeight: METRICS.pageHeadLineHeight,
 			fontWeight: '700',
 			letterSpacing: '-.001em',
-			'@media (min-width: 800px)': {
-            backgroundColor: 'blue',
+			[MEDIA_QUERIES.large]: {
+            fontSize: METRICS.pageHeadAtLargeSize,
+				lineHeight: METRICS.pageHeadAtLargeLineHeight,
         },
-		},
-		'textPageHead--atLarge': {
-			fontSize: METRICS.pageHeadAtLargeSize,
-			lineHeight: METRICS.pageHeadAtLargeLineHeight,
 		},
 		textHero: {
 			fontFamily: METRICS.fontFamily,

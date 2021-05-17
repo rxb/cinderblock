@@ -2,7 +2,7 @@ import React, {useMemo, useContext} from 'react';
 import { View } from '../primitives';
 import PropTypes from 'prop-types';
 import ThemeContext from '../ThemeContext';
-import { BREAKPOINTS, FLEX_ALIGN_VALUES, FLEX_JUSTIFY_VALUES} from '../styles/designConstants';
+import { BREAKPOINT_SIZES, FLEX_ALIGN_VALUES, FLEX_JUSTIFY_VALUES} from '../styles/designConstants';
 import {useMediaContext} from './UseMediaContext';
 
 
@@ -113,6 +113,8 @@ const Flex = (props) => {
 		);
 
 }
+
+const BREAKPOINTS = Object.keys(BREAKPOINT_SIZES);
 
 Flex.propTypes = {
 	align: PropTypes.oneOf(FLEX_ALIGN_VALUES),
