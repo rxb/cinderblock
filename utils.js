@@ -54,20 +54,7 @@ export const findWidestActiveValue = (values, media) => {
 	return useMemo(() => fwav(values, media), [values, media]);
 }
 
-// Add toastable errors
-import { addToast } from '../../actions';
-export const addToastableErrors = (dispatch, error, messages) => {
-  if(error && messages[error.name]){
-    dispatch(addToast(messages[error.name]));
-  }
-}
 
-// for easy delays in promise chains
-export const sleep = (ms) => {
-  return function(x) {
-    return new Promise(resolve => setTimeout(() => resolve(x), ms));
-  };
-}
 
 export const nthChildTest = (conditionsInOrder) => {
   const ordinals = {};

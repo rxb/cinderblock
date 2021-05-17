@@ -540,6 +540,9 @@ const buildStyles = (METRICS, SWATCHES) => {
 			lineHeight: METRICS.pageHeadLineHeight,
 			fontWeight: '700',
 			letterSpacing: '-.001em',
+			'@media (min-width: 800px)': {
+            backgroundColor: 'blue',
+        },
 		},
 		'textPageHead--atLarge': {
 			fontSize: METRICS.pageHeadAtLargeSize,

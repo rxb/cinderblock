@@ -6,6 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dnd": "^14.0.2",
+    "react-dnd-html5-backend": "^14.0.0",
+    "react-dom": "^17.0.2",
+    "react-feather": "^2.0.9",
+    "react-intersection-observer": "^8.32.0",
+    "react-native-media-query": "^1.0.6",
+    "react-native-web": "0.16.3",
+    "react-redux": "^7.2.4"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rxb/cinderblock.git"
