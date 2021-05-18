@@ -4,7 +4,7 @@ import StyleSheet from 'react-native-media-query';
 import {FLEX_GROW_FACTORS, MEDIA_SIZES, MEDIA_QUERIES} from './designConstants';
 
 const stylesForBreakpoints = (baseKey, styles) => {
-	const defs = {};
+	const defs = { [baseKey]: styles };
 	for (let [mqKey, mqValue] of Object.entries(MEDIA_QUERIES)) {
 		defs[`${baseKey}__${mqKey}`] = {
 			[mqValue] : styles
@@ -108,31 +108,31 @@ const buildStyles = (METRICS, SWATCHES) => {
 		// LISTS
 
 		// default
-		'list--linear':{
-
-		},
-		'list-item--linear': {
+		...stylesForBreakpoints('list--linear', {
+			// no extra styles?
+		}),
+		...stylesForBreakpoints('list-item--linear', {
 			borderTopWidth: 1,
 			borderTopColor: SWATCHES.border,
 			paddingTop: space
-		},
+		}),
 		'list-item--linear--firstChild': {
 			borderTopWidth: 0,
 			paddingTop: space / 2
 		},
 
 		// grid
-
-		'list--grid':{
+		...stylesForBreakpoints('list--grid', {
 			flexDirection: 'row',
 			flexWrap: 'wrap',
 			marginLeft: -1*space
-		},
-		'list-item--grid': {
+		}),
+		...stylesForBreakpoints('list-item--grid', {
 			flexWrap: 'nowrap',
 			paddingLeft: space,
 			paddingTop: 0
-		},
+		}),
+		/*
 		...(()=>{
 			const gridObj = {};
 			for(let factor of [1,2,3,4,5,6,7,8]){
@@ -140,11 +140,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 			}
 			return gridObj;
 		})(),
-
+		*/
 
 		// inline
-
-		'list--scroll':{
+		...stylesForBreakpoints('list--scroll', {
 			flexDirection: 'row',
 			flexWrap: 'nowrap',
 			overflowX: 'scroll',
@@ -154,11 +153,11 @@ const buildStyles = (METRICS, SWATCHES) => {
 			paddingBottom: 30,
 			marginBottom: -30,
 			overflow: 'hidden',
-		},
-		'list-item--scroll': {
+		}),
+		...stylesForBreakpoints('list-item--scroll', {
 			width: '45%',
 			paddingLeft: space
-		},
+		}),
 		'list--scroll-wrap': {
 			overflow: 'hidden',
 			marginHorizontal: -1 * space,
@@ -222,12 +221,20 @@ const buildStyles = (METRICS, SWATCHES) => {
 			paddingHorizontal: 16,
 			paddingVertical: 16,
 		},
-		'button--shrink': {},
-		'button--iconOnly': {},
-		'button--grow': {
+
+		...stylesForBreakpoints('button--shrink', {
+			// no extra styles?
+		}),
+
+		...stylesForBreakpoints('button--iconOnly', {
+			// no extra styles?
+		}),
+
+		...stylesForBreakpoints('button--grow', {
 			alignSelf: 'stretch',
 			flex: 1
-		},
+		}),
+
 		'button--primary': {
 			backgroundColor: SWATCHES.buttonPrimaryBackground,
 		},
@@ -267,7 +274,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'buttonText--secondaryInverted': {
 			color: SWATCHES.buttonSecondaryInvertedInk,
 		},
-
+		...stylesForBreakpoints('buttonText--iconOnly', {
+			display: 'none'
+		}),
+		
 
 		// CHIP
 		chip: {
@@ -678,21 +688,12 @@ const buildStyles = (METRICS, SWATCHES) => {
 			marginLeft: -1*base,
 		},
 
-		'flex--row' : {
-			flexDirection: 'row',
-		},
-
-		// flex--row__small, flex--row__medium, flex--row__large, flex--row__xlarge
+		// flex--row, flex--row__small, flex--row__medium, flex--row__large, flex--row__xlarge
 		...stylesForBreakpoints('flex--row', {
 			flexDirection: 'row' 
 		}),
 
-		'flex--column': {
-			flexDirection: 'column',
-			height: '100%'
-		},
-
-		// flex--column__small, flex--column__medium, flex--column__large, flex--column__xlarge
+		// flex--column, flex--column__small, flex--column__medium, flex--column__large, flex--column__xlarge
 		...stylesForBreakpoints('flex--column', {
 			flexDirection: 'column',
 			height: '100%'

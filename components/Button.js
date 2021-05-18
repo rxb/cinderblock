@@ -1,57 +1,55 @@
 import React, {useMemo, useContext} from 'react';
 import { ActivityIndicator } from 'react-native';
-import PropTypes from 'prop-types';
 import { View, Text } from '../primitives';
 import ThemeContext from '../ThemeContext';
+import {getActiveStyles, getStyleKeysForMediaQueryVariants} from '../utils';
 
-import {TEXT_TYPES, TEXT_COLORS, TEXT_WEIGHTS} from '../styles/designConstants';
+import {TEXT_TYPES} from '../styles/designConstants';
 import Icon from './Icon';
-import {useMediaContext} from './UseMediaContext';
-import {findWidestActiveValue} from '../utils';
 import Link from './Link';
 import Touch from './Touch';
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1); 
 
-const getCombinedStyles = (props) => {
+const getStyleKeys = (props) => {
 
 	const {
 		color = 'primary',
-		inverted,
-		currentVariant,
 		size = 'medium',
-		styles,
-		textType
+		inverted,
+		variant,
 	} = props;
+
 	const invertedModifier = (inverted) ? 'Inverted' : '';
+	const textType = {
+		small: "small",
+		medium: "body",
+		large: "big"
+	}[size];
 
 	// BUTTON 
 	const buttonStyleKeys = [
 		'button',
-		`button--${currentVariant}`,
 		`button--${size}`,
+		...[getStyleKeysForMediaQueryVariants("button--", variant)],
 		...[color ? `button--${color}${invertedModifier}` : undefined ]
 	];
-	const button = buttonStyleKeys.map((key, i)=>{
-		return styles[key];
-	});
 
 	// BUTTON TEXT
 	const textStyleKeys = [
 		'text',
 		...[textType ? `text${TEXT_TYPES[textType]}` : undefined ],
 		'buttonText',
+		...[getStyleKeysForMediaQueryVariants("buttonText--", variant)],
 		...[color ? `buttonText--${color}${invertedModifier}` : undefined ],
 	];
-	const text =  textStyleKeys.map((key, i)=>{
-		return styles[key];
-	});
 
-	return { button, text }
+	return { buttonStyleKeys, textStyleKeys }
 }
 
 const Button = (props) => {
-	const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
+
+	const { styles, ids, SWATCHES, METRICS } = useContext(ThemeContext);
 
 	const {
 		// style props
@@ -69,25 +67,8 @@ const Button = (props) => {
 		children,
 		...other
 	} = props
-	const media = useMediaContext();
 
-	// inferred props
-	let textType, iconSize;
-	switch(size){
-		case 'small':
-			textType = "small";
-			iconSize = "small";
-			break;
-		case 'medium':
-			iconSize = "medium";
-			textType = "body";
-			break;
-		case 'large':
-			textType = "big";
-			iconSize = "large";
-			break;
-	}
-
+	
 	// width is shorthand for variants
 	// this is pretty janky
 	// maybe reconsider and do like list
@@ -108,7 +89,6 @@ const Button = (props) => {
 	else{
 		variant = props.variant
 	}
-	const currentVariant = findWidestActiveValue(variant, media);
 
 	// touchable component and semantics
 	let ActionComponent, actionComponentProps;
@@ -128,14 +108,24 @@ const Button = (props) => {
 	}
 
 	// styles 
-	const combinedStyles = useMemo(()=>getCombinedStyles({...props, currentVariant, textType, styles}), [color, inverted, currentVariant, size, textType ]);
-	const buttonFinalStyles = [ combinedStyles.button, style];
-	const textFinalStyles = combinedStyles.text;
+	const {
+		buttonStyleKeys, 
+		textStyleKeys
+	} = getStyleKeys({...props, variant, styles});
+	const {
+		activeStyles: buttonActiveStyles, 
+		activeIds: buttonActiveIds
+	} = getActiveStyles(buttonStyleKeys, styles, ids);
+	const {
+		activeStyles: textActiveStyles, 
+		activeIds: textActiveIds
+	} = getActiveStyles(textStyleKeys, styles, ids);
 	const inkColor = SWATCHES[`button${capitalize(color)}${ inverted ? 'Inverted' : ''}Ink`];
 
 	return(
 		<ActionComponent
-			style={buttonFinalStyles}
+			style={[ buttonActiveStyles, style]}
+			dataSet={{ media: buttonActiveIds}}
 			{...actionComponentProps}
 			{...other}
 			>
@@ -146,12 +136,13 @@ const Button = (props) => {
 							shape={shape} 
 							color={inkColor} 
 							style={{marginLeft: 3, marginRight: 3}} 
-							size={iconSize}
+							size={size}
 							/>
 					}
-					{ label && currentVariant != 'iconOnly' &&
+					{ label && 
 						<Text 
-							style={textFinalStyles}
+							style={textActiveStyles}
+							dataSet={{ media: textActiveIds}}
 							>{label}</Text>
 					}
 				</View>
@@ -169,6 +160,5 @@ const Button = (props) => {
 		</ActionComponent>
 	);
 }
-
 
 export default Button;

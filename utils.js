@@ -66,6 +66,11 @@ export const getActiveStyles = (styleKeys, styles, ids) => {
 	};
 }
 
+export const getStyleKeysForMediaQueryVariants = (baseKey, variant) => {
+  let variantObj = (typeof variant === 'object') ? variant : { small: variant }
+  return Object.keys(variantObj).map( key => `${baseKey}${variantObj[key]}__${key}`);
+}
+
 export const nthChildTest = (conditionsInOrder) => {
   const ordinals = {};
   const index = 1; // first-child == 1

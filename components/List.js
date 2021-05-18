@@ -1,24 +1,18 @@
 import React, {useContext} from 'react';
-import PropTypes from 'prop-types';
 import { View } from '../primitives';
 import { useMediaContext } from './UseMediaContext';
 import ThemeContext from '../ThemeContext';
+import {getActiveStyles, getStyleKeysForMediaQueryVariants} from '../utils';
 import {findWidestActiveValue} from '../utils';
-
-// combine styles
-const combineStyles = (styleKeys, styles) => styleKeys.map((key, i)=>{
-	return styles[key];
-});
-
 
 
 const List = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 
 	const {
 		children,
 		scrollItemWidth,
-		itemsInRow,
+		itemsInRow = {},
 		variant = 'linear',
 		items = [],
 		renderItem = item => item,
@@ -34,19 +28,27 @@ const List = (props) => {
 	const currentItemsInRow = findWidestActiveValue(itemsInRow, media);
 	const currentRenderItem = findWidestActiveValue(renderItem, media);
 
+	// TODO: remove
+	const baseClass = `list--${currentVariant}`; 
 
 	// list styles
-	const baseClass = `list--${currentVariant}`;
-	const combinedStyles = combineStyles([
-		baseClass
-	], styles);
+	const listStyleKeys = getStyleKeysForMediaQueryVariants("list--", variant);
+	const { 
+		activeStyles: listActiveStyles, 
+		activeIds: listActiveIds 
+	} = getActiveStyles(listStyleKeys, styles, ids);
+	
 
 	// list-item styles
 	const itemBaseClass = `list-item--${currentVariant}`;
-	const combinedItemStyles = combineStyles([
-		itemBaseClass,
-		...[ (currentVariant == 'grid') ? `${itemBaseClass}--${currentItemsInRow}` : undefined ]
-	], styles);
+	const listItemStyleKeys = [
+		...[getStyleKeysForMediaQueryVariants("list-item--", variant)],
+		...[getStyleKeysForMediaQueryVariants("list-item--grid", itemsInRow)],
+	];
+	const {
+		activeStyles: listItemActiveStyles,
+		activeIds: listItemActiveIds
+	} = getActiveStyles(listItemStyleKeys, styles, ids);
 	const scrollItemWidthStyle = (currentVariant == 'scroll' && scrollItemWidth) ? {width: scrollItemWidth} : undefined;
 
 	// render items
@@ -56,7 +58,8 @@ const List = (props) => {
 			<View
 				key={`${pageKey}-${i}`}
 				accessibilityRole='listitem'
-				style={[ ...combinedItemStyles, scrollItemWidthStyle, itemStyle, firstChildStyle ]}
+				style={[ listItemActiveStyles, scrollItemWidthStyle, itemStyle, firstChildStyle ]}
+				dataSet={{ media: listItemActiveIds}}
 				>
 				{ currentRenderItem(item, i) }
 			</View>
@@ -68,7 +71,9 @@ const List = (props) => {
 		<View style={styles[`${baseClass}-wrap`]}>
 			<View
 				accessibilityRole='list'
-				style={[ ...combinedStyles, style ]}
+				style={[ listActiveStyles, style ]}
+				dataSet={{ media: listActiveIds}}
+
 				>
 				{ paginated && items.map( (page, i) => renderItems(page.items, i) )}
 				{ !paginated && renderItems(items) }
