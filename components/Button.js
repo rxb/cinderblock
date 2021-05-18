@@ -16,10 +16,10 @@ const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 const getCombinedStyles = (props) => {
 
 	const {
-		color,
+		color = 'primary',
 		inverted,
 		currentVariant,
-		size,
+		size = 'medium',
 		styles,
 		textType
 	} = props;
@@ -51,17 +51,17 @@ const getCombinedStyles = (props) => {
 }
 
 const Button = (props) => {
-	const { styles, SWATCHES } = useContext(ThemeContext);
+	const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
 
 	const {
 		// style props
-		color,
-		size,
+		color = 'primary',
+		size = 'medium',
 		inverted,
 		// rest
 		href,
 		width,
-		onPress,
+		onPress = () => {},
 		label,
 		shape,
 		isLoading,
@@ -170,10 +170,5 @@ const Button = (props) => {
 	);
 }
 
-Button.defaultProps = {
-	size: 'medium',
-	onPress: () => {},
-	color: 'primary'
-}
 
 export default Button;

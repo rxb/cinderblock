@@ -16,7 +16,7 @@ const getCombinedStyles = (media, styles) => {
 }
 
 const Stripe = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 
 	const {
 		children,
@@ -27,8 +27,8 @@ const Stripe = (props) => {
 		...other
 	} = props
 
+	// keeping matchmedia for image height since it's so variable
 	const media = useMediaContext();
-	const combinedStyles = useMemo( ()=>getCombinedStyles(media, styles), [media]);
 	const imageHeightStyle = (image) ? {height: findWidestActiveValue(imageHeight, media)} : {};
 
 	if(image){
@@ -36,7 +36,8 @@ const Stripe = (props) => {
 			<ImageBackground
 				ref={forwardedRef}
 				source={{uri: image}}
-				style={[combinedStyles, style, imageHeightStyle]}
+				style={[styles['stripe'], style, imageHeightStyle]}
+				dataSet={{ media: ids['stripe']}} 
 				{...other}
 				>
 				{children}
@@ -47,7 +48,8 @@ const Stripe = (props) => {
 		return(
 			<View 
 				ref={forwardedRef}
-				style={[combinedStyles, style]} 
+				style={[styles['stripe'], style]}
+				dataSet={{ media: ids['stripe']}} 
 				{...other}
 				>
 				{children}

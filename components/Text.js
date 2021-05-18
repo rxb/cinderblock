@@ -31,12 +31,9 @@ const getActiveStyles = (props, styles, ids) => {
 			return ids[key];
 		}).join(' ')
 	}
-	
 }
 
-
 const Text = (props) => {
-	
 	const { 
 		children, 
 		style, 

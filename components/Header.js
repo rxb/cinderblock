@@ -1,7 +1,7 @@
 import React, {useContext} from 'react';
 import { View, Image } from '../primitives';
 import ThemeContext from '../ThemeContext';
-import {useMediaContext} from './UseMediaContext';
+import {getActiveStyles} from '../utils';
 
 const VALID_TYPES = {
 	transparent: "Transparent"
@@ -15,7 +15,7 @@ const VALID_POSITIONS = {
 }
 
 const Header = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 
 	const {
 		children,
@@ -25,33 +25,22 @@ const Header = (props) => {
 		type = 'separated'
 	} = props
 
-	const media = useMediaContext();
-
-	// media query
-	// this could be packaged up
-
 	const styleKeys = [
 		'header',
-		...[type ? `header${VALID_TYPES[type]}` : undefined ],
-		...[ (media && media.medium) ? 'header--atMedium' : undefined],
-		...[ (type && media && media.medium) ? `header${VALID_TYPES[type]}--atMedium` : undefined],
+		...[type ? `header${VALID_TYPES[type]}` : undefined ]
 	];
-	const combinedStyles = styleKeys.map((key, i)=>{
-		return styles[key];
-	});
-
-	const sectionStyleKeys = [
-		'header-section',
-		...[ (media && media.medium) ? 'header-section--atMedium' : undefined]
-	];
-	const sectionCombinedStyles = sectionStyleKeys.map((key, i)=>{
-		return styles[key];
-	});
+	const {activeStyles, activeIds} = getActiveStyles(styleKeys, styles, ids);
 
 	return(
-		<View style={[ combinedStyles, style, {position: VALID_POSITIONS[position]} ]}>
+		<View 
+			style={[ activeStyles, style, {position: VALID_POSITIONS[position]} ]}
+			dataSet={{ media: activeIds}}
+			>
 			<View style={{maxWidth: maxWidth, alignSelf: 'center', width: '100%'}}>
-				<View style={sectionCombinedStyles}>
+				<View 
+					style={[styles['header-section']]}
+					dataSet={{ media: ids['header-section']}}
+					>
 					{children}
 				</View>
 			</View>

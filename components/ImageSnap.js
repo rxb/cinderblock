@@ -6,7 +6,7 @@ import { findWidestActiveValue } from '../utils';
 
 
 const ImageSnap = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 
 	const {
 		children,
@@ -17,21 +17,13 @@ const ImageSnap = (props) => {
 	} = props
 
 	const media = useMediaContext();
-
 	const imageHeightStyle = {height: findWidestActiveValue(imageHeight, media)};
-	const styleKeys = [
-		'stripe',
-		...[ (media && media.medium) ? 'imageSnap--atMedium' : undefined]
-	];
-	const combinedStyles = styleKeys.map((key, i)=>{
-		return styles[key];
-	});
-
 
 	return(
 		<Image
 			source={{uri: image}}
-			style={[ style, styles.imageSnap, imageHeightStyle, combinedStyles ]}
+			style={[ style, styles.imageSnap, imageHeightStyle ]}
+			dataSet={{ media: ids['imageSnap']}}
 			>
 			{children}
 		</Image>

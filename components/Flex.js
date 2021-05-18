@@ -2,7 +2,7 @@ import React, {useMemo, useContext} from 'react';
 import { View } from '../primitives';
 import ThemeContext from '../ThemeContext';
 import { BREAKPOINT_SIZES, FLEX_ALIGN_VALUES, FLEX_JUSTIFY_VALUES} from '../styles/designConstants';
-import {useMediaContext} from './UseMediaContext';
+import {getActiveStyles} from '../utils';
 
 
 export const DIRECTION_ROW = 'row';
@@ -38,17 +38,14 @@ const getStyleKeys = (props, media) => {
 		// horizontal default
 		...[!isColumn ? FLEX_ROW_CLASS : undefined],
 		...[!isColumn && switchDirection ? `${FLEX_COLUMN_CLASS}__${switchDirection}`: undefined],
-		//...[!isColumn && switchDirection && media[switchDirection] ? FLEX_COLUMN_CLASS : undefined],
 		
-
 		// vertical default
 		...[isColumn ? FLEX_COLUMN_CLASS : undefined],
 		...[isColumn && switchDirection ? `${FLEX_ROW_CLASS}__${switchDirection}` : undefined],
-		//...[isColumn && switchDirection && media[switchDirection] ? FLEX_ROW_CLASS : undefined],
 		
 		// reverse breakpoint modifiers
-		...[rowReverse && media[rowReverse] ? 'flex--rowReverse' : undefined],
-		...[columnReverse && media[columnReverse] ? 'flex--columnReverse' : undefined],
+		...[rowReverse  ? `flex--rowReverse__${rowReverse}`: undefined],
+		...[columnReverse  ? `flex--columnReverse__${columnReverse}`: undefined],
 
 		// other
 		...[wrap ? FLEX_WRAP_CLASS : undefined],
@@ -58,28 +55,15 @@ const getStyleKeys = (props, media) => {
 	]
 }
 
-const getActiveStyles = (styleKeys, styles, ids) => {
-	return{ 
-		activeStyles: styleKeys.map((key, i)=>{
-			return styles[key];
-		}),
-		activeIds: styleKeys.map((key, i)=>{
-			return ids[key];
-		}).join(' ')
-	};
-}
+
 
 const Flex = (props) => {
 	const { styles, ids } = useContext(ThemeContext);
 
 		const { children, style } = props;
 
-		const media = useMediaContext();
-		const styleKeys = useMemo(()=> getStyleKeys(props, media), [media]);
-		
+		const styleKeys = useMemo(()=> getStyleKeys(props), [props]);
 		const {activeStyles, activeIds} = useMemo(()=> getActiveStyles(styleKeys, styles, ids), [styleKeys])
-
-		console.log(activeIds)
 
 		return (
 			<View 

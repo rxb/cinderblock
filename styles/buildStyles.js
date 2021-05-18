@@ -28,17 +28,11 @@ const buildStyles = (METRICS, SWATCHES) => {
 		// LAYOUT
 		stripe: {
 			paddingVertical: space,
-			//flex: 1,
+			[MEDIA_QUERIES.medium]: {
+				paddingVertical: space,
+				paddingHorizontal: space,
+			}
 		},
-		'stripe--atMedium': {
-			paddingVertical: space,
-			paddingHorizontal: space,
-		},
-		/*
-		'stripe--atLarge': {
-			paddingHorizontal: space*1.5,
-		},
-		*/
 		bounds: {
 			maxWidth: METRICS.boundsWidth,
 			minWidth: 1,
@@ -64,14 +58,13 @@ const buildStyles = (METRICS, SWATCHES) => {
 			marginTop: -1 * space,
 			resizeMode: 'cover',
 			borderRadius: 0,
+			[MEDIA_QUERIES.medium]: {
+				marginTop: space / 2,
+				marginHorizontal: space,
+				borderRadius: 6
+			}
 		},
 
-		
-		'imageSnap--atMedium': {
-			marginTop: space / 2,
-			marginHorizontal: space,
-			borderRadius: 6
-		},
 		
 
 		// for sets of chunks with no possibility of sections
@@ -563,10 +556,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 			lineHeight: METRICS.heroLineHeight,
 			fontWeight: '700',
 			letterSpacing: '-.001em',
-		},
-		'textHero--atLarge': {
-			fontSize: METRICS.heroAtLargeSize,
-			lineHeight: METRICS.heroAtLargeLineHeight,
+			[MEDIA_QUERIES.large]: {
+				fontSize: METRICS.heroAtLargeSize,
+				lineHeight: METRICS.heroAtLargeLineHeight,
+        	},
 		},
 		textLabel: {
 			marginTop: 4,
@@ -590,20 +583,20 @@ const buildStyles = (METRICS, SWATCHES) => {
 			backgroundColor: 'white',
 			borderBottomColor: SWATCHES.border,
 			borderBottomWidth: 1,
-		},
-		'header--atMedium': {
-			paddingHorizontal: space*.75,
+			[MEDIA_QUERIES.medium]: {
+				paddingHorizontal: space*.75,
+        	},
 		},
 
 		// HEADER SECTION
 		'header-section': {
 			justifyContent: 'center',
 			paddingHorizontal: METRICS.space,
-			height: 56
-		},
-		'header-section--atMedium': {
-			paddingHorizontal: METRICS.space,
-			height: 64,
+			height: 56,
+			[MEDIA_QUERIES.medium]: {
+				paddingHorizontal: METRICS.space,
+				height: 64,
+        	},
 		},
 
 		// HEADER TYPES
@@ -613,11 +606,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'headerTransparent': {
 			backgroundColor: 'transparent',
 			borderBottomWidth: 0,
+			[MEDIA_QUERIES.medium]: {
+				paddingHorizontal: 0,
+        	},
 		},
-		'headerTransparent--atMedium': {
-			paddingHorizontal: 0,
-		},
-
 
 		// DROPDOWN
 		dropdowner: {
@@ -706,9 +698,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			height: '100%'
 		}),
 
-
 		// FlexItem
-
 		'flex-item' : {
 			width: 'auto',
 			flex: 1,
@@ -756,10 +746,16 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'flex--columnReverse': {
 			flexDirection: 'column-reverse'
 		},
+		...stylesForBreakpoints('flex--columnReverse', {
+			flexDirection: 'column-reverse'
+		}),
 
 		'flex--rowReverse': {
 			flexDirection: 'row-reverse'
 		},
+		...stylesForBreakpoints('flex--rowReverse', {
+			flexDirection: 'row-reverse'
+		}),
 
 		// JUSTIFY
 		'flex--justify-flex-start': {

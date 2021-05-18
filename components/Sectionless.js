@@ -11,13 +11,17 @@ const Sectionless = (props) => {
 		isFirstChild,
 		noBorder,
 		style,
+		...other
 	} = props
 
 	return(
-		<View style={[
-			styles.sectionless,
-			style
-		]}>
+		<View 
+			style={[
+				styles.sectionless,
+				style
+			]} 
+			{...other}
+			>
 			{children}
 		</View>
 	);

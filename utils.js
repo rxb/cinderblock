@@ -55,7 +55,16 @@ export const findWidestActiveValue = (values, media) => {
 	return useMemo(() => fwav(values, media), [values, media]);
 }
 
-
+export const getActiveStyles = (styleKeys, styles, ids) => {
+	return{ 
+		activeStyles: styleKeys.map((key, i)=>{
+			return styles[key];
+		}),
+		activeIds: styleKeys.map((key, i)=>{
+			return ids[key];
+		}).join(' ')
+	};
+}
 
 export const nthChildTest = (conditionsInOrder) => {
   const ordinals = {};

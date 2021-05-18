@@ -53,7 +53,6 @@ const FlexItem = (props) => {
 			growFactor,
 			descendantStyles,
 			isFirstChild,
-			media,
 			justify,
 			align,
 			style,
@@ -65,7 +64,7 @@ const FlexItem = (props) => {
 		// memoized for perf
 		const styleKeys = useMemo(() => getStyleKeys(props), [shrink, growFactor, isFirstChild, justify, align, flush, nbsp]);
 		const itemStyles = useMemo(()=> getItemStyles(styleKeys, styles), [styleKeys])
-		const finalStyles = [styles[FLEX_ITEM_CLASS], /* ...descendantStyles,*/ itemStyles, style];
+		const finalStyles = [styles[FLEX_ITEM_CLASS], itemStyles, style];
 
 		return (
 			<View style={finalStyles}>
