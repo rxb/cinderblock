@@ -138,19 +138,33 @@ export const BREAKPOINT_SIZES = {
 	"xlarge": 1024
 }
 
-export const MEDIA_QUERY_PARAMS = {
-	small: 	`screen`,
-	medium: 	`screen and (min-width: ${BREAKPOINT_SIZES.medium}px)`,
-	large: 	`screen and (min-width: ${BREAKPOINT_SIZES.large}px)`,
-	xlarge: 	`screen and (min-width: ${BREAKPOINT_SIZES.xlarge}px)`
+// MEDIA QUERY PARAMS (just the query, without the @media)
+// single assumes a single breakpoint flip, from that point up (like the flex component)
+// otherwise each query will be the distance between breakpoints (list the list component)
+const buildMediaQueryParams = (single) => {
+	const params = {};
+	const keys = Object.keys(BREAKPOINT_SIZES);
+	keys.forEach( (key, index) => {
+		const firstPart = `screen and (min-width: ${BREAKPOINT_SIZES[key]}px)`;
+		const secondPart = (!single && index+1 < keys.length) ? ` and (max-width: ${BREAKPOINT_SIZES[keys[index+1]]-1}px)` : "";
+		params[key] = firstPart + secondPart;
+	});
+	return params;
 }
+export const MEDIA_QUERY_PARAMS = buildMediaQueryParams(false);
+export const MEDIA_QUERY_PARAMS_SINGLE = buildMediaQueryParams(true);
 
-export const MEDIA_QUERIES = {
-	small: `@media ${MEDIA_QUERY_PARAMS.small}`,
-	medium: `@media ${MEDIA_QUERY_PARAMS.medium}`,
-	large: `@media ${MEDIA_QUERY_PARAMS.large}`,
-	xlarge: `@media ${MEDIA_QUERY_PARAMS.xlarge}`
-};
+// MEDIA QUERIES (with the @media)
+const buildMediaQueries = (params) => {
+	const queries = {};
+	Object.keys(params).forEach( (key, index) => {
+		queries[key] = `@media ${params[key]}`;
+	})
+	return queries;
+}
+export const MEDIA_QUERIES = buildMediaQueries(MEDIA_QUERY_PARAMS);
+export const MEDIA_QUERIES_SINGLE = buildMediaQueries(MEDIA_QUERY_PARAMS_SINGLE);
+
 
 export const MEDIA_SIZES = {
 	xsmall: 16,		// text character size

@@ -31,7 +31,7 @@ const getStyleKeys = (props) => {
 	const buttonStyleKeys = [
 		'button',
 		`button--${size}`,
-		...[getStyleKeysForMediaQueryVariants("button--", variant)],
+		...getStyleKeysForMediaQueryVariants("button--", variant),
 		...[color ? `button--${color}${invertedModifier}` : undefined ]
 	];
 
@@ -40,7 +40,7 @@ const getStyleKeys = (props) => {
 		'text',
 		...[textType ? `text${TEXT_TYPES[textType]}` : undefined ],
 		'buttonText',
-		...[getStyleKeysForMediaQueryVariants("buttonText--", variant)],
+		...getStyleKeysForMediaQueryVariants("buttonText--", variant),
 		...[color ? `buttonText--${color}${invertedModifier}` : undefined ],
 	];
 

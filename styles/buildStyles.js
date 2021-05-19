@@ -1,17 +1,23 @@
 //import {StyleSheet} from '../primitives';
 import StyleSheet from 'react-native-media-query';
 
-import {FLEX_GROW_FACTORS, MEDIA_SIZES, MEDIA_QUERIES} from './designConstants';
+import {FLEX_GROW_FACTORS, MEDIA_SIZES, MEDIA_QUERIES, MEDIA_QUERIES_SINGLE} from './designConstants';
 
-const stylesForBreakpoints = (baseKey, styles) => {
+// generate styles using "breakpoint to breakpoint" queries
+// for components that specify a variant for each breakpoint
+const stylesForBreakpoints = (baseKey, styles, single) => {
 	const defs = { [baseKey]: styles };
-	for (let [mqKey, mqValue] of Object.entries(MEDIA_QUERIES)) {
+	const queries = single ? MEDIA_QUERIES_SINGLE : MEDIA_QUERIES;
+	for (let [mqKey, mqValue] of Object.entries(queries)) {
 		defs[`${baseKey}__${mqKey}`] = {
 			[mqValue] : styles
 		}
 	}
 	return defs;
 }
+// generate styles using "breakpoint to infinity" queries
+// for components that specify a single breakpoint where variant switches (like flex)
+const stylesForSingleBreakpoints = (baseKey, styles) => stylesForBreakpoints(baseKey, styles, true);
 
 
 const buildStyles = (METRICS, SWATCHES) => {
@@ -132,15 +138,15 @@ const buildStyles = (METRICS, SWATCHES) => {
 			paddingLeft: space,
 			paddingTop: 0
 		}),
-		/*
 		...(()=>{
-			const gridObj = {};
-			for(let factor of [1,2,3,4,5,6,7,8]){
-				gridObj[`list-item--grid--${factor}`] = { flexBasis: `${100/factor}%` };
-			}
+			let gridObj = {};
+			[1,2,3,4,5,6,7,8].forEach( factor => {
+				gridObj = {...gridObj, ...stylesForBreakpoints(`list-item--grid--${factor}`, {
+					flexBasis: `${100/factor}%`
+				})}
+			});
 			return gridObj;
 		})(),
-		*/
 
 		// inline
 		...stylesForBreakpoints('list--scroll', {
@@ -689,12 +695,12 @@ const buildStyles = (METRICS, SWATCHES) => {
 		},
 
 		// flex--row, flex--row__small, flex--row__medium, flex--row__large, flex--row__xlarge
-		...stylesForBreakpoints('flex--row', {
+		...stylesForSingleBreakpoints('flex--row', {
 			flexDirection: 'row' 
 		}),
 
 		// flex--column, flex--column__small, flex--column__medium, flex--column__large, flex--column__xlarge
-		...stylesForBreakpoints('flex--column', {
+		...stylesForSingleBreakpoints('flex--column', {
 			flexDirection: 'column',
 			height: '100%'
 		}),
@@ -747,14 +753,14 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'flex--columnReverse': {
 			flexDirection: 'column-reverse'
 		},
-		...stylesForBreakpoints('flex--columnReverse', {
+		...stylesForSingleBreakpoints('flex--columnReverse', {
 			flexDirection: 'column-reverse'
 		}),
 
 		'flex--rowReverse': {
 			flexDirection: 'row-reverse'
 		},
-		...stylesForBreakpoints('flex--rowReverse', {
+		...stylesForSingleBreakpoints('flex--rowReverse', {
 			flexDirection: 'row-reverse'
 		}),
 

@@ -37,14 +37,15 @@ const List = (props) => {
 		activeStyles: listActiveStyles, 
 		activeIds: listActiveIds 
 	} = getActiveStyles(listStyleKeys, styles, ids);
-	
+
 
 	// list-item styles
 	const itemBaseClass = `list-item--${currentVariant}`;
 	const listItemStyleKeys = [
-		...[getStyleKeysForMediaQueryVariants("list-item--", variant)],
-		...[getStyleKeysForMediaQueryVariants("list-item--grid", itemsInRow)],
+		...getStyleKeysForMediaQueryVariants("list-item--", variant), 
+		...getStyleKeysForMediaQueryVariants("list-item--grid--", itemsInRow),
 	];
+	
 	const {
 		activeStyles: listItemActiveStyles,
 		activeIds: listItemActiveIds

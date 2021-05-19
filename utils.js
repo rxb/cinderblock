@@ -66,9 +66,16 @@ export const getActiveStyles = (styleKeys, styles, ids) => {
 	};
 }
 
+// fills out missing breakpoints
+// generates correct stylekeys (classes) for your component
 export const getStyleKeysForMediaQueryVariants = (baseKey, variant) => {
-  let variantObj = (typeof variant === 'object') ? variant : { small: variant }
-  return Object.keys(variantObj).map( key => `${baseKey}${variantObj[key]}__${key}`);
+  const firstBreakpointKey = Object.keys(BREAKPOINT_SIZES)[0];
+  let variantObj = (typeof variant === 'object') ? variant : { [firstBreakpointKey]: variant }
+  let lastActiveVariant = variantObj[firstBreakpointKey] || '';
+  return Object.keys(BREAKPOINT_SIZES).map( key => {
+    lastActiveVariant = variantObj[key] || lastActiveVariant;
+    return `${baseKey}${lastActiveVariant}__${key}`;
+  });
 }
 
 export const nthChildTest = (conditionsInOrder) => {
