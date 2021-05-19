@@ -34,7 +34,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 		// LAYOUT
 		stripe: {
 			paddingVertical: space,
-			[MEDIA_QUERIES.medium]: {
+			[MEDIA_QUERIES_SINGLE.medium]: {
 				paddingVertical: space,
 				paddingHorizontal: space,
 			}
@@ -64,7 +64,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			marginTop: -1 * space,
 			resizeMode: 'cover',
 			borderRadius: 0,
-			[MEDIA_QUERIES.medium]: {
+			[MEDIA_QUERIES_SINGLE.medium]: {
 				marginTop: space / 2,
 				marginHorizontal: space,
 				borderRadius: 6
@@ -561,7 +561,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			lineHeight: METRICS.pageHeadLineHeight,
 			fontWeight: '700',
 			letterSpacing: '-.001em',
-			[MEDIA_QUERIES.large]: {
+			[MEDIA_QUERIES_SINGLE.large]: {
             fontSize: METRICS.pageHeadAtLargeSize,
 				lineHeight: METRICS.pageHeadAtLargeLineHeight,
         },
@@ -572,7 +572,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			lineHeight: METRICS.heroLineHeight,
 			fontWeight: '700',
 			letterSpacing: '-.001em',
-			[MEDIA_QUERIES.large]: {
+			[MEDIA_QUERIES_SINGLE.large]: {
 				fontSize: METRICS.heroAtLargeSize,
 				lineHeight: METRICS.heroAtLargeLineHeight,
         	},
@@ -599,7 +599,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			backgroundColor: 'white',
 			borderBottomColor: SWATCHES.border,
 			borderBottomWidth: 1,
-			[MEDIA_QUERIES.medium]: {
+			[MEDIA_QUERIES_SINGLE.medium]: {
 				paddingHorizontal: space*.75,
         	},
 		},
@@ -609,7 +609,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			justifyContent: 'center',
 			paddingHorizontal: METRICS.space,
 			height: 56,
-			[MEDIA_QUERIES.medium]: {
+			[MEDIA_QUERIES_SINGLE.medium]: {
 				paddingHorizontal: METRICS.space,
 				height: 64,
         	},
@@ -622,7 +622,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'headerTransparent': {
 			backgroundColor: 'transparent',
 			borderBottomWidth: 0,
-			[MEDIA_QUERIES.medium]: {
+			[MEDIA_QUERIES_SINGLE.medium]: {
 				paddingHorizontal: 0,
         	},
 		},
