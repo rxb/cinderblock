@@ -2,9 +2,10 @@ import React, {useContext} from 'react';
 import { View } from '../primitives';
 import { useMediaContext } from './UseMediaContext';
 import ThemeContext from '../ThemeContext';
+import StyleSheet from 'react-native-media-query';
+import { MEDIA_QUERIES } from '../styles/designConstants';
 import {getActiveStyles, getStyleKeysForMediaQueryVariants} from '../utils';
 import {findWidestActiveValue} from '../utils';
-
 
 const List = (props) => {
 	const { styles, ids } = useContext(ThemeContext);
@@ -22,14 +23,11 @@ const List = (props) => {
 		...other
 	} = props;
 
+	// looks like we still need matchmedia for a few things
+	// but in almost all cases, the list will look fine on ssr load
 	const media = useMediaContext();
-
 	const currentVariant = findWidestActiveValue(variant, media);
-	const currentItemsInRow = findWidestActiveValue(itemsInRow, media);
 	const currentRenderItem = findWidestActiveValue(renderItem, media);
-
-	// TODO: remove
-	const baseClass = `list--${currentVariant}`; 
 
 	// list styles
 	const listStyleKeys = getStyleKeysForMediaQueryVariants("list--", variant);
@@ -38,9 +36,7 @@ const List = (props) => {
 		activeIds: listActiveIds 
 	} = getActiveStyles(listStyleKeys, styles, ids);
 
-
 	// list-item styles
-	const itemBaseClass = `list-item--${currentVariant}`;
 	const listItemStyleKeys = [
 		...getStyleKeysForMediaQueryVariants("list-item--", variant), 
 		...getStyleKeysForMediaQueryVariants("list-item--grid--", itemsInRow),
@@ -50,17 +46,34 @@ const List = (props) => {
 		activeStyles: listItemActiveStyles,
 		activeIds: listItemActiveIds
 	} = getActiveStyles(listItemStyleKeys, styles, ids);
-	const scrollItemWidthStyle = (currentVariant == 'scroll' && scrollItemWidth) ? {width: scrollItemWidth} : undefined;
+
+	// FIXED WIDTH WHEN SCROLL ITEMS
+	// without cascading, we have to get creative 
+	const {styles: scrollItemStyles, ids: scollItemIds} = StyleSheet.create({
+		'item': {
+			...(()=>{
+				const styleObj = {};
+				Object.keys(MEDIA_QUERIES).forEach((key,index)=>{
+					if(variant[key] == 'scroll'){
+						styleObj[MEDIA_QUERIES[key]] = {
+							width: scrollItemWidth,
+							flexBasis: 'auto'
+						}
+					}
+				});
+				return styleObj;
+			})()
+		}
+	});
 
 	// render items
 	const renderItems = (items, pageKey=0) => (items.map((item, i)=>{
-		const firstChildStyle = (i == 0) ? styles[`${itemBaseClass}--firstChild`] : undefined;
 		return (
 			<View
 				key={`${pageKey}-${i}`}
 				accessibilityRole='listitem'
-				style={[ listItemActiveStyles, scrollItemWidthStyle, itemStyle, firstChildStyle ]}
-				dataSet={{ media: listItemActiveIds}}
+				style={[ listItemActiveStyles, scrollItemStyles.item, itemStyle ]}
+				dataSet={{ media: listItemActiveIds+" "+scollItemIds.item}}
 				>
 				{ currentRenderItem(item, i) }
 			</View>
@@ -69,7 +82,7 @@ const List = (props) => {
 
 
 	return(
-		<View style={styles[`${baseClass}-wrap`]}>
+		<View style={styles[`list--${currentVariant}-wrap`]}>
 			<View
 				accessibilityRole='list'
 				style={[ listActiveStyles, style ]}

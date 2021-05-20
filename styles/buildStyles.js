@@ -154,7 +154,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			flexWrap: 'nowrap',
 			overflowX: 'scroll',
 			WebkitOverflowScrolling: 'touch',
-			paddingLeft: space - space,
+			paddingLeft: space - space, // TODO: wtf happened here?
 			paddingRight: space,
 			paddingBottom: 30,
 			marginBottom: -30,
