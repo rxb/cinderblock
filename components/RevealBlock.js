@@ -19,7 +19,7 @@ const RevealBlock = (props) => {
 	const directionMultiplier = (fromTop) ? -1 : 1;
 
 	const [visibilityValue, setVisibilityValue] = useState(new Animated.Value(0));
-	const [added, setAdded] = useState(false);
+	const [added, setAdded] = useState(props.added);
 
 	const add = () => {
 		setAdded(true);
