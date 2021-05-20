@@ -41,7 +41,6 @@ const List = (props) => {
 		...getStyleKeysForMediaQueryVariants("list-item--", variant), 
 		...getStyleKeysForMediaQueryVariants("list-item--grid--", itemsInRow),
 	];
-	
 	const {
 		activeStyles: listItemActiveStyles,
 		activeIds: listItemActiveIds

@@ -607,10 +607,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 		// HEADER SECTION
 		'header-section': {
 			justifyContent: 'center',
-			paddingHorizontal: METRICS.space,
+			marginHorizontal: METRICS.space,
 			height: 56,
 			[MEDIA_QUERIES_SINGLE.medium]: {
-				paddingHorizontal: METRICS.space,
+				marginHorizontal: METRICS.space,
 				height: 64,
         	},
 		},
