@@ -56,6 +56,7 @@ const FlexItem = (props) => {
 			justify,
 			align,
 			style,
+			dataSet,
 			flush,
 			nbsp,
 			...other
@@ -67,7 +68,7 @@ const FlexItem = (props) => {
 		const finalStyles = [styles[FLEX_ITEM_CLASS], itemStyles, style];
 
 		return (
-			<View style={finalStyles}>
+			<View style={finalStyles} dataSet={dataSet}>
 				{children}
 			</View>
 		);

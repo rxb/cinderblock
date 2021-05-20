@@ -786,6 +786,18 @@ const buildStyles = (METRICS, SWATCHES) => {
 			alignItems: 'flex-end'
 		},
 
+		'show': {
+			display: 'unset',
+		},
+		'hide': {
+			display: 'none',
+		},
+		...stylesForSingleBreakpoints('showAt', {
+			display: 'unset'
+		}),
+		...stylesForSingleBreakpoints('hideAt', {
+			display: 'none'
+		}),
 
 	});
 }
