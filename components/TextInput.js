@@ -96,6 +96,10 @@ class TextInput extends React.Component{
 			showCounter,
 			style,
 			wrapperStyle,
+			onFocus,
+			onBlur,
+			onKeyPress,
+			onSubmitEditing,
 			...other
 		} = this.props;
 
@@ -104,9 +108,7 @@ class TextInput extends React.Component{
 			{ ({styles, SWATCHES}) => (
 			<View style={wrapperStyle}>
 				<TextInputWeb
-					ref={ (ref) => {
-						this.textinput = ref
-					}}
+					ref={ this.props.innerRef }
 					accessibilityLabel={placeholder}
 					placeholder={placeholder}
 					placeholderTextColor={SWATCHES.textHint}
@@ -114,6 +116,10 @@ class TextInput extends React.Component{
 					maxLength={maxLength}
 					onChange={this.onChange}
 					onContentSizeChange={this.onContentSizeChange}
+					onFocus={onFocus}
+					onBlur={onBlur}
+					onKeyPress={onKeyPress}
+					onSubmitEditing={onSubmitEditing}
 					className='input'
 					style={[
 						styles.input,
@@ -141,5 +147,6 @@ class TextInput extends React.Component{
 	}
 }
 
-
-export default TextInput;
+export default React.forwardRef((props, ref) => <TextInput 
+  innerRef={ref} {...props}
+/>);
