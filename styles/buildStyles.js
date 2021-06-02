@@ -45,7 +45,15 @@ const buildStyles = (METRICS, SWATCHES) => {
 			marginHorizontal: 'auto',
 			width: '100%',
 		},
-
+		"bounds--large": {
+			maxWidth: METRICS.boundsLargeWidth,
+		},
+		"bounds--medium": {
+			maxWidth: METRICS.boundsMediumWidth,
+		},
+		"bounds--small": {
+			maxWidth: METRICS.boundsSmallWidth,
+		},
 		section: {
 			paddingTop: space,
 			marginHorizontal: space,
