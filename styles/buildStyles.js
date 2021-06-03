@@ -511,7 +511,6 @@ const buildStyles = (METRICS, SWATCHES) => {
 		// TEXT
 		text: {
 			fontFamily: METRICS.fontFamily,
-			fontWeight: '400',
 			WebkitFontSmoothing: 'antialiased', // retina/non-retina rendering
 			letterSpacing: '0.01em'
 		},
@@ -537,7 +536,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			color: SWATCHES.tint,
 		},
 		textStrong: {
-			fontWeight: '600',
+			fontWeight: METRICS.textStrongWeight,
 		},
 		textMicro: {
 			fontSize: METRICS.microSize,
@@ -550,24 +549,25 @@ const buildStyles = (METRICS, SWATCHES) => {
 		textBody: {
 			fontSize: METRICS.bodySize,
 			lineHeight: METRICS.bodyLineHeight,
+			fontWeight: METRICS.textBodyWeight
 		},
 		textBig: {
 			fontSize: METRICS.bigSize,
 			lineHeight: METRICS.bigLineHeight,
-			fontWeight: '600'
+			fontWeight: METRICS.textBigWeight
 		},
 		textSectionHead: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.sectionHeadSize,
 			lineHeight: METRICS.sectionHeadLineHeight,
-			fontWeight: '600',
+			fontWeight: METRICS.textSectionHeadWeight,
 			letterSpacing: '-.001em',
 		},
 		textPageHead: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.pageHeadSize,
 			lineHeight: METRICS.pageHeadLineHeight,
-			fontWeight: '700',
+			fontWeight: METRICS.textPageHeadWeight,
 			letterSpacing: '-.001em',
 			[MEDIA_QUERIES_SINGLE.large]: {
             fontSize: METRICS.pageHeadAtLargeSize,
@@ -578,7 +578,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.heroSize,
 			lineHeight: METRICS.heroLineHeight,
-			fontWeight: '700',
+			fontWeight: METRICS.textHeroWeight,
 			letterSpacing: '-.001em',
 			[MEDIA_QUERIES_SINGLE.large]: {
 				fontSize: METRICS.heroAtLargeSize,
@@ -588,7 +588,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 		textLabel: {
 			marginTop: 4,
 			marginBottom: 0,
-			fontWeight: '600',
+			fontWeight: METRICS.textLabelWeight,
 
 		},
 		textError: {
@@ -758,16 +758,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 			flexWrap: 'wrap'
 		},
 
-		'flex--columnReverse': {
-			flexDirection: 'column-reverse'
-		},
 		...stylesForSingleBreakpoints('flex--columnReverse', {
 			flexDirection: 'column-reverse'
 		}),
 
-		'flex--rowReverse': {
-			flexDirection: 'row-reverse'
-		},
 		...stylesForSingleBreakpoints('flex--rowReverse', {
 			flexDirection: 'row-reverse'
 		}),

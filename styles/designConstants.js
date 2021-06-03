@@ -111,10 +111,20 @@ export const METRICS = {
 	},
 	borderRadius: 5,
 	cardBorderRadius: 10,
+
 	boundsWidth: 1100,
 	boundsLargeWidth: 840,
 	boundsMediumWidth: 640,
 	boundsSmallWidth: 480,
+
+	textBodyWeight: 400,
+	textStrongWeight: 600,
+	textLabelWeight: 600,
+	textBigWeight: 600,
+	textSectionHeadWeight: 600,
+	textPageHeadWeight: 700,
+	textHeroWeight: 700,
+
 	fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif'
 }
 

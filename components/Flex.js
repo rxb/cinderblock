@@ -21,32 +21,40 @@ const getStyleKeys = (props, media) => {
 	const {
 		direction,
 		switchDirection,
+		reverseDirection,
+		reverseSwitchDirection,
 		wrap,
 		justify,
 		align,
-		rowReverse,
 		flush,
 		nbsp,
-		columnReverse
 	} = props;
-
-	const isColumn = direction === DIRECTION_COLUMN;
 	
+	// direction
+	// reverseDirection (bool)
+	// switchDirection
+	// reverseSwtichDirection (bool)
+	let startKey, switchKey;
+	if(direction == DIRECTION_COLUMN){
+		startKey = FLEX_COLUMN_CLASS;
+		switchKey = FLEX_ROW_CLASS;
+	}
+	else{
+		startKey = FLEX_ROW_CLASS;
+		switchKey = FLEX_COLUMN_CLASS;
+	}
+	startKey += (reverseDirection) ? 'Reverse' : '';
+	switchKey += (reverseSwitchDirection) ? 'Reverse' : '';
+
 	return [
 		FLEX_CLASS,
 
-		// horizontal default
-		...[!isColumn ? FLEX_ROW_CLASS : undefined],
-		...[!isColumn && switchDirection ? `${FLEX_COLUMN_CLASS}__${switchDirection}`: undefined],
-		
-		// vertical default
-		...[isColumn ? FLEX_COLUMN_CLASS : undefined],
-		...[isColumn && switchDirection ? `${FLEX_ROW_CLASS}__${switchDirection}` : undefined],
-		
-		// reverse breakpoint modifiers
-		...[rowReverse  ? `flex--rowReverse__${rowReverse}`: undefined],
-		...[columnReverse  ? `flex--columnReverse__${columnReverse}`: undefined],
+		// starting direction
+		startKey,
 
+		// switched direction
+		...[switchDirection ? `${switchKey}__${switchDirection}` : undefined],
+		
 		// other
 		...[wrap ? FLEX_WRAP_CLASS : undefined],
 		...[flush ? FLEX_FLUSH_CLASS : undefined],
@@ -54,7 +62,6 @@ const getStyleKeys = (props, media) => {
 
 	]
 }
-
 
 
 const Flex = (props) => {
