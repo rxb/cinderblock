@@ -14,6 +14,7 @@ const RevealBlock = (props) => {
 		visible = false,
 		animateEntrance = true,
 		animateExit = true,
+		scrollIntoView = false,
 		style
 	} = props;
 	const directionMultiplier = (fromTop) ? -1 : 1;
@@ -63,12 +64,17 @@ const RevealBlock = (props) => {
 
 	useEffect(()=>{
 		if(added){
+			if(scrollIntoView){
+				thisRef.current.scrollIntoView({behavior: "smooth"});
+			}
 			show();
 		}
 	}, [added]);
 
+	const thisRef = useRef(null);
+
 	return(
-		<View style={{ display: (added) ? 'flex' : 'none' }}>
+		<View style={{ display: (added) ? 'flex' : 'none' }} ref={thisRef}>
 			{/* can't mix animated style properties and directly controlled style properties*/}
 			<Animated.View
 				style={[{           

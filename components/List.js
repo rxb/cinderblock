@@ -46,24 +46,31 @@ const List = (props) => {
 		activeIds: listItemActiveIds
 	} = getActiveStyles(listItemStyleKeys, styles, ids);
 
+	const listItemFirstChildStyleKeys = getStyleKeysForMediaQueryVariants("list-item-firstChild--", variant);
+	const {
+		activeStyles: listItemFirstChildActiveStyles,
+		activeIds: listItemFirstChildActiveIds
+	} = getActiveStyles(listItemFirstChildStyleKeys, styles, ids);
+
 	// FIXED WIDTH WHEN SCROLL ITEMS
 	// without cascading, we have to get creative 
-	const {styles: scrollItemStyles, ids: scollItemIds} = StyleSheet.create({
-		'item': {
-			...(()=>{
-				const styleObj = {};
-				Object.keys(MEDIA_QUERIES).forEach((key,index)=>{
-					if(variant[key] == 'scroll'){
-						styleObj[MEDIA_QUERIES[key]] = {
-							width: scrollItemWidth,
-							flexBasis: 'auto'
-						}
-					}
-				});
-				return styleObj;
-			})()
-		}
+	const getVariantChildStyles = (variant, childStyles) => {
+		const styleObj = {};
+		Object.keys(MEDIA_QUERIES).forEach((key,index)=>{
+			if(variant[key] == 'scroll'){
+				styleObj[MEDIA_QUERIES[key]] = childStyles
+			}
+		});
+		return styleObj;
+	};
+
+	const {styles: scrollItemStyles, ids: scrollItemIds} = StyleSheet.create({
+		'item': getVariantChildStyles('scroll', {
+			width: scrollItemWidth,
+			flexBasis: 'auto'
+		})
 	});
+
 
 	// render items
 	const renderItems = (items, pageKey=0) => (items.map((item, i)=>{
@@ -71,8 +78,13 @@ const List = (props) => {
 			<View
 				key={`${pageKey}-${i}`}
 				accessibilityRole='listitem'
-				style={[ listItemActiveStyles, scrollItemStyles.item, itemStyle ]}
-				dataSet={{ media: listItemActiveIds+" "+scollItemIds.item}}
+				style={[ 
+					listItemActiveStyles, 
+					scrollItemStyles.item, 
+					itemStyle, 
+					(i==0) ? listItemFirstChildActiveStyles : null 
+				]}
+				dataSet={{ media: listItemActiveIds+" "+scrollItemIds.item+" "+((i==0) ? listItemFirstChildActiveIds : "")}}
 				>
 				{ currentRenderItem(item, i) }
 			</View>
@@ -86,7 +98,6 @@ const List = (props) => {
 				accessibilityRole='list'
 				style={[ listActiveStyles, style ]}
 				dataSet={{ media: listActiveIds}}
-
 				>
 				{ paginated && items.map( (page, i) => renderItems(page.items, i) )}
 				{ !paginated && renderItems(items) }

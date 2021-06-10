@@ -130,10 +130,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 			borderTopColor: SWATCHES.border,
 			paddingTop: space
 		}),
-		'list-item--linear--firstChild': {
+		...stylesForBreakpoints('list-item-firstChild--linear', {
 			borderTopWidth: 0,
-			paddingTop: space / 2
-		},
+			paddingTop: 0,
+		}),
 
 		// grid
 		...stylesForBreakpoints('list--grid', {
