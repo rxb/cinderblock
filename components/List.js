@@ -20,6 +20,7 @@ const List = (props) => {
 		style,
 		itemStyle,
 		paginated = false,
+		linearFirstChildPlain = true,
 		...other
 	} = props;
 
@@ -46,11 +47,17 @@ const List = (props) => {
 		activeIds: listItemActiveIds
 	} = getActiveStyles(listItemStyleKeys, styles, ids);
 
-	const listItemFirstChildStyleKeys = getStyleKeysForMediaQueryVariants("list-item-firstChild--", variant);
-	const {
-		activeStyles: listItemFirstChildActiveStyles,
-		activeIds: listItemFirstChildActiveIds
-	} = getActiveStyles(listItemFirstChildStyleKeys, styles, ids);
+	let listItemFirstChildActiveStyles, listItemFirstChildActiveIds;
+	if(linearFirstChildPlain){
+		const listItemFirstChildStyleKeys = getStyleKeysForMediaQueryVariants("list-item-firstChild--", variant);
+		const { activeStyles, activeIds} = getActiveStyles(listItemFirstChildStyleKeys, styles, ids);
+		listItemFirstChildActiveStyles = activeStyles;
+		listItemFirstChildActiveIds = activeIds;
+	}
+	else{
+		listItemFirstChildActiveStyles = [];
+		listItemFirstChildActiveIds = "";
+	}
 
 	// FIXED WIDTH WHEN SCROLL ITEMS
 	// without cascading, we have to get creative 

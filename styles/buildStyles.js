@@ -33,9 +33,9 @@ const buildStyles = (METRICS, SWATCHES) => {
 
 		// LAYOUT
 		stripe: {
-			paddingVertical: space,
+			paddingVertical: METRICS.spaceSection,
 			[MEDIA_QUERIES_SINGLE.medium]: {
-				paddingVertical: space,
+				paddingVertical: METRICS.spaceSection,
 				paddingHorizontal: space,
 			}
 		},
@@ -55,16 +55,20 @@ const buildStyles = (METRICS, SWATCHES) => {
 			maxWidth: METRICS.boundsSmallWidth,
 		},
 		section: {
-			paddingTop: space,
+			paddingTop: METRICS.spaceSection,
 			marginHorizontal: space,
-			paddingBottom: 0,
+			paddingBottom: METRICS.spaceSection - space,
 		},
 
 		'section--border': {
 			borderTopWidth: 1,
 			borderTopColor: SWATCHES.border,
-			paddingTop: space  * 1.5,
-			marginTop: space * .5
+			paddingTop: METRICS.spaceSection  * 1.33,
+			marginTop: METRICS.spaceSection * .33
+		},
+		'section--borderedContent': {
+			paddingTop: 0,
+			marginTop: METRICS.spaceSection * .33
 		},
 
 		imageSnap: {

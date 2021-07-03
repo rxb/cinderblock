@@ -47,10 +47,10 @@ export const SWATCHES = {
 export const METRICS = {
 	base: 16,
 	get space() {
-		return this.base * 1.25
+		return 20
 	},
 	get spaceSection() {
-		return this.space * 2
+		return this.space
 	},
 	get bodySize() {
 		return this.base
