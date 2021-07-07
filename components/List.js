@@ -91,7 +91,7 @@ const List = (props) => {
 					itemStyle, 
 					(i==0) ? listItemFirstChildActiveStyles : null 
 				]}
-				dataSet={{ media: listItemActiveIds+" "+scrollItemIds.item+" "+((i==0) ? listItemFirstChildActiveIds : "")}}
+				dataSet={{ media: listItemActiveIds+" "+scrollItemIds.item+" "+((i==0 && pageKey==0) ? listItemFirstChildActiveIds : "")}}
 				>
 				{ currentRenderItem(item, i) }
 			</View>

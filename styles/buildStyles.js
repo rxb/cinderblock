@@ -97,7 +97,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 		},
 		'chunk--border': {
 			borderTopWidth: 1,
-			borderTopColor: SWATCHES.border,
+			borderTopColor: SWATCHES.borderSecondary,
 			paddingTop: space
 		},
 
@@ -131,7 +131,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 		}),
 		...stylesForBreakpoints('list-item--linear', {
 			borderTopWidth: 1,
-			borderTopColor: SWATCHES.border,
+			borderTopColor: SWATCHES.borderSecondary,
 			paddingTop: space
 		}),
 		...stylesForBreakpoints('list-item-firstChild--linear', {

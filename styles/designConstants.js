@@ -14,6 +14,7 @@ export const SWATCHES = {
 	focus: 'rgba(0,122,255,.25)',
 	error: 'red',
 	border: 'rgba(0,0,0,.15)',
+	borderSecondary: 'rgba(0,0,0,.085)',
 	backgroundWhite: '#fff',
 	backgroundDark: '#222',
 	backgroundShade: '#fafafa',
