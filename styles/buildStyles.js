@@ -54,6 +54,29 @@ const buildStyles = (METRICS, SWATCHES) => {
 		"bounds--small": {
 			maxWidth: METRICS.boundsSmallWidth,
 		},
+		"bounds--sparse": {
+			[MEDIA_QUERIES_SINGLE.large]: {
+				justifyContent: 'center', 
+				flex: 1,
+			}
+		},
+		"bounds-background--sparse": {
+			display: 'none',
+			[MEDIA_QUERIES_SINGLE.large]: {
+				backgroundColor: SWATCHES.shade,
+				display: 'block',
+				position: 'absolute',
+				top: 0, right: 0, bottom: 0, left: 0,
+			}
+		},
+		"bounds-content--sparse": {
+			[MEDIA_QUERIES_SINGLE.large]: {
+				paddingVertical: METRICS.spaceSection,
+				paddingHorizontal: space,
+				backgroundColor: SWATCHES.backgroundWhite,
+				borderRadius: METRICS.borderRadius
+			}
+		},
 		section: {
 			paddingTop: METRICS.spaceSection,
 			marginHorizontal: space,
