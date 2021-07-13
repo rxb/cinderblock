@@ -21,6 +21,7 @@ const RevealBlock = (props) => {
 
 	const [visibilityValue, setVisibilityValue] = useState(new Animated.Value(0));
 	const [added, setAdded] = useState(props.added);
+	const [hiding, setHiding] = useState(false);
 
 	const add = () => {
 		setAdded(true);
@@ -38,6 +39,7 @@ const RevealBlock = (props) => {
 	}
 
 	const hide = () => {
+		setHiding(true);
 		Animated.timing(
 			visibilityValue,{
 				toValue: 0,
@@ -49,8 +51,8 @@ const RevealBlock = (props) => {
 	}
 
 	const remove = () => {
-
 		setAdded(false);
+		setHiding(false);
 	}
 
 	useEffect(()=>{
@@ -74,7 +76,14 @@ const RevealBlock = (props) => {
 	const thisRef = useRef(null);
 
 	return(
-		<View style={{ display: (added) ? 'flex' : 'none' }} ref={thisRef}>
+		<View 
+			style={{
+				display: (added) ? 'flex' : 'none', 
+				position: 'static',
+				overflow: 'visible',
+				height: (hiding) ? 0 : 'auto'
+			}} 
+			ref={thisRef}>
 			{/* can't mix animated style properties and directly controlled style properties*/}
 			<Animated.View
 				style={[{           
