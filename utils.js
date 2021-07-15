@@ -4,14 +4,29 @@ import validator from './validator';
 
 export const runValidations = (fields, validators) => {
   let errors = [];
-  let args, msg, fieldValidators;
+  let args, msg, fieldValidators, fieldOther;
   for(let fKey in fields){
-    fieldValidators = validators[fKey];
-    for(let vKey in fieldValidators){
-      args = [].concat(fieldValidators[vKey].args);
-      if( !validator[vKey](...[fields[fKey], ...args]) ){ 
-        msg = fieldValidators[vKey].msg || 'There was a problem';
-        errors.push({path: fKey, message: msg});
+    if(validators[fKey]){
+      if(validators[fKey].validate){
+        // allow copying whole model into client-side validation
+        // also supports "allowNull"
+        const {validate, ...other} = validators[fKey].validate;
+        fieldValidators = validate;
+        fieldOther = other;
+      }
+      else{
+        // if not, it's the simple object format
+        fieldValidators = validators[fKey];
+        fieldOther = {};
+      }
+      if( !(fieldOther.allowNull && !fields[fKey]) ){ // don't validate when empty and null is allowed
+        for(let vKey in fieldValidators){
+          args = [].concat(fieldValidators[vKey].args);
+          if( !validator[vKey](...[fields[fKey], ...args]) ){ 
+            msg = fieldValidators[vKey].msg || 'There was a problem';
+            errors.push({path: fKey, message: msg});
+          }
+        }  
       }
     }
   }
