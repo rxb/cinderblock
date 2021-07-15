@@ -86,12 +86,12 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'section--border': {
 			borderTopWidth: 1,
 			borderTopColor: SWATCHES.border,
-			paddingTop: METRICS.spaceSection  * 1.33,
-			marginTop: METRICS.spaceSection * .33
+			paddingTop: METRICS.spaceSection  * 1.25,
+			marginTop: METRICS.spaceSection * .25
 		},
 		'section--borderedContent': {
 			paddingTop: 0,
-			marginTop: METRICS.spaceSection * .33
+			marginTop: METRICS.spaceSection * .25
 		},
 
 		imageSnap: {
@@ -505,8 +505,24 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'avatar--xlarge':{
 			width: MEDIA_SIZES.xlarge,
 			height: MEDIA_SIZES.xlarge,
-			borderRadius: MEDIA_SIZES.xlarge
+			borderRadius: MEDIA_SIZES.xlarge,
+			[MEDIA_QUERIES_SINGLE.large]: {
+				width: MEDIA_SIZES.xlargeAtLarge,
+				height: MEDIA_SIZES.xlargeAtLarge,
+				borderRadius: MEDIA_SIZES.xlargeAtLarge
+			}
 		},
+		'avatar--xxlarge':{
+			width: MEDIA_SIZES.xxlarge,
+			height: MEDIA_SIZES.xxlarge,
+			borderRadius: MEDIA_SIZES.xxlarge,
+			[MEDIA_QUERIES_SINGLE.large]: {
+				width: MEDIA_SIZES.xxlargeAtLarge,
+				height: MEDIA_SIZES.xxlargeAtLarge,
+				borderRadius: MEDIA_SIZES.xxlargeAtLarge
+			}
+		},
+
 
 		// PICTURE
 		picture: {
@@ -533,6 +549,18 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'picture--xlarge':{
 			width: MEDIA_SIZES.xlarge,
 			height: MEDIA_SIZES.xlarge,
+			[MEDIA_QUERIES_SINGLE.large]: {
+				width: MEDIA_SIZES.xlargeAtLarge,
+				height: MEDIA_SIZES.xlargeAtLarge,
+			}
+		},
+		'picture--xxlarge':{
+			width: MEDIA_SIZES.xxlarge,
+			height: MEDIA_SIZES.xxlarge,
+			[MEDIA_QUERIES_SINGLE.large]: {
+				width: MEDIA_SIZES.xxlargeAtLarge,
+				height: MEDIA_SIZES.xxlargeAtLarge,
+			}
 		},
 
 		// TEXT

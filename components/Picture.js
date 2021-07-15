@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ThemeContext from '../ThemeContext';
 
 const Picture = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 	
 	const {
 		size,
@@ -22,6 +22,7 @@ const Picture = (props) => {
 		<Image
 			source={source}
 			style={finalStyles}
+			dataSet={{ media: ids[`picture--${size}`] }}
 			/>
 	);
 }

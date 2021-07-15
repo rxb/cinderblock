@@ -5,7 +5,7 @@ import ThemeContext from '../ThemeContext';
 
 
 const Avatar = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 
 	const {
 		size,
@@ -22,6 +22,7 @@ const Avatar = (props) => {
 		<Image
 			source={source}
 			style={finalStyles}
+			dataSet={{ media: ids[`avatar--${size}`] }}
 			/>
 	);
 }

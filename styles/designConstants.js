@@ -181,11 +181,14 @@ export const MEDIA_QUERIES_SINGLE = buildMediaQueries(MEDIA_QUERY_PARAMS_SINGLE)
 
 
 export const MEDIA_SIZES = {
-	xsmall: 16,		// text character size
-	small: 24,		// comment reply avatar
-	medium: 48,		// comment avatar		
-	large: 64,		// semi-hero, author/host
-	xlarge: 128 	// hero
+	xsmall: 16,				// text character size
+	small: 24,				// comment reply avatar
+	medium: 48,				// comment avatar		
+	large: 64,				// semi-hero, author/host
+	xlarge: 80, 			// header-level 
+	xlargeAtLarge: 96,	// header-left at large breakpoint
+	xxlarge: 128,			// hero 
+	xxlargeAtLarge: 192	// hero at large breakpoint
 };
 
 export const TEXT_TYPES = {
