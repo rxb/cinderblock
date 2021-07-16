@@ -808,6 +808,12 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'flex-item--nbsp': {
 			paddingLeft: METRICS.pseudoLineHeight * 2,
 		},
+		'flex--section': {
+			marginLeft: -1 * METRICS.space * 2, // 2 sections side by side each bring 1 METRICS.space
+		},
+		'flex-item--section': {
+			paddingLeft: METRICS.space * 2,
+		},
 
 		'flex--wrap': {
 			flexWrap: 'wrap'

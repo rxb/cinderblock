@@ -15,6 +15,8 @@ export const FLEX_WRAP_CLASS = `${FLEX_CLASS}--wrap`;
 export const FLEX_ALIGN_CLASS = `${FLEX_CLASS}--align`;
 export const FLEX_FLUSH_CLASS = `${FLEX_CLASS}--flush`;
 export const FLEX_NBSP_CLASS = `${FLEX_CLASS}--nbsp`;
+export const FLEX_SECTION_CLASS = `${FLEX_CLASS}--section`;
+
 
 const getStyleKeys = (props, media) => {
 			
@@ -26,8 +28,9 @@ const getStyleKeys = (props, media) => {
 		wrap,
 		justify,
 		align,
-		flush,
-		nbsp,
+		flush,	
+		nbsp,		
+		section	
 	} = props;
 	
 	// direction
@@ -55,10 +58,15 @@ const getStyleKeys = (props, media) => {
 		// switched direction
 		...[switchDirection ? `${switchKey}__${switchDirection}` : undefined],
 		
+		// space modifiers (default space is METRICS.space)
+		...[flush ? FLEX_FLUSH_CLASS : undefined], 	// no row space, flush
+		...[nbsp ? FLEX_NBSP_CLASS : undefined],		// row space like a text space
+		...[section ? FLEX_SECTION_CLASS : undefined],	// row space like a .section
+
 		// other
 		...[wrap ? FLEX_WRAP_CLASS : undefined],
-		...[flush ? FLEX_FLUSH_CLASS : undefined],
-		...[nbsp ? FLEX_NBSP_CLASS : undefined],
+		
+
 
 	]
 }

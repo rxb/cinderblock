@@ -13,6 +13,8 @@ export const FLEX_ITEM_GROW_CLASS = 'flex-item--';
 export const FLEX_GROW_FACTORS = [0,1,2,3,4,5,6,7];
 export const FLEX_ITEM_FLUSH_CLASS = `${FLEX_ITEM_CLASS}--flush`;
 export const FLEX_ITEM_NBSP_CLASS = `${FLEX_ITEM_CLASS}--nbsp`;
+export const FLEX_ITEM_SECTION_CLASS = `${FLEX_ITEM_CLASS}--section`;
+
 
 const getStyleKeys = (props) => {
 	const {
@@ -23,6 +25,7 @@ const getStyleKeys = (props) => {
 		align,
 		flush,
 		nbsp,
+		section,
 		...other
 	} = props;
 
@@ -34,6 +37,7 @@ const getStyleKeys = (props) => {
 		...[align ? `${FLEX_ALIGN_CLASS}${align}` : undefined],
 		...[flush ? FLEX_ITEM_FLUSH_CLASS : undefined],
 		...[nbsp ? FLEX_ITEM_NBSP_CLASS : undefined],
+		...[section ? FLEX_ITEM_SECTION_CLASS : undefined],
 	];
 }
 
@@ -59,11 +63,12 @@ const FlexItem = (props) => {
 			dataSet,
 			flush,
 			nbsp,
+			section,
 			...other
 		} = props;
 
 		// memoized for perf
-		const styleKeys = useMemo(() => getStyleKeys(props), [shrink, growFactor, isFirstChild, justify, align, flush, nbsp]);
+		const styleKeys = useMemo(() => getStyleKeys(props), [shrink, growFactor, isFirstChild, justify, align, flush, nbsp, section]);
 		const itemStyles = useMemo(()=> getItemStyles(styleKeys, styles), [styleKeys])
 		const finalStyles = [styles[FLEX_ITEM_CLASS], itemStyles, style];
 
