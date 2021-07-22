@@ -17,6 +17,8 @@ const List = (props) => {
 		variant = 'linear',
 		items = [],
 		renderItem = item => item,
+		listIds = "",
+		itemIds = "",
 		style,
 		itemStyle,
 		paginated = false,
@@ -91,7 +93,7 @@ const List = (props) => {
 					itemStyle, 
 					(i==0) ? listItemFirstChildActiveStyles : null 
 				]}
-				dataSet={{ media: listItemActiveIds+" "+scrollItemIds.item+" "+((i==0 && pageKey==0) ? listItemFirstChildActiveIds : "")}}
+				dataSet={{ media: listItemActiveIds+" "+scrollItemIds.item+" "+((i==0 && pageKey==0) ? listItemFirstChildActiveIds : "")+" "+itemIds}}
 				>
 				{ currentRenderItem(item, i) }
 			</View>
@@ -104,7 +106,7 @@ const List = (props) => {
 			<View
 				accessibilityRole='list'
 				style={[ listActiveStyles, style ]}
-				dataSet={{ media: listActiveIds}}
+				dataSet={{ media: listActiveIds+" "+listIds}}
 				>
 				{ paginated && items.map( (page, i) => renderItems(page.items, i) )}
 				{ !paginated && renderItems(items) }
