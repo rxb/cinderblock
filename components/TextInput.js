@@ -100,6 +100,7 @@ class TextInput extends React.Component{
 			onBlur,
 			onKeyPress,
 			onSubmitEditing,
+			children,
 			...other
 		} = this.props;
 
@@ -141,6 +142,7 @@ class TextInput extends React.Component{
 						{...other}
 						>{this.state.count}/{this.props.maxLength}</Text>
 				}
+				{children}
 			</View>
 			)}
 			</ThemeContext.Consumer>
