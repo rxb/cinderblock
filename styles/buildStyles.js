@@ -1,5 +1,5 @@
-//import {StyleSheet} from '../primitives';
-import StyleSheet from 'react-native-media-query';
+import {StyleSheet} from '../primitives';
+import MediaQueryStyleSheet from 'react-native-media-query';
 
 import {FLEX_GROW_FACTORS, MEDIA_SIZES, MEDIA_QUERIES, MEDIA_QUERIES_SINGLE} from './designConstants';
 
@@ -29,7 +29,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 		cardBorderRadius
 	} = METRICS;
 
-	return StyleSheet.create({
+	const {styles: cleanStyles, ids} = MediaQueryStyleSheet.create({
 
 		// LAYOUT
 		stripe: {
@@ -863,6 +863,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 		}),
 
 	});
+
+	const styles = StyleSheet.create(cleanStyles);
+
+	return {styles, ids};
 }
 
 export default buildStyles;

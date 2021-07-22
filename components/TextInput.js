@@ -103,6 +103,7 @@ class TextInput extends React.Component{
 			...other
 		} = this.props;
 
+
 		return (
 			<ThemeContext.Consumer>
 			{ ({styles, SWATCHES}) => (
@@ -128,7 +129,7 @@ class TextInput extends React.Component{
 						styles.text,
 						styles.textBody,
 						{minHeight: this.state.height},
-						style,
+						style
 					]}
 					{...other}
 					/>
