@@ -39,6 +39,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 				paddingHorizontal: space,
 			}
 		},
+		"stripe--border": {
+			borderTopWidth: 1,
+			borderTopColor: SWATCHES.border,
+		},
 		bounds: {
 			maxWidth: METRICS.boundsWidth,
 			minWidth: 1,

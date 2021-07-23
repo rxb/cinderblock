@@ -21,6 +21,7 @@ const Stripe = (props) => {
 	const {
 		children,
 		image,
+		border,
 		imageHeight = {small: 225, medium: 325, large: 400, xlarge: 450},
 		style,
 		forwardedRef,
@@ -29,14 +30,15 @@ const Stripe = (props) => {
 
 	// keeping matchmedia for image height since it's so variable
 	const media = useMediaContext();
-	const imageHeightStyle = (image) ? {height: findWidestActiveValue(imageHeight, media)} : {};
+	const imageHeightStyle = (image) ? {height: findWidestActiveValue(imageHeight, media)} : undefined;
+	const borderStyle = (border) ? styles['stripe--border'] : undefined;
 
 	if(image){
 		return(
 			<ImageBackground
 				ref={forwardedRef}
 				source={{uri: image}}
-				style={[styles['stripe'], style, imageHeightStyle]}
+				style={[styles['stripe'], borderStyle, style, imageHeightStyle]}
 				dataSet={{ media: ids['stripe']}} 
 				{...other}
 				>
@@ -48,7 +50,7 @@ const Stripe = (props) => {
 		return(
 			<View 
 				ref={forwardedRef}
-				style={[styles['stripe'], style]}
+				style={[styles['stripe'], borderStyle, style]}
 				dataSet={{ media: ids['stripe']}} 
 				{...other}
 				>
