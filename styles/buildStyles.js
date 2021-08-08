@@ -223,7 +223,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 		},
 		'input--focus': {
 			borderColor: SWATCHES.textHint,
-			backgroundColor: 'transparent',
+			backgroundColor: SWATCHES.backgroundWhite,
 			boxShadow: `0 0 0 3px ${SWATCHES.focus}`
 		},
 		'input--multilineAndCounter': {

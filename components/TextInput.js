@@ -26,23 +26,28 @@ class TextInput extends React.Component{
 	static defaultProps = {
 		autoExpand: true,
 		onChange: ()=>{},
+		onFocus: () => {},
+		onBlur: () => {},
+		updateVersion: 0,
 		value: '',
 	}
 
 	constructor(props){
 		super(props);
 		this.state = {
+			focus: false,
 			height: 0,
 			count: 0,
 			countColor: 'secondary'
 		}
+		this.onFocus = this.onFocus.bind(this);
+		this.onBlur = this.onBlur.bind(this);
 		this.onChange = this.onChange.bind(this);
 		this.onContentSizeChange = this.onContentSizeChange.bind(this);
 		this.updateCounter = this.updateCounter.bind(this);
 	}
 
 	componentDidMount(){
-
 		this.updateCounter(this.props.value);
 	}
 
@@ -53,6 +58,12 @@ class TextInput extends React.Component{
 		if(this.state != nextState){
 			return true;
 		}
+
+		// passing in a cursor from props to explicitly trigger an update
+		if(this.props.updateVersion != nextProps.updateVersion){
+			return true;
+		}
+
 		return false;
 	}
 
@@ -86,6 +97,16 @@ class TextInput extends React.Component{
 		this.props.onChange(event);
 	}
 
+	// these are just set set state to trigger a re-render on focus/blur
+	onFocus(event){
+		this.setState({focus: true});
+		this.props.onFocus(event);
+	}
+	onBlur(event){
+		this.setState({focus: false});
+		this.props.onBlur(event);
+	}
+
 	render() {
 		const {
 			autoExpand,
@@ -95,6 +116,7 @@ class TextInput extends React.Component{
 			onChange,
 			showCounter,
 			style,
+			focusStyle,
 			wrapperStyle,
 			onFocus,
 			onBlur,
@@ -118,8 +140,8 @@ class TextInput extends React.Component{
 					maxLength={maxLength}
 					onChange={this.onChange}
 					onContentSizeChange={this.onContentSizeChange}
-					onFocus={onFocus}
-					onBlur={onBlur}
+					onFocus={this.onFocus}
+					onBlur={this.onBlur}
 					onKeyPress={onKeyPress}
 					onSubmitEditing={onSubmitEditing}
 					className='input'
@@ -130,7 +152,7 @@ class TextInput extends React.Component{
 						styles.text,
 						styles.textBody,
 						{minHeight: this.state.height},
-						style
+						style,
 					]}
 					{...other}
 					/>
@@ -149,6 +171,7 @@ class TextInput extends React.Component{
 		);
 	}
 }
+
 
 export default React.forwardRef((props, ref) => <TextInput 
   innerRef={ref} {...props}

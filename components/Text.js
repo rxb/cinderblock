@@ -36,7 +36,8 @@ const getActiveStyles = (props, styles, ids) => {
 const Text = (props) => {
 	const { 
 		children, 
-		style, 
+		style,
+		styleIds="", 
 		...other 
 	} = props;
 
@@ -46,7 +47,7 @@ const Text = (props) => {
 	return(
 		<ReactText
 			style={[activeStyles, style]}
-			dataSet={{ media: activeIds }}
+			dataSet={{ media: activeIds+" "+styleIds}}
 			{...other}
 			>
 			{children}
