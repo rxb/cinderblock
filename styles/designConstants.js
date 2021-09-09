@@ -198,7 +198,8 @@ export const TEXT_TYPES = {
 	big: 'Big',
 	sectionHead: 'SectionHead',
 	pageHead: 'PageHead',
-	hero: 'Hero'
+	hero: 'Hero',
+	pageHeadKicker: 'PageHeadKicker'
 }
 
 export const TEXT_COLORS = {

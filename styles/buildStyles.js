@@ -633,6 +633,13 @@ const buildStyles = (METRICS, SWATCHES) => {
 				lineHeight: METRICS.pageHeadAtLargeLineHeight,
         },
 		},
+		textPageHeadKicker: {
+			fontFamily: METRICS.fontFamily,
+			fontSize: METRICS.smallSize,
+			lineHeight: METRICS.smallLineHeight,
+			fontWeight: METRICS.textBodyWeight,
+			textTransform: 'uppercase',
+		},
 		textHero: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.heroSize,
