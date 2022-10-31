@@ -697,7 +697,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			backgroundColor: 'transparent',
 			borderBottomWidth: 0,
 			[MEDIA_QUERIES_SINGLE.medium]: {
-				paddingHorizontal: 0,
+				//paddingHorizontal: 0,
         	},
 		},
 
