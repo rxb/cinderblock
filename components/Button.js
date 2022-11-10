@@ -57,6 +57,7 @@ const Button = (props) => {
 		size = 'medium',
 		inverted,
 		// rest
+		dummy,
 		href,
 		width,
 		onPress = () => {},
@@ -92,7 +93,12 @@ const Button = (props) => {
 
 	// touchable component and semantics
 	let ActionComponent, actionComponentProps;
-	if(href){
+	if(dummy){
+		// rare situations where a button-looking element needs to be wrapped by component that is already clickable
+		ActionComponent = View;
+	}
+	else if(href){
+		// href link
 		ActionComponent = Link;
 		actionComponentProps = {
 			href: href,
@@ -100,6 +106,7 @@ const Button = (props) => {
 		}
 	}
 	else{
+		// onPress action
 		ActionComponent = Touch;
 		actionComponentProps = {
 			onPress: onPress,
@@ -135,7 +142,7 @@ const Button = (props) => {
 						<Icon 
 							shape={shape} 
 							color={inkColor} 
-							style={{marginLeft: 3, marginRight: 3}} 
+							//style={{marginLeft: 3, marginRight: 3}} 
 							size={size}
 							/>
 					}
