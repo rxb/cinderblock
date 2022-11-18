@@ -496,6 +496,11 @@ const buildStyles = (METRICS, SWATCHES) => {
 			height: MEDIA_SIZES.small,
 			borderRadius: MEDIA_SIZES.small
 		},
+		'avatar--mid':{
+			width: MEDIA_SIZES.mid,
+			height: MEDIA_SIZES.mid,
+			borderRadius: MEDIA_SIZES.mid
+		},
 		'avatar--medium':{
 			width: MEDIA_SIZES.medium,
 			height: MEDIA_SIZES.medium,

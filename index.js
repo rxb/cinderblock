@@ -5,6 +5,7 @@ import Card from './components/Card';
 import CheckBox from './components/CheckBox';
 import Chip from './components/Chip';
 import Chunk from './components/Chunk';
+import Bounce from './components/Bounce';
 import Button from './components/Button';
 import {Dropdowner, DropdownTouch} from './components/Dropdowner';
 import FakeInput from './components/FakeInput';
@@ -49,6 +50,7 @@ import * as designConstants from './styles/designConstants';
 export {
 	Animated, 
 	Avatar,
+	Bounce,
 	Bounds,
 	Button,
 	Card,

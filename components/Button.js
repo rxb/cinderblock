@@ -1,4 +1,4 @@
-import React, {useMemo, useContext} from 'react';
+import React, {useMemo, useContext, Fragment} from 'react';
 import { ActivityIndicator } from 'react-native';
 import { View, Text } from '../primitives';
 import ThemeContext from '../ThemeContext';
@@ -8,6 +8,7 @@ import {TEXT_TYPES} from '../styles/designConstants';
 import Icon from './Icon';
 import Link from './Link';
 import Touch from './Touch';
+import Bounce from './Bounce';
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1); 
 
@@ -114,6 +115,7 @@ const Button = (props) => {
 		}
 	}
 
+
 	// styles 
 	const {
 		buttonStyleKeys, 
@@ -137,22 +139,22 @@ const Button = (props) => {
 			{...other}
 			>
 			<View style={isLoading ? styles.visibilityHidden : styles.visibilityVisibile}>
-				<View style={styles.buttonContent}>
-					{ shape &&
-						<Icon 
-							shape={shape} 
-							color={inkColor} 
-							//style={{marginLeft: 3, marginRight: 3}} 
-							size={size}
-							/>
-					}
-					{ label && 
-						<Text 
-							style={textActiveStyles}
-							dataSet={{ media: textActiveIds}}
-							>{label}</Text>
-					}
-				</View>
+					<View style={styles.buttonContent}>
+						{ shape &&
+							<Icon 
+								shape={shape} 
+								color={inkColor} 
+								//style={{marginLeft: 3, marginRight: 3}} 
+								size={size}
+								/>
+						}
+						{ label && 
+							<Text 
+								style={textActiveStyles}
+								dataSet={{ media: textActiveIds}}
+								>{label}</Text>
+						}
+					</View>
 				{children}
 			</View>
 			

@@ -10,7 +10,8 @@ export const SWATCHES = {
 	shade: 'rgba(0,0,0,.06)',
 	shadeInverted: 'rgba(255,255,255,0.5)',
 	notwhite: 'rgba(0,0,0,.015)',
-	tint: '#4353ff',
+	//tint: '#4353ff',
+	tint: '#0011aa',
 	focus: 'rgba(0,122,255,.25)',
 	error: 'red',
 	border: 'rgba(0,0,0,.15)',
@@ -183,6 +184,7 @@ export const MEDIA_QUERIES_SINGLE = buildMediaQueries(MEDIA_QUERY_PARAMS_SINGLE)
 export const MEDIA_SIZES = {
 	xsmall: 16,				// text character size
 	small: 24,				// comment reply avatar
+	mid: 36,					// maintainer attribution
 	medium: 48,				// comment avatar		
 	large: 64,				// semi-hero, author/host
 	xlarge: 80, 			// header-level 

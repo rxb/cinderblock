@@ -32,7 +32,7 @@ Avatar.defaultProps = {
 };
 
 Avatar.propTypes = {
-	size: PropTypes.oneOf(['xsmall', 'small', 'medium', 'large', 'xlarge']),
+	size: PropTypes.oneOf(['xsmall', 'small', 'mid', 'medium', 'large', 'xlarge']),
 	source: PropTypes.object
 }
 
