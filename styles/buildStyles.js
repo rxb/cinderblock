@@ -715,6 +715,15 @@ const buildStyles = (METRICS, SWATCHES) => {
 			zIndex: 3,
 		},
 
+		dropdownItem: {
+			marginTop: -1,
+			borderTopWidth: 1,
+			borderTopColor: SWATCHES.borderSecondary,
+			paddingTop: (space * .66) + 1,
+			paddingBottom: space * .66,
+			paddingHorizontal: space,
+		},
+
 		// TOASTER
 		toaster: {
 			position: 'fixed',

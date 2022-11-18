@@ -6,7 +6,10 @@
 import React, {useState, useRef, useCallback, useEffect, useContext} from 'react';
 import { Animated } from '../primitives';
 import { View } from '../primitives';
+import Sectionless from './Sectionless';
+import Chunk from './Chunk';
 import Touch from './Touch';
+import Link from './Link';
 import Text from './Text';
 import ThemeContext from '../ThemeContext';
 import ReactDOM from 'react-dom';
@@ -177,6 +180,7 @@ export const Dropdown = (props) => {
 				borderColor: SWATCHES.border,
 				borderRadius: METRICS.borderRadius,
 				opacity: visibilityValue,
+				overflow: 'hidden',
             transform: [{
                translateY: visibilityValue.interpolate({
                inputRange: [0, 1],
@@ -186,7 +190,45 @@ export const Dropdown = (props) => {
 			}} 
 			ref={ outerRef }
 			>
-			{dropdownContent}
+				{dropdownContent}
 		</Animated.View>
 	)
+}
+
+export const DropdownItem = (props) => {
+	const { styles, METRICS, SWATCHES } = useContext(ThemeContext);
+	const {
+		dummy,
+		href,
+		onPress,
+		children
+	} = props;
+
+	let ActionComponent, actionComponentProps;
+	if(dummy){
+		// rare situations where a button-looking element needs to be wrapped by component that is already clickable
+		ActionComponent = View;
+	}
+	else if(href){
+		// href link
+		ActionComponent = Link;
+		actionComponentProps = {
+			href: href,
+			accessibilityRole: 'link'
+		}
+	}
+	else{
+		// onPress action
+		ActionComponent = Touch;
+		actionComponentProps = {
+			onPress: onPress,
+			accessibilityRole: 'button'
+		}
+	}
+
+	return (
+		<ActionComponent {...actionComponentProps} style={styles.dropdownItem}>
+			{children}
+		</ActionComponent>
+	);
 }
