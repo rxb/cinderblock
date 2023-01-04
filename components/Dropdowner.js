@@ -181,6 +181,8 @@ export const Dropdown = (props) => {
 				borderRadius: METRICS.borderRadius,
 				opacity: visibilityValue,
 				overflow: 'hidden',
+				shadowRadius: 10,
+				shadowColor: 'rgba(0,0,0,.15)',
             transform: [{
                translateY: visibilityValue.interpolate({
                inputRange: [0, 1],

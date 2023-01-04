@@ -111,7 +111,6 @@ const buildStyles = (METRICS, SWATCHES) => {
 		},
 
 		
-
 		// for sets of chunks with no possibility of sections
 		// basically, inside simple, small cards
 		sectionless: {
@@ -222,9 +221,9 @@ const buildStyles = (METRICS, SWATCHES) => {
 			marginVertical: METRICS.pseudoLineHeight,
 		},
 		'input--focus': {
-			borderColor: SWATCHES.textHint,
+			borderColor: SWATCHES.tint,
 			backgroundColor: SWATCHES.backgroundWhite,
-			boxShadow: `0 0 0 3px ${SWATCHES.focus}`
+			//boxShadow: `0 0 0 3px ${SWATCHES.focus}`
 		},
 		'input--multilineAndCounter': {
 			paddingBottom: 13 + METRICS.bodySize
@@ -477,7 +476,6 @@ const buildStyles = (METRICS, SWATCHES) => {
 			shadowRadius: 12,
 			shadowColor: 'rgba(0,0,0,.25)',
 		},
-
 
 
 

@@ -95,7 +95,7 @@ export const getStyleKeysForMediaQueryVariants = (baseKey, variant) => {
 
 export const nthChildTest = (conditionsInOrder) => {
   const ordinals = {};
-  const index = 1; // first-child == 1
+  let index = 1; // first-child == 1
   for (key in conditions) {
     if(conditionsInOrder[key]){
       ordinals[key] = index;

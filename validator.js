@@ -9,7 +9,7 @@
 // TODO: do this instead of just extending, but for now let's just go with it: 
 // https://github.com/validatorjs/validator.js/issues/525#issuecomment-213149570
 
-const validator = require('validator');
+import validator from 'validator';
 import moment from 'dayjs';
 
 export const extensions = {

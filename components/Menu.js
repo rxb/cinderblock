@@ -3,6 +3,8 @@
 // there's a lot that is counting on DOM stuff
 // but maybe you should be using native components there for menus anyhow
 
+// pretty sure dropdowner replaces this because it's managed centrally
+
 import React, {useContext} from 'react';
 import { View } from '../primitives';
 import RevealBlock from './RevealBlock';
