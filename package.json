@@ -1,34 +1,31 @@
 {
-  "name": "gatsby-starter-default",
-  "description": "Gatsby default starter",
-  "version": "1.0.0",
-  "author": "Kyle Mathews <mathews.kyle@gmail.com>",
-  "dependencies": {
-    "babel-plugin-react-native-web": "^0.9.7",
-    "body-scroll-lock": "^2.5.10",
-    "cinderblock": "file:../cinderblock",
-    "gatsby": "^2.0.48",
-    "gatsby-plugin-react-helmet": "^3.0.2",
-    "gatsby-plugin-react-native-web": "^2.0.0-alpha.0",
-    "react": "^16.6.1",
-    "react-dom": "^16.6.1",
-    "react-feather": "^1.1.4",
-    "react-helmet": "^5.2.0",
-    "react-native-swipe-recognizer": "^0.2.0",
-    "react-native-web": "^0.9.6"
-  },
-  "keywords": [
-    "gatsby"
-  ],
-  "license": "MIT",
-  "main": "n/a",
+  "name": "rgb.work",
+  "version": "0.1.0",
+  "private": true,
   "scripts": {
-    "build": "gatsby build",
-    "develop": "gatsby develop",
-    "format": "prettier --trailing-comma es5 --no-semi --single-quote --write \"src/**/*.js\"",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
   },
-  "devDependencies": {
-    "prettier": "^1.8.2"
+  "dependencies": {
+    "@next/font": "13.1.1",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "babel-plugin-react-native-web": "^0.18.9",
+    "body-scroll-lock": "^3.1.5",
+    "cinderblock": "file:~/Repos/cinderblock",
+    "dayjs": "^1.11.5",
+    "next": "13.1.1",
+    "next-transpile-modules": "^9.0.0",
+    "nprogress": "^0.2.0",
+    "prop-types": "^15.8.1",
+    "react": "18.2.0",
+    "react-dnd": "^16.0.1",
+    "react-dom": "18.2.0",
+    "react-feather": "^2.0.10",
+    "react-native-media-query": "^2.0.0",
+    "react-native-web": "0.18.9",
+    "uuid": "^9.0.0",
+    "validator": "^13.7.0"
   }
 }
