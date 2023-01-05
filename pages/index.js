@@ -14,6 +14,7 @@ import {
 	Icon,
 	Inline,
 	Image,
+  ImageSnap,
 	Label,
 	List,
 	Link,
@@ -38,11 +39,40 @@ import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 
 
+const FullWidthAspectRatioImage = (props) => {
+  const {
+    url,
+    style,
+    alt,
+    title,
+    ...other
+  } = props;
+
+  return (
+    <Chunk>
+      <div style={{borderRadius: 10, overflow: 'hidden'}}>
+      <img 
+        src={url}
+        style={{
+          ...style,
+          backgroundColor: '#eee', 
+          width: '100%', 
+          margin: 0,
+          padding: 0,
+          display: 'block'
+        }} 
+        {...other}
+        />
+      </div>
+    </Chunk>
+  )
+};
+
 const mdxComponents = {
-      h1: ({children, ...props}) => <Text type="pageHead" {...props}>{children}</Text>,
-      h2: ({children, ...props}) => <Text type="sectionHead" {...props}>{children}</Text>,
-      p: ({children, ...props}) => <Text {...props}>{children}</Text>,
-      img: ({ src, ...props }) => <Image source={{uri: src}} {...props} style={{minHeight: 100, minWidth: 100}} />,
+      h1: ({children, ...props}) => <Text chunk type="pageHead" {...props}>{children}</Text>,
+      h2: ({children, ...props}) => <Text chunk type="sectionHead" {...props}>{children}</Text>,
+      p: ({children, ...props}) => <Text chunk {...props}>{children}</Text>,
+      img: (props) => <FullWidthAspectRatioImage {...props} />,
 };
 
 
@@ -66,7 +96,9 @@ export default function Home(props) {
       <FlexItem shrink>
         <Stripe style={{borderRightWidth: 1, borderRightColor: SWATCHES.border, minHeight: '100vh'}}>
           <View style={{minWidth: 240}}>
-            <Section>
+            <Section style={{alignItems: 'flex-start'}}>
+                <Image source={{uri: 'computer.png'}} resizeMode="contain" style={{width: 118, height: 118, marginTop: -14, marginBottom: 20}} />
+    
               <Chunk>
                 <Text weight="strong">Richard Boenigk</Text>
                 <Text color="secondary">Hacking + Designing</Text>
@@ -107,7 +139,6 @@ export default function Home(props) {
           <Bounds>
             <Section>
               <MDXRemote {...props.postData} components={mdxComponents} />
-              {/* <Markdown options={markdownOptions}>{props.postData}</Markdown> */}
             </Section>
           </Bounds>
         </Stripe> 
