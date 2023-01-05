@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useEffect, useState } from 'react';
 
 // COMPONENTS
 import {
@@ -32,8 +32,32 @@ import {
 } from 'cinderblock';
 
 import Page from '@/components/Page';
+import fs from 'fs';
+import path from 'path';
+import { MDXRemote } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
 
-export default function Home() {
+
+const mdxComponents = {
+      h1: ({children, ...props}) => <Text type="pageHead" {...props}>{children}</Text>,
+      h2: ({children, ...props}) => <Text type="sectionHead" {...props}>{children}</Text>,
+      p: ({children, ...props}) => <Text {...props}>{children}</Text>,
+      img: ({ src, ...props }) => <Image source={{uri: src}} {...props} style={{minHeight: 100, minWidth: 100}} />,
+};
+
+
+export async function getStaticProps({ params }) {
+  const fileContents = fs.readFileSync(path.resolve(process.cwd(), 'posts/test.md'));
+  const postData = await serialize(fileContents);
+  return {
+    props: {
+      postData,
+    },
+  };
+};
+
+export default function Home(props) {
+
   const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
 
   return (
@@ -82,7 +106,8 @@ export default function Home() {
         <Stripe>
           <Bounds>
             <Section>
-              <Text type="pageHead">Hey</Text>
+              <MDXRemote {...props.postData} components={mdxComponents} />
+              {/* <Markdown options={markdownOptions}>{props.postData}</Markdown> */}
             </Section>
           </Bounds>
         </Stripe> 
