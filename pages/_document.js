@@ -116,6 +116,22 @@ class MyDocument extends Document {
 											display: block;
 											color: #aaa;
 										 }
+
+                     .video-container {
+                      position: relative;
+                      padding-bottom: 56.25%; /* 16:9 */
+                      height: 0;
+                    }
+                    .video-container iframe {
+                      position: absolute;
+                      top: 0;
+                      left: 0;
+                      width: 100%;
+                      height: 100%;
+                      border-radius: ${METRICS.cardBorderRadius}px;
+                      background-color: ${SWATCHES.shade};
+                      border: none;
+                    }
 									`}}
 							/>
             </Head>
