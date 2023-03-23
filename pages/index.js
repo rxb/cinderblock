@@ -38,6 +38,8 @@ import fs from 'fs';
 import path from 'path';
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
+import {MEDIA_QUERIES_SINGLE} from 'cinderblock/styles/designConstants';
+import StyleSheet from 'react-native-media-query';
 
 
 const FullWidthAspectRatioImage = (props) => {
@@ -156,54 +158,15 @@ export async function getStaticProps({ params }) {
   };
 };
 
+
+
 export default function Home(props) {
 
   const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
 
   return (
     <Page>
-    <Flex direction="column" switchDirection="large" flush>
-      <FlexItem shrink flush>
-        <Stripe style={{borderRightWidth: 1, borderRightColor: SWATCHES.border, minHeight: '100%'}}>
-          <View style={{minWidth: 240}}>
-            <Section style={{alignItems: 'flex-start'}}>
-              <Image source={{uri: 'computer.png'}} resizeMode="contain" style={{width: 118, height: 118, marginTop: -14, marginBottom: 19}} />
-              <Chunk>
-                <Text weight="strong">Richard Boenigk</Text>
-                <Text color="secondary">Hacking + Designing</Text>
-              </Chunk>
-            </Section>
-            <Section border>
-              <Chunk>
-                <Text weight="strong">Home</Text>
-                <Text color="secondary">Projects</Text>
-                <Text color="secondary">Blog</Text>
-                <Text color="secondary">About</Text>
-              </Chunk> 
-              <Chunk>
-                <Inline>
-                <Button 
-                  shape="Twitter"
-                  color="secondary"
-                  size="small"
-                  />
-                <Button 
-                  shape="Instagram"
-                  color="secondary"
-                  size="small"
-                  /> 
-                <Button 
-                  shape="GitHub"
-                  color="secondary"
-                  size="small"
-                  />        
-                </Inline>           
-              </Chunk>
-            </Section>
-          </View>
-        </Stripe> 
-      </FlexItem>
-      <FlexItem flush>
+    
         <Stripe>
           <Bounds>
             <Section>
@@ -223,8 +186,9 @@ export default function Home(props) {
             </Section>
           </Bounds>
         </Stripe> 
-      </FlexItem>
-    </Flex>
+
     </Page>
   )
 }
+
+

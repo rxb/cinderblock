@@ -42,15 +42,15 @@ import {
 	View,
 	ThemeContext
 } from 'cinderblock';
+import Layout from './rgb/Layout';
 
-//import LoginModal from './LoginModal';
-//import { TldrSearch } from './tldr/components'; // TODO: make a 'connected' version of this
 import ConnectedToaster from './ConnectedToaster';
 import ConnectedPrompter from './ConnectedPrompter';
 import ConnectedDropdowner from './ConnectedDropdowner';
 import { addToastableErrors } from '@/components/utils';
 
 function Page(props) {
+	const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
 
 	// data from redux
 	const dispatch = useDispatch();
@@ -89,7 +89,9 @@ function Page(props) {
 				<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet" />
 			</Head>
 
-			{props.children}
+			<Layout>
+				{props.children}
+			</Layout>
 
 			{/* global ui */}
 			<ConnectedToaster />
