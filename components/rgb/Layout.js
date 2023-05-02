@@ -1,4 +1,7 @@
 import React, { Fragment, useState, useEffect, useRef, useContext } from 'react';
+import Head from "next/head";
+import { connect, useDispatch, useSelector } from 'react-redux';
+import { updateUi } from '@/actions';
 
 import {
 	Avatar,
@@ -32,7 +35,7 @@ import {
 } from 'cinderblock';
 
 
-const SiteMenu = (props) => {
+export const SiteMenu = (props) => {
 	const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
    return(
 		<>
@@ -65,25 +68,112 @@ const SiteMenu = (props) => {
 	)
 }
 
-const SiteLogo = (props) => {
-	const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
+export const SiteLogo = (props) => {
 	const {
-		style = {}
+		style = {},
+		activeScreen = false
 	} = props;
+
+	const defaultImage = 'computer.png';
+	const activeImage = 'computer_christmas.png';
+
+	const [imageSrc, setImageSrc] = useState(defaultImage);
+	const activateScreen = () => {
+		setImageSrc(activeImage)
+	}
+	const deActivateScreen = () => {
+		if(!activeScreen){
+			setImageSrc(defaultImage)
+		}
+	}
+	useEffect(()=>{
+		if(activeScreen){
+			activateScreen();
+		}
+		else{
+			deActivateScreen();
+		}
+	}, [activeScreen])
+
    return(
-		<Image 
-			source={{uri: 'computer.png'}} 
-			resizeMode="contain" 
-			style={style} 
-			/>
+		<>
+			<Head>
+				<link
+					rel="preload"
+					href="computer_christmas.png"
+					as="image"
+				/>
+			</Head>
+			<View
+				onMouseOver={activateScreen}
+				onMouseOut={deActivateScreen}
+				>
+				<Image 
+					source={{uri: imageSrc}} 
+					resizeMode="contain" 
+					style={style} 
+					/>
+			</View>
+		</>
 	);
 }
 
-const Layout = (props) => {
+export const NarrowMenu = (props) => {
+	const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
+	const ui = useSelector(state => state.ui);
+	const [visible, setVisible] = useState(false);
+	const [displayBlock, setDisplayBlock] = useState(false);
+	useEffect(()=>{
+		if(ui.siteMenuOverlayActive){
+			setDisplayBlock(true);
+			setTimeout(()=>{
+				setVisible(true);
+			}, 5);
+		}
+		else{
+			setVisible(false);
+			setTimeout(()=>{
+				setDisplayBlock(false);
+			}, 300);
+		}
+	}, [ui.siteMenuOverlayActive]);
+	return(
+		<Stripe style={{
+			backgroundColor: 'white', 
+			position: 'absolute',
+			top: 0, left: 0, right: 0,
+			shadowColor: 'rgba(0,0,0,.35)',
+			shadowRadius: 25,
+			transitionProperty: "all",
+			transitionDuration: "250ms",
+			transitionTimingFunction: "cubic-bezier(0.16, 1, 0.3, 1)",
+			opacity: visible ? 1 : 0,
+			transform:[
+				{translateY: visible ? 0 : -10},
+			],
+			display: displayBlock ? 'block' : 'none'
+			}}>
+				<Section style={{
+					marginTop: 60,
+					paddingBottom: '0px!important',
+					borderTopWidth: 1,
+					borderTopColor: SWATCHES.border,
+				}}>
+				<View>
+					<SiteMenu />
+				</View>
+				</Section>
+		</Stripe>
+	);
+}
+
+export const Layout = (props) => {
 	const { styles, ids, SWATCHES, METRICS } = useContext(ThemeContext);
+	const dispatch = useDispatch();
+	const ui = useSelector(state => state.ui);
 
    return(
-			<Flex direction="row" flush>
+			<Flex direction="row" flush style={{flex: 1, maxWidth: 1000, alignSelf: 'center'}}>
 				<FlexItem 
 					shrink 
 					flush 
@@ -92,6 +182,7 @@ const Layout = (props) => {
 					>
 					<Stripe style={{borderRightWidth: 1, borderRightColor: SWATCHES.border, minHeight: '100%'}}>
 						<View style={{minWidth: 240, position: 'sticky', top: 20}}>
+							<Link href="/">
 							<Section style={{alignItems: 'flex-start'}}>
 								<SiteLogo style={{width: 118, height: 118, marginTop: -14, marginBottom: 19}} />
 								<Chunk>
@@ -99,6 +190,7 @@ const Layout = (props) => {
 									<Text color="secondary">Hacking + Designing</Text>
 								</Chunk>
 							</Section>
+							</Link>
 							<Section border>
 								<SiteMenu />
 							</Section>
@@ -106,31 +198,53 @@ const Layout = (props) => {
 					</Stripe> 
 				</FlexItem>
 				<FlexItem flush>
-					<View dataSet={{ media: ids["hideAt__large"] }}>
+					<View dataSet={{ media: ids["hideAt__large"] }} style={{zIndex: 2}}>
 						<Header 
 							position="static"
-							type="separated"
+							type="transparent"
 							>
 							<Flex flush>
-								<FlexItem shrink flush justify="center">
-									<SiteLogo style={{width: 45, height: 45, marginTop: -2, marginRight: 12}} />
+								<FlexItem flush>
+									<Link href="/">
+										<Flex flush>
+										<FlexItem shrink flush justify="center">
+											<SiteLogo 
+												activeScreen={ui.siteMenuOverlayActive}
+												style={{
+													width: 45, 
+													height: 45, 
+													marginTop: -2, 
+													marginRight: 12, 
+													marginLeft: 5
+												}} 
+												/>
+										</FlexItem>
+										<FlexItem flush justify="center">
+											
+											<Text weight="strong" type="small">rgb.work</Text>
+											<Text color="secondary" type="micro">Hacking + Designing</Text>
+										</FlexItem>
+									</Flex>
+								</Link>
 								</FlexItem>
-								<FlexItem flush justify="center">
-									<Text weight="strong" type="small">rgb.work</Text>
-									<Text color="secondary" type="micro">Hacking + Designing</Text>
-								</FlexItem>
-								<FlexItem shrink flush  justify="center">
-									<Icon 
-										shape="Menu"
-										/>
+								<FlexItem shrink justify="center">
+									<Touch
+										onPress={()=>{
+											dispatch(updateUi({ siteMenuOverlayActive: !ui.siteMenuOverlayActive}))
+										}}>
+										<View >
+										<Icon 
+											shape={ui.siteMenuOverlayActive ? 'X' : 'Menu'}
+											/>
+										</View>
+									</Touch>
 								</FlexItem>
 							</Flex>
 						</Header>
+						<NarrowMenu />
 					</View>
 					{props.children}
             </FlexItem>
          </Flex>
    )
 }
-
-export default Layout;

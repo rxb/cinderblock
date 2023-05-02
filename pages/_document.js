@@ -134,6 +134,8 @@ class MyDocument extends Document {
                     }
 									`}}
 							/>
+
+							<link rel='stylesheet' type='text/css' href='/nprogress.css' />
             </Head>
             <body>
               <Main />

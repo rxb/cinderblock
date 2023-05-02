@@ -14,7 +14,12 @@ const MediaProvider = initMediaProvider(MEDIA_QUERY_PARAMS_SINGLE);
 // CONFIG STYLES
 const METRICS = {
   ...styleConfig.METRICS,
-  fontFamily: `'Plus Jakarta Sans', ${styleConfig.METRICS.fontFamily}`
+  fontFamily: `'Plus Jakarta Sans', ${styleConfig.METRICS.fontFamily}`,
+  textStrongWeight: 700,
+	textLabelWeight: 700,
+	textBigWeight: 700,
+  textSectionHeadWeight: 700,
+  textPageHeadWeight: 800
 };
 const SWATCHES = {
   ...styleConfig.SWATCHES

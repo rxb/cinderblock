@@ -42,7 +42,7 @@ import {
 	View,
 	ThemeContext
 } from 'cinderblock';
-import Layout from './rgb/Layout';
+import {Layout, SiteMenu} from './rgb/Layout';
 
 import ConnectedToaster from './ConnectedToaster';
 import ConnectedPrompter from './ConnectedPrompter';
@@ -65,7 +65,7 @@ function Page(props) {
 		Router.onRouteChangeComplete = () => {
 			NProgress.done();
 			dispatch(clearDropdowns());
-			//dispatch(updateUi({searchOverlayActive: false, searchHeaderActive: false}));
+			dispatch(updateUi({siteMenuOverlayActive: false}));
 			setTimeout(() => dispatch(showDelayedToasts()), 500);
 		}
 		Router.onRouteChangeError = () => NProgress.done();
@@ -75,7 +75,7 @@ function Page(props) {
 	useEffect(() => {
 		function handleResize() {
 			dispatch(clearDropdowns());
-			//dispatch(updateUi({searchOverlayActive: false, searchHeaderActive: false}));
+			dispatch(updateUi({siteMenuOverlayActive: false}));
 		}
 		window.addEventListener("resize", handleResize);
 		return () => window.removeEventListener("resize", handleResize);
@@ -86,7 +86,7 @@ function Page(props) {
 			<Head>
 				<link rel="preconnect" href="https://fonts.googleapis.com" /> 
 				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin /> 
-				<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet" />
+				<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet" />
 			</Head>
 
 			<Layout>
@@ -97,6 +97,8 @@ function Page(props) {
 			<ConnectedToaster />
 			<ConnectedPrompter />
 			<ConnectedDropdowner />
+
+			
 		</View>
 	);
 }
