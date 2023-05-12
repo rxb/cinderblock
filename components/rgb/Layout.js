@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef, useContext } from 'react';
 import Head from "next/head";
+import {useRouter} from 'next/router'
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { updateUi } from '@/actions';
 
@@ -37,13 +38,42 @@ import {
 
 export const SiteMenu = (props) => {
 	const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
+	const router = useRouter()
+	const { version = 'mobile' } = props;
+
+	let menuItems = [
+		{path: "/", label: "Home"},
+		{path: "/projects", label: "Projects"},
+		{path: "/blog", label: "Blog"},
+		{path: "/about", label: "About"},
+	];
+	menuItems = menuItems.map((m, i)=>{
+		if(m.path == router.pathname){
+			m.active = true;
+		}
+		return m;
+	});
+	
+
    return(
 		<>
 			<Chunk>
-				<Text weight="strong">Home</Text>
-				<Text color="secondary">Projects</Text>
-				<Text color="secondary">Blog</Text>
-				<Text color="secondary">About</Text>
+				{ menuItems.map((m, i)=>{
+					return(
+						<Link href={m.path}>
+							<Text 
+								style={[ 
+									(version == 'mobile' && i>0) ? {marginTop: 12} : {}
+								]}
+								type={ (version == 'mobile') ? 'sectionHead' : 'body' }
+								//weight={m.active ? 'strong' : ''}
+								//color={m.active ? 'primary' : 'secondary'}
+								>{m.label}</Text>
+						</Link>
+
+					);
+				})}
+
 			</Chunk> 
 			<Chunk>
 				<Inline>
@@ -51,16 +81,19 @@ export const SiteMenu = (props) => {
 						shape="Twitter"
 						color="secondary"
 						size="small"
+						style={(version == 'mobile') ? {marginRight: 2} : {}}
 						/>
 					<Button 
 						shape="Instagram"
 						color="secondary"
 						size="small"
+						style={(version == 'mobile') ? {marginRight: 2} : {}}
 						/> 
 					<Button 
 						shape="GitHub"
 						color="secondary"
 						size="small"
+						style={(version == 'mobile') ? {marginRight: 2} : {}}
 						/>        
 				</Inline>           
 			</Chunk>
@@ -75,7 +108,9 @@ export const SiteLogo = (props) => {
 	} = props;
 
 	const defaultImage = 'computer.png';
-	const activeImage = 'computer_christmas.png';
+	//const activeImage = 'computer_christmas.png';
+	const activeImage = 'computer_dinosaur.png';
+
 
 	const [imageSrc, setImageSrc] = useState(defaultImage);
 	const activateScreen = () => {
@@ -100,7 +135,7 @@ export const SiteLogo = (props) => {
 			<Head>
 				<link
 					rel="preload"
-					href="computer_christmas.png"
+					href={activeImage}
 					as="image"
 				/>
 			</Head>
@@ -160,7 +195,7 @@ export const NarrowMenu = (props) => {
 					borderTopColor: SWATCHES.border,
 				}}>
 				<View>
-					<SiteMenu />
+					<SiteMenu version="mobile" />
 				</View>
 				</Section>
 		</Stripe>
@@ -192,7 +227,7 @@ export const Layout = (props) => {
 							</Section>
 							</Link>
 							<Section border>
-								<SiteMenu />
+								<SiteMenu version="desktop" />
 							</Section>
 						</View>
 					</Stripe> 

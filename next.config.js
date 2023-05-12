@@ -10,6 +10,8 @@ module.exports = {
   
 	webpack: (config, options) => {
 
+		// no fs on client and that's ok
+		config.resolve.fallback = { fs: false };
 
 		// Transform all direct `react-native` imports to `react-native-web`
 		config.resolve.alias = {
