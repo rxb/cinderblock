@@ -81,18 +81,21 @@ export const SiteMenu = (props) => {
 						shape="Twitter"
 						color="secondary"
 						size="small"
+						href="https://twitter.com/richardboenigk"
 						style={(version == 'mobile') ? {marginRight: 2} : {}}
 						/>
 					<Button 
 						shape="Instagram"
 						color="secondary"
 						size="small"
+						href="https://instagram.com/rbgk"
 						style={(version == 'mobile') ? {marginRight: 2} : {}}
 						/> 
 					<Button 
 						shape="GitHub"
 						color="secondary"
 						size="small"
+						href="https://github.com/rxb"
 						style={(version == 'mobile') ? {marginRight: 2} : {}}
 						/>        
 				</Inline>           

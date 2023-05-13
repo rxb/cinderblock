@@ -61,11 +61,11 @@ function Page(props) {
 		NProgress.configure({ trickle: true, trickleSpeed: 400, showSpinner: false });
 		Router.onRouteChangeStart = (url) => {
 			NProgress.start();
+			dispatch(updateUi({siteMenuOverlayActive: false}));
 		}
 		Router.onRouteChangeComplete = () => {
 			NProgress.done();
 			dispatch(clearDropdowns());
-			dispatch(updateUi({siteMenuOverlayActive: false}));
 			setTimeout(() => dispatch(showDelayedToasts()), 500);
 		}
 		Router.onRouteChangeError = () => NProgress.done();
