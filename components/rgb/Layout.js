@@ -60,7 +60,7 @@ export const SiteMenu = (props) => {
 			<Chunk>
 				{ menuItems.map((m, i)=>{
 					return(
-						<Link href={m.path}>
+						<Link href={m.path} key={`menu-${i}`}>
 							<Text 
 								style={[ 
 									(version == 'mobile' && i>0) ? {marginTop: 12} : {}
@@ -211,7 +211,7 @@ export const Layout = (props) => {
 	const ui = useSelector(state => state.ui);
 
    return(
-			<Flex direction="row" flush style={{flex: 1, maxWidth: 1000, alignSelf: 'center'}}>
+			<Flex direction="row" flush style={{flex: 1, maxWidth: 1000, width: '100%', alignSelf: 'center'}}>
 				<FlexItem 
 					shrink 
 					flush 

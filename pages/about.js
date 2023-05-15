@@ -90,8 +90,6 @@ const ArticleImage = (props) => {
 
 
 
-
-
 export default function Home(props) {
 
   const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
@@ -101,18 +99,16 @@ export default function Home(props) {
         <Stripe>
             <Section>
               <Chunk>
-                <Text type="pageHead">{props.mdxSource.frontmatter.title}</Text>
+                <Text type="pageHead">About rgb.work</Text>
+              </Chunk>
+            </Section>
+            <Section>
+              <Chunk>
+                <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </Text>
               </Chunk>
               <Chunk>
-                {props.mdxSource.frontmatter.category == 'blog' &&
-                  <Text type="small" weight="strong">March 12, 2022</Text>
-                }
-                {props.mdxSource.frontmatter.category == 'project' &&
-                  <Text type="small" color="secondary">Project</Text>
-                }
-                
+                <Text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. </Text>
               </Chunk>
-              <MDXRemote {...props.mdxSource} components={mdxComponents} />
             </Section>
         </Stripe> 
 
