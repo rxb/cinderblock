@@ -50,13 +50,16 @@ export async function getStaticProps() {
   // get all posts content
   const postsPromises = mdxFiles.map( async (file, index) => {
     try{
-      const fileRead = await fs.readFile(file);
+      const fileRead = await fs.readFile(file, "utf8");
       const mdxSource = await serialize(fileRead, {parseFrontmatter: true}); 
+      const {frontmatter} = mdxSource;
+      const generatedExcerpt = fileRead.split(/---/g)[2].substring(0, 200).trim();
       const fileStats = await fs.stat(file); 
       const post = {
         file: file,
-        mdxSource,
-        date: mdxSource.frontmatter.date || fileStats.birthtime.toISOString()
+        date: fileStats.birthtime.toISOString(),
+        excerpt: generatedExcerpt,
+        ...frontmatter
       }
       return post;
     }
@@ -107,22 +110,22 @@ export default function Home(props) {
             <Section>
 
               <List 
-                items={[1,2,3,4]}
-                renderItem={()=>(
+                items={props.posts}
+                renderItem={(post)=>(
                   <Link href="/article">
                   <Flex>
                     <FlexItem>
                       <Chunk>
-                        <Text type="sectionHead">A table that reads books aloud and summarizes</Text>
+                        <Text type="sectionHead">{post.title}</Text>
                       </Chunk>
                       <Chunk>
-                        <Text type="small">Lorem ipsum dolor sit amet, adipiscing, sed do. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do</Text>
+                        <Text type="small">{post.excerpt}</Text>
                       </Chunk>
                     </FlexItem>
                     <FlexItem shrink>
                       <Chunk>
                         <Image 
-                          source={{uri: 'https://i.imgur.com/y4WUgiU.jpg'}} 
+                          source={{uri: post.image}} 
                           resizeMode="cover" 
                           style={{width: 110, height: 110, borderRadius: 4}}
                           />
