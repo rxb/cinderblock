@@ -10,6 +10,7 @@ import { logOut, logInSuccess, updateUi } from '../actions';
 import { ThemeContext, styleConfig, designConstants, initMediaProvider } from 'cinderblock';
 const { MEDIA_QUERY_PARAMS_SINGLE } = designConstants;
 const MediaProvider = initMediaProvider(MEDIA_QUERY_PARAMS_SINGLE);
+import Page from '@/components/Page';
 
 // CONFIG STYLES
 const METRICS = {
@@ -41,10 +42,12 @@ export default function App({ Component, pageProps }) {
 		<ThemeContext.Provider value={themedStyleConfig}>
 			<MediaProvider>
         <Provider store={store}>
-          <Head>
-              <meta name="viewport" content="width=device-width, initial-scale=1 shrink-to-fit=no" />
-          </Head>
-          <Component {...pageProps} />
+          <Page>
+            <Head>
+                <meta name="viewport" content="width=device-width, initial-scale=1 shrink-to-fit=no" />
+            </Head>
+            <Component {...pageProps} />
+          </Page>
         </Provider>
       </MediaProvider>
 		</ThemeContext.Provider>

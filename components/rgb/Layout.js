@@ -43,8 +43,8 @@ export const SiteMenu = (props) => {
 
 	let menuItems = [
 		{path: "/", label: "Home"},
-		{path: "/projects", label: "Projects"},
-		{path: "/blog", label: "Blog"},
+		{path: "/categories/projects", label: "Projects"},
+		{path: "/categories/blog", label: "Blog"},
 		{path: "/about", label: "About"},
 	];
 	menuItems = menuItems.map((m, i)=>{
@@ -110,9 +110,9 @@ export const SiteLogo = (props) => {
 		activeScreen = false
 	} = props;
 
-	const defaultImage = 'computer.png';
+	const defaultImage = '/computer.jpeg';
 	//const activeImage = 'computer_christmas.png';
-	const activeImage = 'computer_dinosaur.png';
+	const activeImage = '/computer_dinosaur.jpeg';
 
 
 	const [imageSrc, setImageSrc] = useState(defaultImage);

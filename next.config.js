@@ -25,8 +25,6 @@ module.exports = {
 		peerDependencies.forEach( item => {
 			config.resolve.alias[item] = path.resolve(__dirname, '.', 'node_modules', item);
 		});
-  
-		
 
 		config.resolve.extensions = [
 			'.web.js',

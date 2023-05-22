@@ -34,8 +34,10 @@ import {
 } from 'cinderblock';
 
 import Page from '@/components/Page';
-import fs from 'fs';
+import fs from 'fs/promises';
 import path from 'path';
+import dayjs from 'dayjs';
+import {glob} from 'glob'
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import {MEDIA_QUERIES_SINGLE} from 'cinderblock/styles/designConstants';
@@ -147,13 +149,43 @@ const mdxComponents = {
       img: (props) => <FullWidthAspectRatioImage {...props} />,
 };
 
+export async function getStaticPaths(){ 
+  const mdxFiles = await glob('posts/*.mdx', { cwd: process.cwd() });
+
+  // get all posts content
+  const postsPromises = mdxFiles.map( async (file, index) => {
+    try{
+      const slug = file.split('/')[1].split('.')[0];
+      const ret = {
+        params: {
+          slug: slug
+        }
+      }
+      return ret;
+    }
+    catch(e){
+      console.log(`problem loading post ${file}`);
+      console.error(e);
+    }
+  });
+  let paths = await Promise.all(postsPromises);
+  
+  return { 
+    paths,
+    fallback: false // basically swr, serve stale and regenerate in background
+  }
+}
 
 export async function getStaticProps({ params }) {
-  const fileRead = fs.readFileSync(path.resolve(process.cwd(), 'posts/test.mdx'));
+  const { slug } = params;
+  const fileRead = await fs.readFile(path.resolve(process.cwd(), `posts/${slug}.mdx`));
+  const fileStats = await fs.stat(`posts/${slug}.mdx`);
   const mdxSource = await serialize(fileRead, {parseFrontmatter: true});
+  const date = mdxSource.frontmatter.date || fileStats.birthtime.toISOString()
   return {
     props: {
-      mdxSource
+      mdxSource,
+      date
     },
   };
 };
@@ -165,7 +197,7 @@ export default function Home(props) {
   const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
 
   return (
-    <Page>
+    <>
         <Stripe>
             <Section>
               <Chunk>
@@ -173,7 +205,7 @@ export default function Home(props) {
               </Chunk>
               <Chunk>
                 {props.mdxSource.frontmatter.category == 'blog' &&
-                  <Text type="small" weight="strong">March 12, 2022</Text>
+                  <Text type="small" weight="strong">{dayjs(props.date).format('MMMM DD, YYYY')}</Text>
                 }
                 {props.mdxSource.frontmatter.category == 'project' &&
                   <Text type="small" color="secondary">Project</Text>
@@ -184,7 +216,7 @@ export default function Home(props) {
             </Section>
         </Stripe> 
 
-    </Page>
+    </>
   )
 }
 

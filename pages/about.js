@@ -95,7 +95,7 @@ export default function Home(props) {
   const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
 
   return (
-    <Page>
+    <>
         <Stripe>
             <Section>
               <Chunk>
@@ -112,7 +112,7 @@ export default function Home(props) {
             </Section>
         </Stripe> 
 
-    </Page>
+    </>
   )
 }
 
