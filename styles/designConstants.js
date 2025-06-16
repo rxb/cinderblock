@@ -79,10 +79,16 @@ export const METRICS = {
 		return this.bigSize * 1.4
 	},
 	get sectionHeadSize() {
-		return this.base * 1.5
+		return this.base * 1.35
 	},
 	get sectionHeadLineHeight() {
 		return this.sectionHeadSize * 1.25
+	},
+	get sectionHeadAtLargeSize() {
+		return this.base * 1.5
+	},
+	get sectionHeadAtLargeLineHeight() {
+		return this.sectionHeadAtLargeSize * 1.25
 	},
 	get pageHeadSize() {
 		return this.base * 2.25 

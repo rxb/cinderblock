@@ -110,6 +110,11 @@ const buildStyles = (METRICS, SWATCHES) => {
 			}
 		},
 
+
+		imageRatio: {
+
+		},
+
 		
 		// for sets of chunks with no possibility of sections
 		// basically, inside simple, small cards
@@ -326,9 +331,11 @@ const buildStyles = (METRICS, SWATCHES) => {
 		// CHIP
 		chip: {
 			backgroundColor: '#eee',
-			paddingVertical: space*0.5,
-			paddingHorizontal: space,
+			textTransform: 'capitalize',
+			paddingVertical: 4,
+			paddingHorizontal: 8,
 			borderRadius: 20,
+			marginVertical: METRICS.pseudoLineHeight,
 			flex: 0,
 			flexBasis: 0,
 			minHeight: '-webkit-min-content',
@@ -336,7 +343,9 @@ const buildStyles = (METRICS, SWATCHES) => {
 			minWidth: '-webkit-min-content'
 		},
 		chipText: {
-			textAlign: 'center'
+			textAlign: 'center',
+			fontSize: METRICS.microSize,
+			lineHeight: METRICS.microLineHeight,
 		},
 
 		// CARD
@@ -624,6 +633,10 @@ const buildStyles = (METRICS, SWATCHES) => {
 			lineHeight: METRICS.sectionHeadLineHeight,
 			fontWeight: METRICS.textSectionHeadWeight,
 			letterSpacing: '-.001em',
+			[MEDIA_QUERIES_SINGLE.large]: {
+            fontSize: METRICS.sectionHeadAtLargeSize,
+				lineHeight: METRICS.sectionHeadAtLargeLineHeight,
+        },
 		},
 		textPageHead: {
 			fontFamily: METRICS.fontFamily,
