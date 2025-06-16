@@ -105,6 +105,7 @@ const ArticleGithub = (props) => {
   const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
 
   return(
+    <Chunk>
     <Card style={{backgroundColor: SWATCHES.shade, borderWidth: 0}}>
       <Section>
         <Flex>
@@ -136,6 +137,7 @@ const ArticleGithub = (props) => {
         </Flex>
       </Section>
     </Card>
+    </Chunk>
   );
 }
 
@@ -213,6 +215,10 @@ export default function Home(props) {
                 
               </Chunk>
               <MDXRemote {...props.mdxSource} components={mdxComponents} />
+            </Section>
+            <Section border>
+                <Text>More articles</Text>
+
             </Section>
         </Stripe> 
 

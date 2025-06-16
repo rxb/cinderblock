@@ -44,7 +44,7 @@ import {MEDIA_QUERIES_SINGLE} from 'cinderblock/styles/designConstants';
 import StyleSheet from 'react-native-media-query';
 import POSTS_CONFIG from "../posts/config.json" assert { type: "json" };
 
-
+import {PostList} from '@/components/rgb/Posts';
 
 export async function getStaticProps({ params }) {
   const mdxFiles = await glob('posts/*.mdx', { cwd: process.cwd() });
@@ -110,6 +110,10 @@ export default function Home(props) {
   return (
     <>
         <Stripe>
+
+            <PostList posts={props.posts} />
+
+            {/* 
             <Section>
 
               <List 
@@ -144,6 +148,7 @@ export default function Home(props) {
                 )}
                 />
             </Section>
+            */}
         </Stripe> 
 
     </>

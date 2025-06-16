@@ -33,7 +33,6 @@ import {
 	designConstants
 } from 'cinderblock';
 
-import Page from '@/components/Page';
 import fs from 'fs/promises';
 import dayjs from 'dayjs';
 import path from 'path';
@@ -42,6 +41,9 @@ import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
 import {MEDIA_QUERIES_SINGLE} from 'cinderblock/styles/designConstants';
 import StyleSheet from 'react-native-media-query';
+
+import {PostList} from '@/components/rgb/Posts';
+
 
 export async function getStaticPaths(){ 
   
@@ -69,7 +71,7 @@ export async function getStaticProps({ params }) {
       const fileRead = await fs.readFile(file, "utf8");
       const mdxSource = await serialize(fileRead, {parseFrontmatter: true}); 
       const {frontmatter} = mdxSource;
-      const generatedExcerpt = fileRead.split(/---/g)[2].substring(0, 200).trim()+"…";
+      const generatedExcerpt = fileRead.split(/---/g)[2].substring(0, 140).trim()+"…";
       const fileStats = await fs.stat(file);
       const slug = file.split('/')[1].split('.')[0];
       const post = {
@@ -130,35 +132,9 @@ export default function Home(props) {
                   <Text type="pageHead">{pageTitle}</Text>
                </Chunk>
             </Section>
-            <Section>
 
-              <List 
-                items={props.posts}
-                renderItem={(post)=>(
-                  <Link href={`/articles/${post.slug}`}>
-                  <Flex>
-                    <FlexItem>
-                      <Chunk>
-                        <Text type="sectionHead">{post.title}</Text>
-                      </Chunk>
-                      <Chunk>
-                        <Text type="small">{post.excerpt}</Text>
-                      </Chunk>
-                    </FlexItem>
-                    <FlexItem shrink>
-                      <Chunk>
-                        <Image 
-                          source={{uri: post.image}} 
-                          resizeMode="cover" 
-                          style={{width: 110, height: 110, borderRadius: 4}}
-                          />
-                      </Chunk>
-                    </FlexItem>
-                  </Flex>
-                  </Link>
-                )}
-                />
-            </Section>
+            <PostList posts={props.posts} />
+
         </Stripe> 
 
     </>
