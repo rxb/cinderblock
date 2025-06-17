@@ -1,0 +1,43 @@
+{
+  "name": "create-cinderblock-app",
+  "version": "0.1.0",
+  "description": "Create a new Cinderblock app with zero configuration",
+  "main": "src/index.js",
+  "bin": {
+    "create-cinderblock-app": "bin/create-cinderblock-app.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "cinderblock",
+    "nextjs",
+    "react",
+    "design-system",
+    "starter",
+    "template",
+    "cli"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "dependencies": {
+    "commander": "^11.0.0",
+    "prompts": "^2.4.2",
+    "chalk": "^4.1.2",
+    "fs-extra": "^11.1.1",
+    "validate-npm-package-name": "^5.0.0",
+    "cross-spawn": "^7.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rxb/cinderblock.git",
+    "directory": "packages/create-cinderblock-app"
+  },
+  "bugs": {
+    "url": "https://github.com/rxb/cinderblock/issues"
+  },
+  "homepage": "https://github.com/rxb/cinderblock#readme"
+}
