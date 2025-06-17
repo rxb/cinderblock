@@ -33,7 +33,7 @@ import {
 	TextInput,
 	View,
 	ThemeContext
-} from 'cinderblock';
+} from '@cinderblock/design-system';
 
 
 export const SiteMenu = (props) => {

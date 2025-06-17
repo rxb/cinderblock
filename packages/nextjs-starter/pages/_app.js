@@ -7,7 +7,7 @@ import { useStore } from '../store';
 import { logOut, logInSuccess, updateUi } from '../actions';
 
 // STYLE
-import { ThemeContext, styleConfig, designConstants, initMediaProvider } from 'cinderblock';
+import { ThemeContext, styleConfig, designConstants, initMediaProvider } from '@cinderblock/design-system';
 const { MEDIA_QUERY_PARAMS_SINGLE } = designConstants;
 const MediaProvider = initMediaProvider(MEDIA_QUERY_PARAMS_SINGLE);
 import Page from '@/components/Page';

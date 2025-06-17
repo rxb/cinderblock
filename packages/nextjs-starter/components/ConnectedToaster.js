@@ -11,7 +11,7 @@ import {
 	removeToast
 } from '../actions';
 
-import { Toaster } from 'cinderblock';
+import { Toaster } from '@cinderblock/design-system';
 
 const ConnectedToaster = (props) => (<Toaster {...props} />);
 const mapStateToProps = (state, ownProps) => ({ toasts: state.toasts });

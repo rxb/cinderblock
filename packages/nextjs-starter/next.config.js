@@ -6,7 +6,7 @@ module.exports = {
 
   // nextjs 13 can transpile packages
   // https://beta.nextjs.org/docs/api-reference/next.config.js#transpilepackages
-  transpilePackages: ['cinderblock', 'react-native-media-query', 'react-native-web'],
+  transpilePackages: ['@cinderblock/design-system', 'react-native-media-query', 'react-native-web'],
   
 	webpack: (config, options) => {
 

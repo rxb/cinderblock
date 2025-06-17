@@ -45,7 +45,7 @@ import {
    TextInput,
    View,
    ThemeContext
-} from 'cinderblock';
+} from '@cinderblock/design-system';
 import { RegisterForm, LoginForm, RegisterHeader, LoginHeader } from 'components/authComponents';
 
 

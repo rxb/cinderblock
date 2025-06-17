@@ -2,7 +2,7 @@ import { Children } from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 import { AppRegistry } from 'react-native'
 import { flush } from 'react-native-media-query';
-import { ThemeContext, styleConfig, designConstants, initMediaProvider } from 'cinderblock';
+import { ThemeContext, styleConfig, designConstants, initMediaProvider } from '@cinderblock/design-system';
 const { BREAKPOINT_SIZES } = designConstants;
 
 class MyDocument extends Document {

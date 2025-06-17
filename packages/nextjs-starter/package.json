@@ -12,7 +12,7 @@
     "babel-plugin-module-resolver": "^5.0.0",
     "babel-plugin-react-native-web": "^0.19.0",
     "body-scroll-lock": "^3.1.5",
-    "cinderblock": "file:~/Repos/cinderblock",
+    "@cinderblock/design-system": "workspace:*",
     "dayjs": "^1.11.7",
     "glob": "^10.2.3",
     "gray-matter": "^4.0.3",
