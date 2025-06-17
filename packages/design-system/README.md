@@ -1,3 +1,5 @@
+![Cinderblock Design System](./cinderblock.png)
+
 # Cinderblock Design System
 
 A comprehensive React/React Native Web design system focused on structural hierarchy and responsive design.
