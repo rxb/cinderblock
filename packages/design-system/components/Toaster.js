@@ -9,6 +9,150 @@ import ThemeContext from '../ThemeContext';
 
 import {EASE } from '../styles/designConstants';
 
+/**
+ * Toast notification system with automatic dismissal and animations.
+ * Displays temporary notification messages with slide-in/out animations.
+ * 
+ * The Toaster system manages a queue of toast notifications, each with
+ * configurable timing, auto-hide behavior, and dismissal options. Toasts
+ * slide in from the bottom with smooth animations and can be manually
+ * dismissed or automatically hidden after a delay.
+ * 
+ * The system consists of:
+ * - Toaster: Container component that renders all active toasts
+ * - Toast: Individual notification with animation and timing logic
+ * 
+ * @example
+ * // Basic toaster implementation
+ * function NotificationSystem() {
+ *   const [toasts, setToasts] = useState([]);
+ * 
+ *   const addToast = (message, options = {}) => {
+ *     const id = Date.now();
+ *     const toast = {
+ *       id,
+ *       message,
+ *       visible: true,
+ *       autoHide: options.autoHide !== false,
+ *       hideDelay: options.hideDelay || 2500,
+ *       ...options
+ *     };
+ *     setToasts(prev => [...prev, toast]);
+ *   };
+ * 
+ *   const hideToast = (id) => {
+ *     setToasts(prev => prev.map(t => t.id === id ? { ...t, visible: false } : t));
+ *   };
+ * 
+ *   const removeToast = (id) => {
+ *     setToasts(prev => prev.filter(t => t.id !== id));
+ *   };
+ * 
+ *   return (
+ *     <View>
+ *       {/* Your app content */}
+ *       <Button onPress={() => addToast('Success! Changes saved.')}>Save</Button>
+ *       <Button onPress={() => addToast('Error: Please try again.', { hideDelay: 5000 })}>
+ *         Trigger Error
+ *       </Button>
+ *       
+ *       {/* Toast container */}
+ *       <Toaster
+ *         toasts={toasts}
+ *         hideToast={hideToast}
+ *         removeToast={removeToast}
+ *       />
+ *     </View>
+ *   );
+ * }
+ * 
+ * @example
+ * // Form validation with toast feedback
+ * function FormWithToasts() {
+ *   const { addToast } = useToaster(); // Assuming a toast context
+ *   const formState = useFormState({
+ *     initialFields: { email: '', password: '' }
+ *   });
+ * 
+ *   const handleSubmit = async () => {
+ *     try {
+ *       await api.login(formState.fields);
+ *       addToast('Successfully signed in! Welcome back.', {
+ *         hideDelay: 3000
+ *       });
+ *     } catch (error) {
+ *       if (error.code === 'invalid_credentials') {
+ *         addToast('Invalid email or password. Please try again.', {
+ *           hideDelay: 5000
+ *         });
+ *       } else {
+ *         addToast('Something went wrong. Please try again later.', {
+ *           autoHide: false // Requires manual dismissal
+ *         });
+ *       }
+ *     }
+ *   };
+ * 
+ *   return (
+ *     <Section>
+ *       <TextInput
+ *         value={formState.getFieldValue('email')}
+ *         onChange={(value) => formState.setFieldValue('email', value)}
+ *         placeholder="Email"
+ *       />
+ *       
+ *       <TextInput
+ *         value={formState.getFieldValue('password')}
+ *         onChange={(value) => formState.setFieldValue('password', value)}
+ *         placeholder="Password"
+ *         secureTextEntry
+ *       />
+ *       
+ *       <Button onPress={handleSubmit}>Sign In</Button>
+ *     </Section>
+ *   );
+ * }
+ * 
+ * @example
+ * // Custom toast types with different timing
+ * function ToastVariations() {
+ *   const { addToast } = useToaster();
+ * 
+ *   const showSuccess = () => {
+ *     addToast('Operation completed successfully!', {
+ *       hideDelay: 2000 // Quick success message
+ *     });
+ *   };
+ * 
+ *   const showWarning = () => {
+ *     addToast('Warning: This action cannot be undone.', {
+ *       hideDelay: 4000 // Longer warning
+ *     });
+ *   };
+ * 
+ *   const showError = () => {
+ *     addToast('Error: Please contact support if this persists.', {
+ *       autoHide: false // Requires manual dismissal
+ *     });
+ *   };
+ * 
+ *   const showInfo = () => {
+ *     addToast('Tip: You can customize these settings in your profile.', {
+ *       hideDelay: 6000 // Longer info message
+ *     });
+ *   };
+ * 
+ *   return (
+ *     <Section>
+ *       <Button onPress={showSuccess}>Success Toast</Button>
+ *       <Button onPress={showWarning}>Warning Toast</Button>
+ *       <Button onPress={showError}>Error Toast</Button>
+ *       <Button onPress={showInfo}>Info Toast</Button>
+ *     </Section>
+ *   );
+ * }
+ */
+
 
 const duration = 200;
 

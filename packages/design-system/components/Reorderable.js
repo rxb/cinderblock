@@ -1,3 +1,204 @@
+/**
+ * Drag-and-drop reorderable list component using react-dnd.
+ * Enables users to reorder items by dragging them to new positions.
+ * 
+ * Reorderable provides drag-and-drop functionality for list items using
+ * react-dnd. It handles the complex drag detection, hover calculations,
+ * and reordering logic. Items can be dragged vertically to new positions
+ * with smooth visual feedback and performance optimizations.
+ * 
+ * Platform Support:
+ * - Web: Full support using HTML5 drag-and-drop backend
+ * - React Native: Requires react-dnd-react-native-backend (not included)
+ * 
+ * Dependencies:
+ * - react-dnd
+ * - react-dnd-html5-backend (for web)
+ * - DndProvider must wrap the component tree
+ * 
+ * @param {Object} props - Component props
+ * @param {string|number} props.id - Unique identifier for the item
+ * @param {number} props.index - Current position index of the item
+ * @param {Function} props.moveItem - Callback to handle item reordering
+ * @param {React.ReactNode} props.children - Content to make draggable
+ * 
+ * @example
+ * // Basic reorderable todo list
+ * function TodoList() {
+ *   const [todos, setTodos] = useState([
+ *     { id: '1', text: 'Learn React', completed: false },
+ *     { id: '2', text: 'Build an app', completed: false },
+ *     { id: '3', text: 'Deploy to production', completed: false }
+ *   ]);
+ * 
+ *   const moveItem = useCallback((dragIndex, hoverIndex) => {
+ *     const dragItem = todos[dragIndex];
+ *     const newTodos = [...todos];
+ *     newTodos.splice(dragIndex, 1);
+ *     newTodos.splice(hoverIndex, 0, dragItem);
+ *     setTodos(newTodos);
+ *   }, [todos]);
+ * 
+ *   return (
+ *     <DndProvider backend={HTML5Backend}>
+ *       <Section>
+ *         <Chunk><Text type="title">Reorderable Todo List</Text></Chunk>
+ *         
+ *         {todos.map((todo, index) => (
+ *           <Reorderable
+ *             key={todo.id}
+ *             id={todo.id}
+ *             index={index}
+ *             moveItem={moveItem}
+ *           >
+ *             <Chunk>
+ *               <Card>
+ *                 <Section>
+ *                   <Flex direction="row" align="center">
+ *                     <FlexItem>
+ *                       <Icon shape="Menu" color="gray" />
+ *                     </FlexItem>
+ *                     <FlexItem grow>
+ *                       <Text>{todo.text}</Text>
+ *                     </FlexItem>
+ *                     <FlexItem shrink>
+ *                       <CheckBox
+ *                         value={todo.completed}
+ *                         onChange={(completed) => updateTodo(todo.id, { completed })}
+ *                       />
+ *                     </FlexItem>
+ *                   </Flex>
+ *                 </Section>
+ *               </Card>
+ *             </Chunk>
+ *           </Reorderable>
+ *         ))}
+ *       </Section>
+ *     </DndProvider>
+ *   );
+ * }
+ * 
+ * @example
+ * // Reorderable image gallery
+ * function ImageGallery() {
+ *   const [images, setImages] = useState([
+ *     { id: 'img1', url: '/photo1.jpg', title: 'Sunset' },
+ *     { id: 'img2', url: '/photo2.jpg', title: 'Mountain' },
+ *     { id: 'img3', url: '/photo3.jpg', title: 'Ocean' }
+ *   ]);
+ * 
+ *   const moveImage = useCallback((dragIndex, hoverIndex) => {
+ *     const dragImage = images[dragIndex];
+ *     const newImages = [...images];
+ *     newImages.splice(dragIndex, 1);
+ *     newImages.splice(hoverIndex, 0, dragImage);
+ *     setImages(newImages);
+ *   }, [images]);
+ * 
+ *   return (
+ *     <DndProvider backend={HTML5Backend}>
+ *       <Section>
+ *         <Chunk><Text type="title">Drag to Reorder Gallery</Text></Chunk>
+ *         
+ *         <Flex direction="row" wrap>
+ *           {images.map((image, index) => (
+ *             <Reorderable
+ *               key={image.id}
+ *               id={image.id}
+ *               index={index}
+ *               moveItem={moveImage}
+ *             >
+ *               <FlexItem basis="33%">
+ *                 <Card style={{ margin: 8, cursor: 'move' }}>
+ *                   <ImageRatio
+ *                     image={image.url}
+ *                     imageHeight={{ small: 120, medium: 150 }}
+ *                   />
+ *                   <Section>
+ *                     <Chunk><Text align="center">{image.title}</Text></Chunk>
+ *                   </Section>
+ *                 </Card>
+ *               </FlexItem>
+ *             </Reorderable>
+ *           ))}
+ *         </Flex>
+ *       </Section>
+ *     </DndProvider>
+ *   );
+ * }
+ * 
+ * @example
+ * // Reorderable navigation menu
+ * function EditableNavigation() {
+ *   const [navItems, setNavItems] = useState([
+ *     { id: 'home', label: 'Home', href: '/' },
+ *     { id: 'about', label: 'About', href: '/about' },
+ *     { id: 'services', label: 'Services', href: '/services' },
+ *     { id: 'contact', label: 'Contact', href: '/contact' }
+ *   ]);
+ * 
+ *   const moveNavItem = useCallback((dragIndex, hoverIndex) => {
+ *     const dragItem = navItems[dragIndex];
+ *     const newNavItems = [...navItems];
+ *     newNavItems.splice(dragIndex, 1);
+ *     newNavItems.splice(hoverIndex, 0, dragItem);
+ *     setNavItems(newNavItems);
+ *   }, [navItems]);
+ * 
+ *   const saveOrder = () => {
+ *     // Save the new order to your API
+ *     api.updateNavigationOrder(navItems.map(item => item.id));
+ *   };
+ * 
+ *   return (
+ *     <DndProvider backend={HTML5Backend}>
+ *       <Section>
+ *         <Chunk>
+ *           <Flex direction="row" align="center">
+ *             <FlexItem grow>
+ *               <Text type="title">Edit Navigation Order</Text>
+ *             </FlexItem>
+ *             <FlexItem shrink>
+ *               <Button onPress={saveOrder}>Save Order</Button>
+ *             </FlexItem>
+ *           </Flex>
+ *         </Chunk>
+ *         
+ *         {navItems.map((item, index) => (
+ *           <Reorderable
+ *             key={item.id}
+ *             id={item.id}
+ *             index={index}
+ *             moveItem={moveNavItem}
+ *           >
+ *             <Chunk>
+ *               <Card>
+ *                 <Section>
+ *                   <Flex direction="row" align="center">
+ *                     <FlexItem shrink>
+ *                       <Icon shape="GripVertical" color="gray" />
+ *                     </FlexItem>
+ *                     <FlexItem grow>
+ *                       <Text>{item.label}</Text>
+ *                       <Text color="hint" size="small">{item.href}</Text>
+ *                     </FlexItem>
+ *                     <FlexItem shrink>
+ *                       <Button type="secondary" size="small">
+ *                         Edit
+ *                       </Button>
+ *                     </FlexItem>
+ *                   </Flex>
+ *                 </Section>
+ *               </Card>
+ *             </Chunk>
+ *           </Reorderable>
+ *         ))}
+ *       </Section>
+ *     </DndProvider>
+ *   );
+ * }
+ */
+
 // REORDERABLE
 // this only works on web, at the moment
 // it would need a new react-dnd "backend" for react native

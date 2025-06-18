@@ -1,3 +1,58 @@
+/**
+ * DEPRECATED: Legacy menu component with click-outside behavior.
+ * 
+ * This component provides basic dropdown menu functionality but has limitations
+ * with React Native compatibility due to DOM dependencies. The Dropdowner component
+ * is recommended as a replacement for most use cases as it provides centralized
+ * state management and better cross-platform support.
+ * 
+ * Note: This component relies on DOM methods and click event handling that
+ * won't work in React Native environments. Use native menu components or
+ * Dropdowner for React Native applications.
+ * 
+ * @deprecated Use Dropdowner component instead for better state management
+ * 
+ * @example
+ * // Basic menu usage (deprecated pattern)
+ * function UserMenu() {
+ *   const menuRef = useRef(null);
+ * 
+ *   return (
+ *     <View>
+ *       <Touch onPress={() => menuRef.current.toggle()}>
+ *         <Text>User Menu</Text>
+ *       </Touch>
+ *       
+ *       <Menu ref={menuRef}>
+ *         <Link href="/profile">Profile</Link>
+ *         <Link href="/settings">Settings</Link>
+ *         <Touch onPress={handleLogout}>
+ *           <Text>Sign Out</Text>
+ *         </Touch>
+ *       </Menu>
+ *     </View>
+ *   );
+ * }
+ * 
+ * @example
+ * // Recommended alternative using Dropdowner
+ * function ModernUserMenu() {
+ *   const dropdown = (
+ *     <Section>
+ *       <DropdownItem href="/profile">Profile</DropdownItem>
+ *       <DropdownItem href="/settings">Settings</DropdownItem>
+ *       <DropdownItem onPress={handleLogout}>Sign Out</DropdownItem>
+ *     </Section>
+ *   );
+ * 
+ *   return (
+ *     <DropdownTouch dropdown={dropdown}>
+ *       <Text>User Menu</Text>
+ *     </DropdownTouch>
+ *   );
+ * }
+ */
+
 // MENU
 // this outclick stuff won't work on react native
 // there's a lot that is counting on DOM stuff

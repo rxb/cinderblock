@@ -5,7 +5,14 @@ import { View, TextInput as TextInputWeb } from 'react-native-web';
 import Text from './Text';
 import ThemeContext from '../ThemeContext';
 
-
+/**
+ * Debounces function calls to prevent excessive updates during rapid user input.
+ * Used for character counter updates to avoid performance issues.
+ * 
+ * @param {Function} callback - Function to debounce
+ * @param {number} [time=60] - Delay in milliseconds
+ * @returns {Function} Debounced function
+ */
 function debounce(callback, time = 60) {
 	var timeout;
 	return function() {
@@ -22,24 +29,65 @@ function debounce(callback, time = 60) {
 }
 
 
+/**
+ * Advanced text input component with auto-expansion, character counting, and focus states.
+ * Provides enhanced functionality beyond basic HTML inputs for forms and user interactions.
+ * 
+ * Features:
+ * - Auto-expanding height for multiline inputs
+ * - Character counter with color feedback (warns when approaching limit)
+ * - Focus state management and styling
+ * - Debounced updates for performance
+ * - Consistent styling with design system
+ * 
+ * @example
+ * // Basic single-line input
+ * <TextInput 
+ *   value={name}
+ *   onChange={setName}
+ *   placeholder="Enter your name"
+ * />
+ * 
+ * @example
+ * // Multiline input with character limit
+ * <TextInput 
+ *   multiline
+ *   value={message}
+ *   onChange={setMessage}
+ *   placeholder="Write your message..."
+ *   maxLength={500}
+ *   showCounter
+ * />
+ * 
+ * @example
+ * // Controlled input with validation
+ * <TextInput 
+ *   value={email}
+ *   onChange={setEmail}
+ *   onBlur={validateEmail}
+ *   placeholder="your@email.com"
+ *   autoCapitalize="none"
+ * />
+ */
 class TextInput extends React.Component{
 	static defaultProps = {
-		autoExpand: true,
-		onChange: ()=>{},
-		onFocus: () => {},
-		onBlur: () => {},
-		updateVersion: 0,
-		value: '',
+		autoExpand: true,    // Auto-expand height for multiline inputs
+		onChange: ()=>{},    // Value change callback
+		onFocus: () => {},   // Focus event callback
+		onBlur: () => {},    // Blur event callback
+		updateVersion: 0,    // Force update trigger
+		value: '',           // Input value
 	}
 
 	constructor(props){
 		super(props);
 		this.state = {
-			focus: false,
-			height: 0,
-			count: 0,
-			countColor: 'secondary'
+			focus: false,           // Track input focus state for styling
+			height: 0,              // Current height for auto-expanding inputs
+			count: 0,               // Character count for counter display
+			countColor: 'secondary' // Counter color ('secondary', 'warning', 'error')
 		}
+		// Bind event handlers to component instance
 		this.onFocus = this.onFocus.bind(this);
 		this.onBlur = this.onBlur.bind(this);
 		this.onChange = this.onChange.bind(this);

@@ -12,37 +12,48 @@ import Bounce from './Bounce';
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1); 
 
+/**
+ * Generates CSS class names for Button component styling.
+ * Handles responsive variants that affect button width and behavior.
+ * 
+ * @param {Object} props - Button component props
+ * @returns {Object} Object with buttonStyleKeys and textStyleKeys arrays
+ */
 const getStyleKeys = (props) => {
 
 	const {
-		color = 'primary',
-		size = 'medium',
-		inverted,
-		variant,
+		color = 'primary',      // Button color theme ('primary', 'secondary', etc.)
+		size = 'medium',        // Button size ('small', 'medium', 'large')
+		inverted,               // Boolean - use inverted color scheme
+		variant,                // Responsive variant object for width/behavior
 	} = props;
 
 	const invertedModifier = (inverted) ? 'Inverted' : '';
+	
+	// Map button size to text type for consistent typography
 	const textType = {
 		small: "small",
-		medium: "body",
+		medium: "body", 
 		large: "big"
 	}[size];
 
-	// BUTTON 
+	// BUTTON CONTAINER STYLES
+	// Generates classes like: 'button', 'button--medium', 'button--grow__small', 'button--primary'
 	const buttonStyleKeys = [
-		'button',
-		`button--${size}`,
-		...getStyleKeysForMediaQueryVariants("button--", variant),
-		...[color ? `button--${color}${invertedModifier}` : undefined ]
+		'button',                    // Base button styles
+		`button--${size}`,          // Size-specific styles (padding, height, etc.)
+		...getStyleKeysForMediaQueryVariants("button--", variant), // Responsive width behavior
+		...[color ? `button--${color}${invertedModifier}` : undefined ] // Color theme styles
 	];
 
-	// BUTTON TEXT
+	// BUTTON TEXT STYLES  
+	// Generates classes like: 'text', 'textBody', 'buttonText', 'buttonText--primary'
 	const textStyleKeys = [
-		'text',
-		...[textType ? `text${TEXT_TYPES[textType]}` : undefined ],
-		'buttonText',
-		...getStyleKeysForMediaQueryVariants("buttonText--", variant),
-		...[color ? `buttonText--${color}${invertedModifier}` : undefined ],
+		'text',                      // Base text styles
+		...[textType ? `text${TEXT_TYPES[textType]}` : undefined ], // Size-based typography
+		'buttonText',               // Button-specific text styles
+		...getStyleKeysForMediaQueryVariants("buttonText--", variant), // Responsive text behavior
+		...[color ? `buttonText--${color}${invertedModifier}` : undefined ], // Color-specific text styles
 	];
 
 	return { buttonStyleKeys, textStyleKeys }
@@ -71,24 +82,28 @@ const Button = (props) => {
 	} = props
 
 	
-	// width is shorthand for variants
-	// this is pretty janky
-	// maybe reconsider and do like list
+	// WIDTH SHORTHAND SYSTEM
+	// The 'width' prop is converted to responsive variant objects for convenience
+	// This provides common responsive button patterns without verbose variant objects
 	let variant;
 	if(!props.variant){
 		switch(width){
 			case 'snap':
+				// 'snap': full-width on mobile, shrink-to-content on desktop
 				variant = {small: 'grow', medium: 'shrink'};
 				break;
 			case 'full':
+				// 'full': full-width on all screen sizes
 				variant = {small: 'grow'};
 				break;
 			default:
+				// default: shrink-to-content on all screen sizes
 				variant = {small: 'shrink'};
 				break;
 		}
 	}
 	else{
+		// If explicit variant provided, use that instead of width shorthand
 		variant = props.variant
 	}
 

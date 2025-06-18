@@ -1,3 +1,138 @@
+/**
+ * Advanced dropdown system with centralized state management and positioning.
+ * Provides reusable dropdown menus with automatic positioning and animations.
+ * 
+ * The Dropdowner system consists of three main components:
+ * - Dropdowner: Container that renders all active dropdowns
+ * - DropdownTouch: Trigger component that opens dropdowns
+ * - DropdownItem: Individual menu items with link/action support
+ * 
+ * This system handles complex positioning logic, click-outside detection,
+ * and coordinated state management across multiple dropdowns. It replaces
+ * the legacy Menu component with better architecture.
+ * 
+ * Note: Uses DOM methods for positioning and click detection. For React Native,
+ * consider using native menu components or adapting the positioning logic.
+ * 
+ * @example
+ * // Complete dropdown implementation
+ * function UserMenuExample() {
+ *   // This would typically be managed by Redux or context
+ *   const [dropdowns, setDropdowns] = useState([]);
+ * 
+ *   const addDropdown = (content, position) => {
+ *     setDropdowns(prev => [...prev, { ...position, content, visible: true }]);
+ *   };
+ * 
+ *   const hideDropdown = (id) => {
+ *     setDropdowns(prev => prev.map(d => d.id === id ? { ...d, visible: false } : d));
+ *   };
+ * 
+ *   const removeDropdown = (id) => {
+ *     setDropdowns(prev => prev.filter(d => d.id !== id));
+ *   };
+ * 
+ *   const clearDropdowns = () => {
+ *     setDropdowns([]);
+ *   };
+ * 
+ *   const userMenu = (
+ *     <Section>
+ *       <DropdownItem href="/profile">
+ *         <Text>View Profile</Text>
+ *       </DropdownItem>
+ *       <DropdownItem href="/settings">
+ *         <Text>Settings</Text>
+ *       </DropdownItem>
+ *       <DropdownItem onPress={handleLogout}>
+ *         <Text>Sign Out</Text>
+ *       </DropdownItem>
+ *     </Section>
+ *   );
+ * 
+ *   return (
+ *     <View>
+ *       {/* Dropdown trigger */}
+ *       <DropdownTouch
+ *         dropdown={userMenu}
+ *         dropdowns={dropdowns}
+ *         addDropdown={addDropdown}
+ *         hideDropdown={hideDropdown}
+ *         clearDropdowns={clearDropdowns}
+ *       >
+ *         <Flex direction="row" align="center">
+ *           <Avatar size="small" />
+ *           <Icon shape="ChevronDown" size="small" />
+ *         </Flex>
+ *       </DropdownTouch>
+ * 
+ *       {/* Dropdown container */}
+ *       <Dropdowner
+ *         dropdowns={dropdowns}
+ *         hideDropdown={hideDropdown}
+ *         removeDropdown={removeDropdown}
+ *       />
+ *     </View>
+ *   );
+ * }
+ * 
+ * @example
+ * // Multiple dropdown triggers
+ * function NavigationWithDropdowns() {
+ *   const productsMenu = (
+ *     <Section>
+ *       <DropdownItem href="/products/software">
+ *         <Text>Software</Text>
+ *       </DropdownItem>
+ *       <DropdownItem href="/products/hardware">
+ *         <Text>Hardware</Text>
+ *       </DropdownItem>
+ *       <DropdownItem href="/products/services">
+ *         <Text>Services</Text>
+ *       </DropdownItem>
+ *     </Section>
+ *   );
+ * 
+ *   const helpMenu = (
+ *     <Section>
+ *       <DropdownItem href="/docs">
+ *         <Text>Documentation</Text>
+ *       </DropdownItem>
+ *       <DropdownItem href="/support">
+ *         <Text>Support</Text>
+ *       </DropdownItem>
+ *       <DropdownItem href="/contact">
+ *         <Text>Contact Us</Text>
+ *       </DropdownItem>
+ *     </Section>
+ *   );
+ * 
+ *   return (
+ *     <Header>
+ *       <Flex direction="row" align="center">
+ *         <FlexItem><Text type="title">Logo</Text></FlexItem>
+ *         
+ *         <FlexItem grow justify="end">
+ *           <Inline>
+ *             <DropdownTouch dropdown={productsMenu}>
+ *               <Text>Products ↓</Text>
+ *             </DropdownTouch>
+ *             
+ *             <Link href="/about">About</Link>
+ *             
+ *             <DropdownTouch dropdown={helpMenu}>
+ *               <Text>Help ↓</Text>
+ *             </DropdownTouch>
+ *           </Inline>
+ *         </FlexItem>
+ *       </Flex>
+ *       
+ *       <Dropdowner dropdowns={dropdowns} />
+ *     </Header>
+ *   );
+ * }
+ */
+
 // DROPDOWN
 // this outclick stuff won't work on react native
 // there's a lot that is counting on DOM stuff

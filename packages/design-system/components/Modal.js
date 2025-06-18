@@ -17,41 +17,54 @@ import { EASE } from '../styles/designConstants';
 
 import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
-/*
-
-know that there is an input bug in ios versions < 11.3
-fixed positioning gets weird
-
-*/
-
-
-
-/*
-
-/////////////////////////
-potential redux version
-
-// state shape
-modals: [
-	{id: id, content: content, status: showing / hiding }
-]
-
-const id = id;
-dispatch(showModal(id, content));
-// mounts modal hidden then triggers animation to reveal
-
-dispatch(hideModal(id));
-// animates hiding, then triggers
-
-dispatch(removeModal(id));
-
-
-/////////////////////////
-alternate way is to have a skeleton modal just hanging out and waiting to be popped
-
-*/
-
-
+/**
+ * Advanced modal component with animations, accessibility, and responsive behavior.
+ * 
+ * Features:
+ * - Smooth fade animations with configurable easing
+ * - Body scroll locking to prevent background scrolling
+ * - Responsive sizing (full-screen on mobile, centered on desktop)
+ * - Keyboard support (ESC to close, Enter for actions)
+ * - Overlay click-to-close functionality
+ * - Proper focus management and accessibility
+ * - Portal rendering for proper z-index layering
+ * 
+ * Note: There's a known iOS bug in versions < 11.3 where fixed positioning
+ * can cause issues with input elements in modals.
+ * 
+ * @example
+ * // Basic modal with content
+ * <Modal 
+ *   visible={showModal}
+ *   onRequestClose={() => setShowModal(false)}
+ * >
+ *   <Card>
+ *     <Chunk><Text type="sectionHead">Confirm Action</Text></Chunk>
+ *     <Chunk><Text>Are you sure you want to proceed?</Text></Chunk>
+ *     <Chunk>
+ *       <Flex>
+ *         <FlexItem><Button onPress={handleCancel}>Cancel</Button></FlexItem>
+ *         <FlexItem><Button color="primary" onPress={handleConfirm}>Confirm</Button></FlexItem>
+ *       </Flex>
+ *     </Chunk>
+ *   </Card>
+ * </Modal>
+ * 
+ * @example
+ * // Modal with form and enter key handling
+ * <Modal 
+ *   visible={showForm}
+ *   onRequestClose={closeForm}
+ *   onPressEnter={submitForm}
+ * >
+ *   <Card>
+ *     <form onSubmit={submitForm}>
+ *       <Chunk><TextInput label="Name" value={name} onChange={setName} /></Chunk>
+ *       <Chunk><Button type="submit">Save</Button></Chunk>
+ *     </form>
+ *   </Card>
+ * </Modal>
+ */
 class Modal extends React.Component{
 
 	static contextType = MediaContext;
