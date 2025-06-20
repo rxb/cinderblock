@@ -6,6 +6,7 @@
     "sync-templates": "node scripts/sync-templates.js",
     "test-cli": "npm run sync-templates && node scripts/test-cli.js",
     "dev:starter": "cd packages/nextjs-starter && npm run dev",
+    "dev:kitchensink": "cd packages/nextjs-kitchensink && npm run dev",
     "dev:cli": "npm run sync-templates && cd packages/create-cinderblock-app && npm link"
   },
   "devDependencies": {

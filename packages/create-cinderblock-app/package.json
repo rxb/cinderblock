@@ -7,7 +7,10 @@
     "create-cinderblock-app": "bin/create-cinderblock-app.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test-local.js",
+    "dev": "npm link",
+    "build": "echo \"No build step required\"",
+    "prepack": "echo \"Preparing package for publishing...\""
   },
   "keywords": [
     "cinderblock",

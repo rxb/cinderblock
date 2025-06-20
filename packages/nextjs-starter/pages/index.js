@@ -1,158 +1,189 @@
-import React, { Fragment, useContext, useEffect, useState } from 'react';
-
-// COMPONENTS
+import React, { useContext } from 'react';
 import {
-	Avatar,
-	Bounds,
-	Button,
-	Card,
-	CheckBox,
-  Chip,
-	Chunk,
-	Flex,
-	FlexItem,
-	Header,
-	Icon,
-	Inline,
-	Image,
-  ImageSnap,
-	Label,
-	List,
-	Link,
-	Modal,
-	Picker,
-	Section,
-	Sectionless,
-	Stripe,
-	Text,
-	TextInput,
-	Touch,
-	useMediaContext,
-	View,
-	ThemeContext,
-	designConstants
+  Button,
+  Card,
+  Chunk,
+  Flex,
+  FlexItem,
+  Header,
+  Icon,
+  Link,
+  Section,
+  Stripe,
+  Text,
+  ThemeContext
 } from '@cinderblock/design-system';
 
-
-import fs from 'fs/promises';
-import dayjs from 'dayjs';
-import path from 'path';
-import {glob} from 'glob'
-import { MDXRemote } from 'next-mdx-remote';
-import { serialize } from 'next-mdx-remote/serialize';
-import {MEDIA_QUERIES_SINGLE} from '@cinderblock/design-system/styles/designConstants';
-import StyleSheet from 'react-native-media-query';
-import POSTS_CONFIG from "../posts/config.json" assert { type: "json" };
-
-import {PostList} from '@/components/rgb/Posts';
-
-export async function getStaticProps({ params }) {
-  const mdxFiles = await glob('posts/*.mdx', { cwd: process.cwd() });
-
-  // get all posts content
-  const postsPromises = mdxFiles.map( async (file, index) => {
-    try{
-      const fileRead = await fs.readFile(file, "utf8");
-      const mdxSource = await serialize(fileRead, {parseFrontmatter: true}); 
-      const {frontmatter} = mdxSource;
-      const generatedExcerpt = fileRead.split(/---/g)[2].substring(0, 140).trim()+"…";
-      const fileStats = await fs.stat(file);
-      const slug = file.split('/')[1].split('.')[0];
-      const post = {
-        file: file,
-        slug: slug,
-        date: fileStats.birthtime.toISOString(),
-        excerpt: generatedExcerpt,
-        ...frontmatter
-      }
-      return post;
-    }
-    catch(e){
-      console.log(`problem loading post ${file}`);
-      console.error(e);
-    }
-  });
-  let posts = await Promise.all(postsPromises);
-  
-  // sort by date
-  posts.sort((a,b)=>{
-    return new Date(b.date) - new Date(a.date);
-  })
-
-  // pinned posts
-  const {pinned = []} = POSTS_CONFIG;
-  [...pinned].reverse().forEach( p => {     
-    const foundIdx = posts.findIndex(el => el.slug == p);
-    if(foundIdx > -1){
-      const foundItem = posts[foundIdx];
-      posts.splice(foundIdx, 1);
-      posts.unshift(foundItem);
-    }
-    else{
-      console.log('pinned post not found');
-    }
-  });
-
-  return { 
-    props: {
-      posts,
-      POSTS_CONFIG
-    }
-  }
-}
-
-
-
-export default function Home(props) {
-
-  const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
+export default function Home() {
+  const { styles } = useContext(ThemeContext);
 
   return (
     <>
-        <Stripe>
+      {/* Header */}
+      <Header>
+        <Flex direction="row" align="center">
+          <FlexItem>
+            <Text type="title">My App</Text>
+          </FlexItem>
+          
+          <FlexItem grow justify="end">
+            <Link href="/about">About</Link>
+          </FlexItem>
+        </Flex>
+      </Header>
 
-            <PostList posts={props.posts} />
+      {/* Main Content */}
+      <Stripe>
+        <Section>
+          <Chunk>
+            <Text type="pageHead" align="center">
+              Welcome to Cinderblock
+            </Text>
+          </Chunk>
+          
+          <Chunk>
+            <Text align="center">
+              A powerful design system for building beautiful React applications.
+            </Text>
+          </Chunk>
+          
+          <Chunk>
+            <Flex direction="row" justify="center">
+              <FlexItem shrink>
+                <Button onPress={() => alert('Getting started!')}>
+                  Get Started
+                </Button>
+              </FlexItem>
+            </Flex>
+          </Chunk>
+        </Section>
 
-            {/* 
-            <Section>
+        {/* Feature Cards */}
+        <Section>
+          <Chunk>
+            <Text type="sectionHead" align="center">
+              Key Features
+            </Text>
+          </Chunk>
 
-              <List 
-                items={props.posts}
-                renderItem={(post)=>(
-                  <Link href={`/articles/${post.slug}`}>
-                  <Flex>
-                    <FlexItem>
-                      <Chunk>
-                        <Text type="sectionHead">{post.title}</Text>
-                      </Chunk>
-                      <Chunk>
-                        <Text type="small">{post.excerpt}</Text>
-                      </Chunk>
+          <Flex direction="row" wrap>
+            <FlexItem basis="33%" style={{ minWidth: 280 }}>
+              <Card>
+                <Section>
+                  <Chunk>
+                    <Flex direction="row" align="center">
+                      <FlexItem shrink>
+                        <Icon shape="Zap" size="medium" />
+                      </FlexItem>
+                      <FlexItem grow>
+                        <Text type="sectionHead">Fast Development</Text>
+                      </FlexItem>
+                    </Flex>
+                  </Chunk>
+                  
+                  <Chunk>
+                    <Text>
+                      Pre-built components and patterns to accelerate your development workflow.
+                    </Text>
+                  </Chunk>
+                </Section>
+              </Card>
+            </FlexItem>
+
+            <FlexItem basis="33%" style={{ minWidth: 280 }}>
+              <Card>
+                <Section>
+                  <Chunk>
+                    <Flex direction="row" align="center">
+                      <FlexItem shrink>
+                        <Icon shape="Smartphone" size="medium" />
+                      </FlexItem>
+                      <FlexItem grow>
+                        <Text type="sectionHead">Responsive Design</Text>
+                      </FlexItem>
+                    </Flex>
+                  </Chunk>
+                  
+                  <Chunk>
+                    <Text>
+                      Mobile-first responsive components that work beautifully on any device.
+                    </Text>
+                  </Chunk>
+                </Section>
+              </Card>
+            </FlexItem>
+
+            <FlexItem basis="33%" style={{ minWidth: 280 }}>
+              <Card>
+                <Section>
+                  <Chunk>
+                    <Flex direction="row" align="center">
+                      <FlexItem shrink>
+                        <Icon shape="Layers" size="medium" />
+                      </FlexItem>
+                      <FlexItem grow>
+                        <Text type="sectionHead">Design System</Text>
+                      </FlexItem>
+                    </Flex>
+                  </Chunk>
+                  
+                  <Chunk>
+                    <Text>
+                      Consistent, accessible components with thoughtful design patterns.
+                    </Text>
+                  </Chunk>
+                </Section>
+              </Card>
+            </FlexItem>
+          </Flex>
+        </Section>
+
+        {/* Getting Started */}
+        <Section>
+          <Chunk>
+            <Text type="sectionHead" align="center">
+              Next Steps
+            </Text>
+          </Chunk>
+
+          <Chunk>
+            <Card>
+              <Section>
+                <Chunk>
+                  <Text type="title">Start Building</Text>
+                </Chunk>
+                
+                <Chunk>
+                  <Text>
+                    This starter includes the essential setup for building with Cinderblock. 
+                    Start by editing <Text weight="bold">pages/index.js</Text> to customize this page.
+                  </Text>
+                </Chunk>
+                
+                <Chunk>
+                  <Flex direction="row">
+                    <FlexItem grow>
+                      <Button 
+                        type="secondary" 
+                        onPress={() => window.open('https://github.com/rxb/cinderblock')}
+                      >
+                        View Documentation
+                      </Button>
                     </FlexItem>
-                    <FlexItem shrink>
-                      <Chunk  style={{flex: 1}}>
-                        <Image 
-                          source={{uri: post.image}} 
-                          resizeMode="cover" 
-                          style={{
-                            width: 140, 
-                            flex: 1,
-                            minHeight: 140, 
-                            borderRadius: 4
-                          }}
-                          />
-                      </Chunk>
+                    <FlexItem grow>
+                      <Link href="/about">
+                        <Button>
+                          See Example Page
+                        </Button>
+                      </Link>
                     </FlexItem>
                   </Flex>
-                  </Link>
-                )}
-                />
-            </Section>
-            */}
-        </Stripe> 
-
+                </Chunk>
+              </Section>
+            </Card>
+          </Chunk>
+        </Section>
+      </Stripe>
     </>
-  )
+  );
 }
-
-

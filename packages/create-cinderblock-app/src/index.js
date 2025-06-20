@@ -32,6 +32,9 @@ async function createCinderblockApp(args) {
   if (options.useYarn) packageManager = 'yarn';
   if (options.usePnpm) packageManager = 'pnpm';
   if (options.useNpm) packageManager = 'npm';
+  
+  // Get template from options
+  if (options.template) template = options.template;
 
   console.log(chalk.blue.bold('🧱 Create Cinderblock App'))
   console.log();
@@ -62,22 +65,30 @@ async function createCinderblockApp(args) {
     projectName = response.projectName;
   }
 
-  // Additional prompts
-  const responses = await prompts([
-    {
+  // Additional prompts (only if not provided via command line)
+  const promptQuestions = [];
+  
+  // Only prompt for template if not provided
+  if (!options.template) {
+    promptQuestions.push({
       type: 'select',
       name: 'template',
       message: 'Which template would you like to use?',
       choices: [
-        { title: 'Default', value: 'default', description: 'Next.js starter with Cinderblock components' },
+        { title: 'Default (Minimal)', value: 'default', description: 'Clean starting point for new projects' },
+        { title: 'Kitchensink (Full Demo)', value: 'kitchensink', description: 'Comprehensive showcase of all components' },
         { title: 'Blog', value: 'blog', description: 'Blog template with MDX (coming soon)', disabled: true },
         { title: 'Dashboard', value: 'dashboard', description: 'Analytics dashboard template (coming soon)', disabled: true },
         { title: 'E-commerce', value: 'ecommerce', description: 'Shopping cart and catalog (coming soon)', disabled: true }
       ],
       initial: 0
-    },
-    {
-      type: packageManager === 'npm' ? 'select' : null,
+    });
+  }
+  
+  // Only prompt for package manager if not provided and is npm (default)
+  if (packageManager === 'npm' && !options.useNpm && !options.useYarn && !options.usePnpm) {
+    promptQuestions.push({
+      type: 'select',
       name: 'packageManager',
       message: 'Which package manager would you like to use?',
       choices: [
@@ -86,8 +97,10 @@ async function createCinderblockApp(args) {
         { title: 'pnpm', value: 'pnpm' }
       ],
       initial: 0
-    }
-  ]);
+    });
+  }
+  
+  const responses = await prompts(promptQuestions);
 
   if (responses.template) template = responses.template;
   if (responses.packageManager) packageManager = responses.packageManager;
@@ -114,7 +127,7 @@ async function createCinderblockApp(args) {
       throw new Error(`Template "${template}" not found`);
     }
 
-    await copyTemplate(templatePath, projectPath, { projectName });
+    await copyTemplate(templatePath, projectPath, { PROJECT_NAME: projectName });
 
     console.log(chalk.green('✓ Project files created'));
 

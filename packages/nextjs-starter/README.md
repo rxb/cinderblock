@@ -1,36 +1,118 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Cinderblock Next.js Starter
 
-## Getting Started
+A minimal, clean starting point for building modern web applications with the Cinderblock Design System and Next.js.
 
-First, run the development server:
+## Purpose
+
+This starter provides the essential foundation for new projects without the complexity of advanced features or demos. It's designed to get you building quickly with a clean, understandable codebase.
+
+## What's Included
+
+### ⚡ **Essential Setup**
+- Next.js 15 with React 19
+- Cinderblock Design System integration
+- Optimized Babel configuration for React Native Web
+- Clean, minimal project structure
+
+### 🎨 **Basic Components**
+- Header navigation example
+- Responsive layout patterns
+- Form component demonstration
+- Card-based content sections
+
+### 📱 **Production Ready**
+- Optimized build configuration
+- Responsive design patterns
+- Accessible component usage
+- Clean code structure
+
+## Quick Start
 
 ```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
-# or
-yarn dev
+
+# Open http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Project Structure
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```
+├── pages/
+│   ├── _app.js          # App configuration with design system
+│   ├── _document.js     # HTML document setup
+│   ├── index.js         # Homepage
+│   ├── about.js         # Example page
+│   └── api/hello.js     # API route example
+├── public/              # Static assets
+├── styles/              # Global styles
+├── next.config.js       # Next.js configuration
+└── jsconfig.json        # JavaScript configuration
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Customization
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+### Update the Homepage
+Edit `pages/index.js` to customize the main landing page with your content.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### Add New Pages
+Create new files in the `pages/` directory. Next.js automatically creates routes based on the file structure.
+
+### Styling
+The project uses the Cinderblock Design System for styling. Global styles can be added to `styles/globals.css`.
+
+## Comparison with Kitchensink
+
+| Feature | nextjs-starter | nextjs-kitchensink |
+|---------|----------------|-------------------|
+| **Complexity** | Minimal, clean slate | Full-featured showcase |
+| **Purpose** | Project foundation | Learning & reference |
+| **Components** | Essential examples | Comprehensive gallery |
+| **Dependencies** | Core packages only | Advanced integrations |
+| **Setup Time** | Immediate | Exploration focused |
+
+## When to Use This Starter
+
+✅ **Perfect for:**
+- New project development
+- Clean starting point
+- Learning Cinderblock basics
+- MVP development
+- Client projects
+
+❌ **Not ideal for:**
+- Exploring all design system features
+- Advanced pattern examples
+- Complex state management demos
+
+For comprehensive examples, check out the `nextjs-kitchensink` package.
+
+## Next Steps
+
+1. **Customize** `pages/index.js` with your content
+2. **Add pages** by creating files in the `pages/` directory  
+3. **Explore components** in the [Cinderblock documentation](https://github.com/rxb/cinderblock)
+4. **Build features** using the design system components
+
+## Create New Projects
+
+For new projects, use the CLI tool:
+
+```bash
+npx create-cinderblock-app my-project --template default
+```
 
 ## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+- [Cinderblock Design System](https://github.com/rxb/cinderblock)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [React Documentation](https://reactjs.org/docs)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deploy
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new).
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
