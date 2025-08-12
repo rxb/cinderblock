@@ -49,7 +49,12 @@ import ConnectedPrompter from './ConnectedPrompter';
 import ConnectedDropdowner from './ConnectedDropdowner';
 import { addToastableErrors } from '@/components/utils';
 
-function Page(props) {
+function Page({ 
+	title = "Cinderblock Blog", 
+	description = "A blog built with Cinderblock Design System and MDX",
+	children,
+	...props 
+}) {
 	const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
 
 	// data from redux
@@ -81,13 +86,14 @@ function Page(props) {
 		<View style={{ minHeight: '100vh', flex: 1 }}>
 			<NextTopLoader showSpinner={false} />
 			<Head>
-				<link rel="preconnect" href="https://fonts.googleapis.com" /> 
-				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin /> 
-				<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet" />
+				<title>{title}</title>
+				<meta name="description" content={description} />
+				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<link rel="icon" href="/favicon.ico" />
 			</Head>
 
 			<Layout>
-				{props.children}
+				{children}
 			</Layout>
 
 			{/* global ui */}

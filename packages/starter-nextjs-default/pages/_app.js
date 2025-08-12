@@ -1,5 +1,5 @@
 import React from 'react';
-import Head from 'next/head'
+import Head from 'next/head';
 
 // STYLE
 import { ThemeContext, styleConfig, designConstants, initMediaProvider } from '@cinderblock/design-system';
@@ -33,9 +33,11 @@ export default function App({ Component, pageProps }) {
 	return (
 		<ThemeContext.Provider value={themedStyleConfig}>
 			<MediaProvider>
-        <Head>
-          <meta name="viewport" content="width=device-width, initial-scale=1 shrink-to-fit=no" />
-        </Head>
+				<Head>
+					<link rel="preconnect" href="https://fonts.googleapis.com" /> 
+					<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin /> 
+					<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet" />
+				</Head>
         <Component {...pageProps} />
       </MediaProvider>
 		</ThemeContext.Provider>
