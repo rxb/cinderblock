@@ -10,7 +10,7 @@ const packageJson = require('../package.json');
 
 async function createCinderblockApp(args) {
   let projectName;
-  let template = 'default';
+  let template = 'nextjs-default';
   let packageManager = 'npm';
 
   // Parse command line arguments
@@ -19,7 +19,7 @@ async function createCinderblockApp(args) {
     .description('Create a new Cinderblock app')
     .version(packageJson.version)
     .argument('[project-name]', 'name of the project')
-    .option('-t, --template <template>', 'project template', 'default')
+    .option('-t, --template <template>', 'project template', 'nextjs-default')
     .option('--use-npm', 'use npm')
     .option('--use-yarn', 'use yarn')
     .option('--use-pnpm', 'use pnpm')
@@ -70,19 +70,30 @@ async function createCinderblockApp(args) {
   
   // Only prompt for template if not provided
   if (!options.template) {
-    promptQuestions.push({
-      type: 'select',
-      name: 'template',
-      message: 'Which template would you like to use?',
-      choices: [
-        { title: 'Default (Minimal)', value: 'default', description: 'Clean starting point for new projects' },
-        { title: 'Kitchensink (Full Demo)', value: 'kitchensink', description: 'Comprehensive showcase of all components' },
-        { title: 'Blog', value: 'blog', description: 'Blog template with MDX (coming soon)', disabled: true },
-        { title: 'Dashboard', value: 'dashboard', description: 'Analytics dashboard template (coming soon)', disabled: true },
-        { title: 'E-commerce', value: 'ecommerce', description: 'Shopping cart and catalog (coming soon)', disabled: true }
-      ],
-      initial: 0
-    });
+    promptQuestions.push(
+      {
+        type: 'select',
+        name: 'framework',
+        message: 'Which framework would you like to use?',
+        choices: [
+          { title: 'Next.js', value: 'nextjs', description: 'React framework for production' },
+          { title: 'Expo', value: 'expo', description: 'React Native for mobile (coming soon)', disabled: true },
+          { title: 'Jekyll', value: 'jekyll', description: 'Static site generator (coming soon)', disabled: true }
+        ],
+        initial: 0
+      },
+      {
+        type: 'select',
+        name: 'templateType',
+        message: 'Which template would you like to use?',
+        choices: [
+          { title: 'Default (Minimal)', value: 'default', description: 'Clean starting point for new projects' },
+          { title: 'Kitchensink (Full Demo)', value: 'kitchensink', description: 'Comprehensive showcase of all components' },
+          { title: 'Blog', value: 'blog', description: 'Blog template with MDX and authentication' }
+        ],
+        initial: 0
+      }
+    );
   }
   
   // Only prompt for package manager if not provided and is npm (default)
@@ -102,7 +113,11 @@ async function createCinderblockApp(args) {
   
   const responses = await prompts(promptQuestions);
 
-  if (responses.template) template = responses.template;
+  if (responses.framework && responses.templateType) {
+    template = `${responses.framework}-${responses.templateType}`;
+  } else if (responses.template) {
+    template = responses.template;
+  }
   if (responses.packageManager) packageManager = responses.packageManager;
 
   const projectPath = path.resolve(process.cwd(), projectName);

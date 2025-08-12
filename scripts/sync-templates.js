@@ -5,22 +5,24 @@ const path = require('path');
 const chalk = require('chalk');
 
 const MONOREPO_ROOT = path.resolve(__dirname, '..');
-const NEXTJS_STARTER_PATH = path.join(MONOREPO_ROOT, 'packages/nextjs-starter');
+const STARTER_NEXTJS_DEFAULT_PATH = path.join(MONOREPO_ROOT, 'packages/starter-nextjs-default');
+const STARTER_NEXTJS_KITCHENSINK_PATH = path.join(MONOREPO_ROOT, 'packages/starter-nextjs-kitchensink');
+const STARTER_NEXTJS_BLOG_PATH = path.join(MONOREPO_ROOT, 'packages/starter-nextjs-blog');
 const TEMPLATES_PATH = path.join(MONOREPO_ROOT, 'packages/create-cinderblock-app/templates');
 const DESIGN_SYSTEM_VERSION = '0.0.1'; // TODO: Read from design-system package.json
 
 // Template configurations
 const TEMPLATE_CONFIGS = {
-  default: {
-    source: NEXTJS_STARTER_PATH,
-    destination: path.join(TEMPLATES_PATH, 'default'),
+  'nextjs-default': {
+    source: STARTER_NEXTJS_DEFAULT_PATH,
+    destination: path.join(TEMPLATES_PATH, 'nextjs-default'),
     enabled: true,
     transformations: {
       // Replace workspace dependency with published version
       packageJson: (content) => {
         return content
           .replace('"@cinderblock/design-system": "workspace:*"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
-          .replace('"name": "rgb.work"', '"name": "{{PROJECT_NAME}}"');
+          .replace('"name": "starter-nextjs-default"', '"name": "{{PROJECT_NAME}}"');
       },
       // Update README for template usage
       readme: (content) => {
@@ -147,11 +149,139 @@ This project was created with \`create-cinderblock-app\`. To learn more about th
     ]
   },
   
-  blog: {
-    source: null, // No source yet
-    destination: path.join(TEMPLATES_PATH, 'blog'),
-    enabled: false,
-    placeholderOnly: true
+  'nextjs-kitchensink': {
+    source: STARTER_NEXTJS_KITCHENSINK_PATH,
+    destination: path.join(TEMPLATES_PATH, 'nextjs-kitchensink'),
+    enabled: true,
+    transformations: {
+      // Replace workspace dependency with published version
+      packageJson: (content) => {
+        return content
+          .replace('"@cinderblock/design-system": "workspace:*"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
+          .replace('"name": "starter-nextjs-kitchensink"', '"name": "{{PROJECT_NAME}}"');
+      },
+      // Update README for template usage
+      readme: (content) => {
+        return `# {{PROJECT_NAME}}
+
+A Next.js application built with the [Cinderblock Design System](https://github.com/rxb/cinderblock) featuring a comprehensive showcase of all components.
+
+## Getting Started
+
+First, install dependencies:
+
+\`\`\`bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+\`\`\`
+
+Then, run the development server:
+
+\`\`\`bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+\`\`\`
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## About This Template
+
+This template showcases the full capabilities of the Cinderblock Design System with:
+
+- **Complete component showcase**: Examples of all available components
+- **Advanced patterns**: Complex layouts and interactions
+- **State management**: Redux integration for app state
+- **Content management**: MDX support for blog-style content
+- **Responsive design**: Mobile-first responsive layouts
+
+## Learn More
+
+- [Cinderblock Documentation](https://github.com/rxb/cinderblock/tree/main/packages/design-system/docs)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Design System Components](https://github.com/rxb/cinderblock/tree/main/packages/design-system/docs)`;
+      }
+    },
+    excludePatterns: [
+      'node_modules',
+      '.next',
+      '.git',
+      'package-lock.json',
+      '.DS_Store'
+    ]
+  },
+  
+  'nextjs-blog': {
+    source: STARTER_NEXTJS_BLOG_PATH,
+    destination: path.join(TEMPLATES_PATH, 'nextjs-blog'),
+    enabled: true,
+    transformations: {
+      // Replace workspace dependency with published version
+      packageJson: (content) => {
+        return content
+          .replace('"cinderblock": "file:~/Repos/cinderblock"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
+          .replace('"name": "rgb.work"', '"name": "{{PROJECT_NAME}}"');
+      },
+      // Update README for template usage
+      readme: (content) => {
+        return `# {{PROJECT_NAME}}
+
+A Next.js blog application built with the [Cinderblock Design System](https://github.com/rxb/cinderblock) featuring MDX support and content management.
+
+## Getting Started
+
+First, install dependencies:
+
+\`\`\`bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+\`\`\`
+
+Then, run the development server:
+
+\`\`\`bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+\`\`\`
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## About This Template
+
+This template showcases a full-featured blog with:
+
+- **MDX Support**: Write blog posts in Markdown with React components
+- **Content Management**: File-based content management system
+- **Rich Components**: Full showcase of design system components
+- **Authentication**: User login and registration flows
+- **State Management**: Redux integration for complex app state
+- **Responsive Design**: Mobile-first responsive layouts
+
+## Learn More
+
+- [Cinderblock Documentation](https://github.com/rxb/cinderblock/tree/main/packages/design-system/docs)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [MDX Documentation](https://mdxjs.com/)`;
+      }
+    },
+    excludePatterns: [
+      'node_modules',
+      '.next',
+      '.git',
+      'package-lock.json',
+      '.DS_Store'
+    ]
   },
   
   dashboard: {
@@ -270,11 +400,27 @@ async function main() {
   console.log(chalk.bold.blue('🔄 Syncing Create Cinderblock App Templates'));
   console.log();
   
-  // Update design system version
+  // Update design system version for all templates
   const version = await getDesignSystemVersion();
-  TEMPLATE_CONFIGS.default.transformations.packageJson = (content) => {
+  
+  // Update nextjs-default template
+  TEMPLATE_CONFIGS['nextjs-default'].transformations.packageJson = (content) => {
     return content
       .replace('"@cinderblock/design-system": "workspace:*"', `"@cinderblock/design-system": "^${version}"`)
+      .replace('"name": "starter-nextjs-default"', '"name": "{{PROJECT_NAME}}"');
+  };
+  
+  // Update nextjs-kitchensink template
+  TEMPLATE_CONFIGS['nextjs-kitchensink'].transformations.packageJson = (content) => {
+    return content
+      .replace('"@cinderblock/design-system": "workspace:*"', `"@cinderblock/design-system": "^${version}"`)
+      .replace('"name": "starter-nextjs-kitchensink"', '"name": "{{PROJECT_NAME}}"');
+  };
+  
+  // Update nextjs-blog template
+  TEMPLATE_CONFIGS['nextjs-blog'].transformations.packageJson = (content) => {
+    return content
+      .replace('"cinderblock": "file:~/Repos/cinderblock"', `"@cinderblock/design-system": "^${version}"`)
       .replace('"name": "rgb.work"', '"name": "{{PROJECT_NAME}}"');
   };
   
