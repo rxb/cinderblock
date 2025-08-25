@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import { View, Picker as PickerWeb } from 'react-native-web';
+import { View, Picker as PickerWeb } from '../primitives';
 import Icon from './Icon';
 import ThemeContext from '../ThemeContext';
 

@@ -85,9 +85,9 @@ const Label = (props) => {
 
 	return(
 		<Text
-			accessibilityRole="label"    // Semantic role for accessibility
+			accessibilityRole="label"
 			color={color}
-			style={[styles['textLabel'], style]}  // Label-specific styling
+			style={[styles['textLabel'], style]}
 			{...other}
 			>
 			{children}

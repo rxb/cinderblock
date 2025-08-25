@@ -218,7 +218,7 @@ const RevealBlock = (props) => {
 				height: (hiding) ? 0 : 'auto'
 			}} 
 			ref={thisRef}>
-			{/* can't mix animated style properties and directly controlled style properties*/}
+			{/* can't mix animated style properties and directly controlled style properties */}
 			<Animated.View
 				style={[{           
 					opacity: visibilityValue,

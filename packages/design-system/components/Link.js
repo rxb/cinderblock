@@ -71,7 +71,7 @@ const Link = (props) => {
 
 	return(
 		<Touch
-			accessibilityRole="link"    // Semantic HTML and screen reader support
+			accessibilityRole="link"
 			href={href}
 			onPress={(event)=>{
 				event.preventDefault();         // Prevent default browser navigation

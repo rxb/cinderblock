@@ -31,11 +31,11 @@ import ThemeContext from '../ThemeContext';
  * 
  * @example
  * // Different width constraints
- * <Bounds small>  {/* Narrow for forms or focused content */}
+ * <Bounds small>  // Narrow for forms or focused content
  *   <TextInput label="Email" />
  * </Bounds>
  * 
- * <Bounds large>  {/* Wide for data tables or complex layouts */}
+ * <Bounds large>  // Wide for data tables or complex layouts
  *   <List variant="grid" items={products} />
  * </Bounds>
  * 

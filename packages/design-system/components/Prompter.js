@@ -1,6 +1,5 @@
 import React, { useContext } from 'react';
-import { Animated, Easing, Touchable, View } from '../primitives';
-import { ScrollView } from 'react-native-web';
+import { Animated, Easing, ScrollView, Touchable, View } from '../primitives';
 import ThemeContext from '../ThemeContext';
 
 import Card from './Card';

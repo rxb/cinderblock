@@ -1,6 +1,5 @@
 import React, {useContext} from 'react';
-import { StyleSheet, Touchable } from '../primitives';
-import { CheckBox as CheckBoxWeb } from 'react-native-web';
+import { StyleSheet, Touchable, CheckBox as CheckBoxWeb } from '../primitives';
 import Label from './Label';
 import Text from './Text';
 import Inline from './Inline';
@@ -137,7 +136,7 @@ class CheckBox extends React.Component {
 								this.setState({hasFocus: false}); // Remove focus styling
 							}}
 							onChange={onChange}
-							color={SWATCHES.tint}  // Checkbox color from theme
+							color={SWATCHES.tint}
 							{...other}
 							/>
 						{/* Clickable label text */}

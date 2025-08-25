@@ -10,11 +10,16 @@
 
 
 import {
+	ActivityIndicator,
 	Animated,
+	CheckBox,
 	Easing,
 	Image,
 	ImageBackground,
+	Picker,
+	ScrollView,
 	Text,
+	TextInput,
 	TouchableWithoutFeedback as Touchable,
 	Platform,
 	StyleSheet,
@@ -22,11 +27,16 @@ import {
 } from 'react-native-web';
 
 export {
+	ActivityIndicator,
 	Animated,
+	CheckBox,
 	Easing,
 	Image,
 	ImageBackground,
+	Picker,
+	ScrollView,
 	Text,
+	TextInput,
 	Touchable,
 	Platform,
 	StyleSheet,

@@ -1,7 +1,6 @@
 import React, {useContext} from 'react';
 import PropTypes from 'prop-types';
-import { View, Text, StyleSheet } from '../primitives';
-import { ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from '../primitives';
 import ThemeContext from '../ThemeContext';
 
 import Icon from './Icon';
@@ -69,7 +68,7 @@ const LoadingBlock = (props) => {
 			<View 
         style={[
           style, 
-          {opacity: (isLoading ? .33 : 1)}  // Reduce opacity when loading
+          {opacity: (isLoading ? .33 : 1)}
         ]}
         {...other}
       >

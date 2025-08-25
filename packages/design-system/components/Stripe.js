@@ -65,13 +65,13 @@ const getCombinedStyles = (media, styles) => {
  * // Multiple stripes for page structure
  * <>
  *   <Stripe image="/hero.jpg">
- *     <Section>{/* Hero content */}</Section>
+ *     <Section>// Hero content</Section>
  *   </Stripe>
  *   <Stripe>
- *     <Section>{/* Features content */}</Section>
+ *     <Section>// Features content</Section>
  *   </Stripe>
  *   <Stripe style={{backgroundColor: '#f8f9fa'}}>
- *     <Section>{/* Testimonials content */}</Section>
+ *     <Section>// Testimonials content</Section>
  *   </Stripe>
  * </>
  */

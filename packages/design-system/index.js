@@ -42,6 +42,8 @@ import Toaster from './components/Toaster';
 
 import useFormState from './components/UseFormState';
 import {useMediaContext, initMediaProvider} from './components/UseMediaContext';
+import { flush } from 'react-native-media-query';
+import { AppRegistry } from 'react-native-web';
 import * as Utils from './utils';
 
 import styleConfig from './styles';
@@ -98,6 +100,8 @@ export {
 	useFormState,
 	useMediaContext,
 	initMediaProvider,
+	flush,
+	AppRegistry,
 
 	Utils,
 

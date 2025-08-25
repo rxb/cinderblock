@@ -52,7 +52,7 @@
  * 
  *   return (
  *     <View>
- *       {/* Dropdown trigger */}
+ *       // Dropdown trigger
  *       <DropdownTouch
  *         dropdown={userMenu}
  *         dropdowns={dropdowns}
@@ -66,7 +66,7 @@
  *         </Flex>
  *       </DropdownTouch>
  * 
- *       {/* Dropdown container */}
+ *       // Dropdown container
  *       <Dropdowner
  *         dropdowns={dropdowns}
  *         hideDropdown={hideDropdown}

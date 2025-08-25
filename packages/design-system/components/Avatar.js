@@ -77,11 +77,12 @@ const Avatar = (props) => {
 		style
 	];
 	
+	// Responsive media query application
 	return(
 		<Image
 			source={source}
 			style={finalStyles}
-			dataSet={{ media: ids[`avatar--${size}`] }}  // Responsive media query application
+			dataSet={{ media: ids[`avatar--${size}`] }}
 			/>
 	);
 }

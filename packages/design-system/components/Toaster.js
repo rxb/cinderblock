@@ -50,13 +50,13 @@ import {EASE } from '../styles/designConstants';
  * 
  *   return (
  *     <View>
- *       {/* Your app content */}
+ *       // Your app content
  *       <Button onPress={() => addToast('Success! Changes saved.')}>Save</Button>
  *       <Button onPress={() => addToast('Error: Please try again.', { hideDelay: 5000 })}>
  *         Trigger Error
  *       </Button>
  *       
- *       {/* Toast container */}
+ *       // Toast container
  *       <Toaster
  *         toasts={toasts}
  *         hideToast={hideToast}

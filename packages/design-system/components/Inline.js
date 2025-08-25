@@ -67,8 +67,8 @@ const Inline = (props) => {
 			if(React.isValidElement(child)){
 				return (
 					<View style={[
-						styles.inlineItem,                                    // Base inline item spacing
-						(i==0 ? styles['inlineItem--firstChild'] : {})      // Remove left margin from first item
+						styles.inlineItem,
+						(i==0 ? styles['inlineItem--firstChild'] : {})
 						]}>
 						{child}
 					</View>

@@ -1,7 +1,6 @@
 import React, {Fragment, useContext} from 'react';
 import ReactDOM from 'react-dom'
-import { StyleSheet } from '../primitives';
-import { View, TextInput as TextInputWeb } from 'react-native-web';
+import { StyleSheet, View, TextInput as TextInputWeb } from '../primitives';
 import Text from './Text';
 import ThemeContext from '../ThemeContext';
 

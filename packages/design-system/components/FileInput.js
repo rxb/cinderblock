@@ -1,5 +1,5 @@
 import React, {Fragment, useContext} from 'react';
-import { View, Image } from 'react-native-web';
+import { View, Image } from '../primitives';
 import Icon from './Icon';
 import Text from './Text';
 import ThemeContext from '../ThemeContext';

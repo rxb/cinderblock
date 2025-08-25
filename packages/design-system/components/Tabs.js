@@ -130,7 +130,7 @@ class Tabs extends React.Component {
 			<ThemeContext.Consumer>
 				{ ({styles}) => (
 					<View
-						style={[styles.tabs]}   // Base tabs container styling
+						style={[styles.tabs]}
 						{...other}
 						>
 						{childrenWithProps}

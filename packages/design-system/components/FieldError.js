@@ -80,7 +80,7 @@ import ThemeContext from '../ThemeContext';
  * <Chunk>
  *   <Label>Email</Label>
  *   <TextInput value={email} onChange={setEmail} />
- *   <FieldError error={emailError} />  {/* Only renders when emailError is truthy */}
+ *   <FieldError error={emailError} />  // Only renders when emailError is truthy
  * </Chunk>
  */
 const FieldError = (props) => {
@@ -99,13 +99,13 @@ const FieldError = (props) => {
 	return(
 		<Inline>
 			<Icon
-				shape="AlertCircle"    // Error/warning icon (changed from ArrowUpCircle)
+				shape="AlertCircle"
 				size="small"
 				color="red"
 				/>
 			<Text
 				type="small"
-				style={[styles['textError'], style]}  // Error-specific text styling
+				style={[styles['textError'], style]}
 				{...other}
 				>
 				{error}

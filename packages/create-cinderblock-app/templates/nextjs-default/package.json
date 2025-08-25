@@ -16,6 +16,6 @@
     "nextjs-toploader": "^1.6.12",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "react-native-web": "0.20.0"
+    "uuid": "^9.0.0"
   }
 }

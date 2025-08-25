@@ -10,7 +10,8 @@
     "test": "node test-local.js",
     "dev": "npm link",
     "build": "echo \"No build step required\"",
-    "prepack": "echo \"Preparing package for publishing...\""
+    "prepack": "echo \"Preparing package for publishing...\"",
+    "sync": "node sync-templates.js"
   },
   "keywords": [
     "cinderblock",

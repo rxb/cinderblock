@@ -79,7 +79,7 @@ const Picture = (props) => {
 		<Image
 			source={source}
 			style={finalStyles}
-			dataSet={{ media: ids[`picture--${size}`] }}  // Responsive media query application
+			dataSet={{ media: ids[`picture--${size}`] }}
 			/>
 	);
 }

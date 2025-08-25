@@ -1,6 +1,5 @@
 import React, {useMemo, useContext, Fragment} from 'react';
-import { ActivityIndicator } from 'react-native';
-import { View, Text } from '../primitives';
+import { ActivityIndicator, View, Text } from '../primitives';
 import ThemeContext from '../ThemeContext';
 import {getActiveStyles, getStyleKeysForMediaQueryVariants} from '../utils';
 

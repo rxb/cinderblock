@@ -1,6 +1,5 @@
 import React, {useContext} from 'react';
-import { Animated, Easing, Touchable, View } from '../primitives';
-import { ScrollView } from 'react-native-web';
+import { Animated, Easing, ScrollView, Touchable, View } from '../primitives';
 import ThemeContext from '../ThemeContext';
 
 import Card from './Card';
@@ -209,7 +208,6 @@ class Modal extends React.Component{
 					    }]
 					}
 				]}>
-					{/*
 					<Stripe style={{borderBottomWidth: 1, borderBottomColor: SWATCHES.border}}>
 						<Section style={{ paddingVertical: 0}}>
 							<Flex>
@@ -230,7 +228,6 @@ class Modal extends React.Component{
 							</Flex>
 						</Section>
 					</Stripe>
-					*/}
 
 					<View style={{position: 'absolute', top: 0, right: 0, padding: METRICS.base, zIndex: 5}}>
 						<Touch
@@ -250,7 +247,7 @@ class Modal extends React.Component{
 					{/* scrollview is blocking the rest */}
 
 					<ScrollView 
-						style={{/*backgroundColor: 'green'*/}} 
+						style={{/* backgroundColor: 'green' */}} 
 						ref={this.targetRef}
 						>
 						{children}
