@@ -13,14 +13,18 @@
     "react-feather": "^2.0.10",
     "react-native-media-query": "^2.0.1",
     "react-native-web": "0.20.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "validator": "^13.7.0",
+    "dayjs": "^1.11.5"
   },
-  "peerDependencies": {
-    "next": "15.2.0",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+  "optionalDependencies": {
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1"
+  },
+  "peerDependencies": {
+    "next": "15.5.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
   },
   "repository": {
     "type": "git",

@@ -12,6 +12,10 @@
   "overrides": {
     "react-native-media-query": {
       "react-native-web": "$react-native-web"
+    },
+    "next-mdx-remote": {
+      "react": "$react",
+      "react-dom": "$react-dom"
     }
   },
   "devDependencies": {

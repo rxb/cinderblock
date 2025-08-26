@@ -127,7 +127,8 @@ function handlePackageJson(sourcePath, targetPath, relativePath) {
   
   // Change workspace dependency to published version
   if (syncedPackage.dependencies && syncedPackage.dependencies['@cinderblock/design-system']) {
-    if (syncedPackage.dependencies['@cinderblock/design-system'].includes('workspace:')) {
+    const depVersion = syncedPackage.dependencies['@cinderblock/design-system'];
+    if (depVersion.includes('workspace:') || depVersion === '*') {
       syncedPackage.dependencies['@cinderblock/design-system'] = '^0.0.1';
     }
   }

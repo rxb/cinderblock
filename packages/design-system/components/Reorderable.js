@@ -11,10 +11,14 @@
  * - Web: Full support using HTML5 drag-and-drop backend
  * - React Native: Requires react-dnd-react-native-backend (not included)
  * 
- * Dependencies:
- * - react-dnd
- * - react-dnd-html5-backend (for web)
+ * Dependencies (optional - install only if using Reorderable):
+ * - react-dnd: `npm install react-dnd`
+ * - react-dnd-html5-backend: `npm install react-dnd-html5-backend` (for web)
  * - DndProvider must wrap the component tree
+ * 
+ * Note: This component will render a fallback version without drag functionality
+ * if react-dnd dependencies are not installed. Install the dependencies above
+ * to enable full drag-and-drop reordering capabilities.
  * 
  * @param {Object} props - Component props
  * @param {string|number} props.id - Unique identifier for the item
@@ -236,13 +240,28 @@ const moveItem = useCallback((dragIndex, hoverIndex) => {
 */
 
 import React, {Fragment, useState, useCallback, useRef, useContext} from 'react';
-import { useDrag, useDrop } from 'react-dnd';
+
+// Try to import react-dnd dependencies, with fallback
+let useDrag, useDrop;
+try {
+  const reactDnd = require('react-dnd');
+  useDrag = reactDnd.useDrag;
+  useDrop = reactDnd.useDrop;
+} catch (error) {
+  // react-dnd not available
+}
 
 const ItemTypes = {
    REORDERABLE: 'reorderable',
 }
 
 const Reorderable = ({ id, children, index, moveItem }) => {
+   // Check if react-dnd is available
+   if (!useDrag || !useDrop) {
+      console.warn('Reorderable component requires react-dnd and react-dnd-html5-backend to be installed. Please run: npm install react-dnd react-dnd-html5-backend');
+      return <div>{children}</div>;
+   }
+
    const ref = useRef(null);
    const [, drop] = useDrop({
        accept: ItemTypes.REORDERABLE,

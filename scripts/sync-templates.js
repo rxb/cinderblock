@@ -22,6 +22,7 @@ const TEMPLATE_CONFIGS = {
       packageJson: (content) => {
         return content
           .replace('"@cinderblock/design-system": "workspace:*"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
+          .replace('"@cinderblock/design-system": "*"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
           .replace('"name": "starter-nextjs-default"', '"name": "{{PROJECT_NAME}}"');
       },
       // Update README for template usage
@@ -158,6 +159,7 @@ This project was created with \`create-cinderblock-app\`. To learn more about th
       packageJson: (content) => {
         return content
           .replace('"@cinderblock/design-system": "workspace:*"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
+          .replace('"@cinderblock/design-system": "*"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
           .replace('"name": "starter-nextjs-kitchensink"', '"name": "{{PROJECT_NAME}}"');
       },
       // Update README for template usage
@@ -224,7 +226,10 @@ This template showcases the full capabilities of the Cinderblock Design System w
       // Replace workspace dependency with published version
       packageJson: (content) => {
         return content
+          .replace('"@cinderblock/design-system": "workspace:*"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
+          .replace('"@cinderblock/design-system": "*"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
           .replace('"cinderblock": "file:~/Repos/cinderblock"', `"@cinderblock/design-system": "^${DESIGN_SYSTEM_VERSION}"`)
+          .replace('"name": "starter-nextjs-blog"', '"name": "{{PROJECT_NAME}}"')
           .replace('"name": "rgb.work"', '"name": "{{PROJECT_NAME}}"');
       },
       // Update README for template usage
