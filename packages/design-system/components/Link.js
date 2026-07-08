@@ -59,6 +59,18 @@ import ThemeContext from '../ThemeContext';
  *   <Text>Current Page</Text>
  * </Inline>
  */
+/**
+ * Whether an href points off-app. Anything with a URL scheme (http:, https:,
+ * mailto:, tel:, …) or a protocol-relative "//host" is external; relative and
+ * root-relative ("/about") paths are internal. This — not the `target` prop —
+ * is what decides router vs. browser navigation. `target` only controls where
+ * an external link opens (new tab vs. same tab).
+ */
+const isExternalHref = (href) => {
+	if (typeof href !== 'string') return false;
+	return /^([a-z][a-z0-9+.-]*:|\/\/)/i.test(href);
+};
+
 const Link = (props) => {
 	const { styles } = useContext(ThemeContext);
 
@@ -74,11 +86,23 @@ const Link = (props) => {
 			accessibilityRole="link"
 			href={href}
 			onPress={(event)=>{
-				event.preventDefault();         // Prevent default browser navigation
+				event.preventDefault();         // Take over from the default handler
 				onPress();                      // Execute additional callback
-				
-				// Use router for internal navigation, allow browser for external links
-				if(!props.target){ 
+
+				if(isExternalHref(href)){
+					// External link: hand off to the browser. `target` only
+					// chooses the destination context.
+					if(typeof window !== 'undefined' && href){
+						if(props.target){
+							window.open(href, props.target, 'noopener,noreferrer');
+						}
+						else {
+							window.location.href = href;
+						}
+					}
+				}
+				else {
+					// Internal link: client-side navigation via Next.js router
 					Router.push(href).then(()=>{
 						window.scroll(0,0);        // Scroll to top after navigation
 					});

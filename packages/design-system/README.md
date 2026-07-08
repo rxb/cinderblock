@@ -130,6 +130,7 @@ Detailed component documentation is available in the [docs](./docs/) folder:
 - [Content/Display Components](./docs/content-components.md)
 - [Utility/Behavioral Components](./docs/utility-components.md)
 - [Usage Examples](./docs/examples.md)
+- [Next.js Integration Guide](./docs/nextjs-integration.md) — router requirement, webpack recipe, `file:` dep consumption, TypeScript shim, known landmines
 
 ## Development
 
@@ -137,10 +138,11 @@ This design system is built for React and React Native Web, providing consistent
 
 ### Peer Dependencies
 
-- React 19.0.0
-- React DOM 19.0.0
-- React Native Web 0.20.0
-- React Redux ^9.1.2
+- React ^19
+- React DOM ^19
+- Next.js ^15 (Pages Router — see the [Next.js Integration Guide](./docs/nextjs-integration.md))
+
+React Native Web (0.21.x) ships as a regular dependency of this package.
 
 ## Contributing
 
