@@ -401,7 +401,7 @@ const users = [
 <List 
   variant="grid"
   items={products}
-  itemsInRow={{ mobile: 1, tablet: 2, desktop: 3 }}
+  itemsInRow={{ small: 1, medium: 2, large: 3 }}
   renderItem={(product) => (
     <Card key={product.id}>
       <Picture source={{ uri: product.image }} />
@@ -716,7 +716,7 @@ function ArticlePage() {
             <List 
               variant="grid"
               items={relatedArticles}
-              itemsInRow={{ mobile: 1, tablet: 2, desktop: 3 }}
+              itemsInRow={{ small: 1, medium: 2, large: 3 }}
               renderItem={(article) => (
                 <Link href={`/articles/${article.id}`} key={article.id}>
                   <Card>

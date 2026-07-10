@@ -12,6 +12,10 @@ Cinderblock is unique among design systems because it's not just about visual el
 
 **Space and positioning is almost never explicitly defined inline.** Instead, space and positioning comes from the structural hierarchy of components. This approach ensures consistent spacing, responsive behavior, and maintainable layouts.
 
+## For AI agents (and humans in a hurry)
+
+Start with **[docs/AGENTS.md](./docs/AGENTS.md)** — a compact, source-verified reference: the canonical page skeleton (`Stripe > Bounds > Section > Chunk`), a component index, the responsive model, and anti-patterns. Then **[docs/recipes.md](./docs/recipes.md)** for real-world page patterns (live versions in the kitchensink starter under `pages/recipes/`).
+
 ## Installation
 
 ```bash

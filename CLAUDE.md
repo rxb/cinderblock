@@ -1,7 +1,7 @@
 # Cinderblock — notes for coding agents
 
 Cinderblock is a React Native Web design system (untyped JS, ESM) built around
-structural spacing components (Stripe > Section > Chunk). This is an npm
+structural spacing components (Stripe > Bounds > Section > Chunk). This is an npm
 workspaces monorepo:
 
 - `packages/design-system` — the library itself (`@cinderblock/design-system`)
@@ -28,7 +28,14 @@ workspaces monorepo:
 - `packages/design-system/docs/nextjs-integration.md` — **read this before
   debugging any consumer integration issue** (transpile/symlink/exports
   landmines, `file:` dep consumption, TS shim, verification checklist).
+- `packages/design-system/docs/AGENTS.md` — **start here for component
+  usage**: canonical page skeleton (`Stripe > Bounds > Section > Chunk`),
+  component index, responsive model, anti-patterns. Verified against source.
+- `packages/design-system/docs/recipes.md` — real-world page patterns; live
+  versions in the kitchensink starter under `pages/recipes/`.
 - `packages/design-system/docs/*.md` — component API references and patterns.
+- After editing docs, run `npm run lint-docs` in `packages/design-system` —
+  it checks doc code blocks for nonexistent imports and wrong nesting.
 
 ## Known state (2026-07)
 

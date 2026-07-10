@@ -1,21 +1,23 @@
 {
-  "name": "cinderblock", 
-  "private": true, 
-  "workspaces": ["packages/*"],
+  "name": "cinderblock",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
     "sync-templates": "node scripts/sync-templates.js",
     "test-cli": "npm run sync-templates && node scripts/test-cli.js",
-    "dev:starter": "cd packages/nextjs-starter && npm run dev",
-    "dev:kitchensink": "cd packages/nextjs-kitchensink && npm run dev",
+    "dev:starter": "cd packages/starter-nextjs-default && npm run dev",
+    "dev:kitchensink": "cd packages/starter-nextjs-kitchensink && npm run dev",
     "dev:cli": "npm run sync-templates && cd packages/create-cinderblock-app && npm link"
   },
   "overrides": {
     "react-native-media-query": {
-      "react-native-web": "$react-native-web"
+      "react-native-web": "^0.21.0"
     },
     "next-mdx-remote": {
-      "react": "$react",
-      "react-dom": "$react-dom"
+      "react": "^19.0.0",
+      "react-dom": "^19.0.0"
     }
   },
   "devDependencies": {

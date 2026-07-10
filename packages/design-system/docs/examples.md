@@ -113,7 +113,8 @@ function LandingPage() {
               </FlexItem>
             </Flex>
           </Chunk>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
 
       {/* CTA Section */}
@@ -246,7 +247,8 @@ function DashboardLayout() {
     <>
       {/* Dashboard Header */}
       <Stripe>
-        <Section>
+        <Bounds large>
+          <Section>
           <Chunk>
             <Flex justify="space-between" align="center">
               <FlexItem>
@@ -280,7 +282,7 @@ function DashboardLayout() {
                       </Text>
                     </Chunk>
                     <Chunk>
-                      <Text color={metric.positive ? 'success' : 'error'}>
+                      <Text style={{ color: metric.positive ? 'green' : 'red' }}>
                         {metric.change}
                       </Text>
                     </Chunk>
@@ -289,12 +291,14 @@ function DashboardLayout() {
               ))}
             </Flex>
           </Chunk>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
 
       {/* Charts Section */}
       <Stripe style={{ backgroundColor: '#f8f9fa' }}>
-        <Section>
+        <Bounds large>
+          <Section>
           <Chunk>
             <Text type="sectionHead">Analytics</Text>
           </Chunk>
@@ -313,7 +317,8 @@ function DashboardLayout() {
               </Chunk>
             </Card>
           </Chunk>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
     </>
   );
@@ -753,7 +758,8 @@ function ProductGrid() {
 
   return (
     <Stripe>
-      <Section>
+      <Bounds large>
+        <Section>
         <Chunk>
           <Flex justify="space-between" align="center" switchDirection="medium">
             <FlexItem>
@@ -778,7 +784,7 @@ function ProductGrid() {
             <List 
               variant="grid"
               items={filteredProducts}
-              itemsInRow={{ mobile: 1, tablet: 2, desktop: 4 }}
+              itemsInRow={{ small: 1, medium: 2, large: 4 }}
               renderItem={(product) => (
                 <Card key={product.id} shadow>
                   <Picture 
@@ -811,7 +817,8 @@ function ProductGrid() {
             </Text>
           </Chunk>
         )}
-      </Section>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }
@@ -842,7 +849,8 @@ function TeamDirectory() {
 
   return (
     <Stripe>
-      <Section>
+      <Bounds large>
+        <Section>
         <Chunk>
           <Text type="pageHead">Our Team</Text>
         </Chunk>
@@ -877,7 +885,7 @@ function TeamDirectory() {
           <List 
             variant="grid"
             items={filteredTeam}
-            itemsInRow={{ mobile: 1, tablet: 2, desktop: 3 }}
+            itemsInRow={{ small: 1, medium: 2, large: 3 }}
             renderItem={(member) => (
               <Card key={member.id}>
                 <Chunk>
@@ -911,7 +919,8 @@ function TeamDirectory() {
             </Text>
           </Chunk>
         )}
-      </Section>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }
@@ -928,7 +937,8 @@ Navigation that adapts to different screen sizes.
 ```javascript
 function ResponsiveNav() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isMobile } = useMediaContext();
+  const media = useMediaContext();
+  const isMobile = !media.medium;
 
   const menuItems = [
     { label: 'Home', href: '/' },
@@ -1009,7 +1019,8 @@ function ResponsiveCards() {
 
   return (
     <Stripe>
-      <Section>
+      <Bounds>
+        <Section>
         <Chunk>
           <Text type="pageHead">Features</Text>
         </Chunk>
@@ -1019,7 +1030,7 @@ function ResponsiveCards() {
           <List 
             variant="grid"
             items={cards}
-            itemsInRow={{ mobile: 1, tablet: 2, desktop: 4 }}
+            itemsInRow={{ small: 1, medium: 2, large: 4 }}
             renderItem={(card) => (
               <Card key={card.title} shadow>
                 <Chunk>
@@ -1032,7 +1043,8 @@ function ResponsiveCards() {
             )}
           />
         </Chunk>
-      </Section>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }
@@ -1064,7 +1076,8 @@ function StaggeredList() {
 
   return (
     <Stripe>
-      <Section>
+      <Bounds>
+        <Section>
         <Chunk>
           <Button onPress={() => setVisible(!visible)}>
             {visible ? 'Hide' : 'Show'} List
@@ -1085,7 +1098,8 @@ function StaggeredList() {
             </Chunk>
           </RevealBlock>
         ))}
-      </Section>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }
@@ -1103,7 +1117,8 @@ function InteractiveFeedback() {
 
   return (
     <Stripe>
-      <Section>
+      <Bounds>
+        <Section>
         <Chunk>
           <Card>
             <Chunk>
@@ -1145,7 +1160,8 @@ function InteractiveFeedback() {
             </Chunk>
           </Card>
         </Chunk>
-      </Section>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }
@@ -1199,7 +1215,7 @@ function InteractiveFeedback() {
 
 <List 
   variant="grid"
-  itemsInRow={{ mobile: 1, tablet: 2, desktop: 3 }}
+  itemsInRow={{ small: 1, medium: 2, large: 3 }}
   items={items}
   renderItem={renderItem}
 />
