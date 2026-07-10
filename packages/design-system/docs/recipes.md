@@ -297,7 +297,32 @@ const DeletePrompt = ({ thing, onRequestClose }) => (
 />
 ```
 
-## 14. App-level wiring (Page wrapper)
+## 14. Animation touches (Bounce and RevealBlock)
+
+`Bounce` scales its child whenever `watchProp` changes — right for counters
+and toggle feedback:
+
+```jsx
+<Bounce watchProp={voteCount} scale={1.4}>
+  <Text weight="strong">{voteCount}</Text>
+</Bounce>
+```
+
+`RevealBlock` animates content in/out; stagger with `delay` for lists:
+
+```jsx
+{items.map((item, index) => (
+  <RevealBlock key={item.id} visible={visible} delay={index * 100}>
+    <Chunk>
+      <Card>{/* item */}</Card>
+    </Chunk>
+  </RevealBlock>
+))}
+```
+
+(See recipe 11 for the Modal + RevealBlock panel-swap pattern.)
+
+## 15. App-level wiring (Page wrapper)
 
 Every page renders inside a shared `Page` component that mounts the global
 singletons once:

@@ -1,4 +1,8 @@
-# Style Generation System
+# Style Generation System (maintainer doc)
+
+> **Audience: library maintainers.** If you're *using* Cinderblock, you want
+> [responsive-system.md](./responsive-system.md) — this file documents the
+> internal pipeline that generates the utility styles.
 
 Cinderblock's responsive utilities are automatically generated through a sophisticated style generation system. This system takes breakpoint definitions and creates comprehensive sets of responsive utilities, ensuring consistency and eliminating manual work.
 

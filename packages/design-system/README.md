@@ -129,12 +129,15 @@ function MyComponent() {
 
 Detailed component documentation is available in the [docs](./docs/) folder:
 
+- [Quick Reference (AGENTS.md)](./docs/AGENTS.md) — start here
+- [Recipes](./docs/recipes.md) — real-world page patterns
 - [Structural Components](./docs/structural-components.md)
 - [UI/Interactive Components](./docs/ui-components.md)
 - [Content/Display Components](./docs/content-components.md)
 - [Utility/Behavioral Components](./docs/utility-components.md)
-- [Usage Examples](./docs/examples.md)
+- [Responsive System](./docs/responsive-system.md) — breakpoints and utility classes
 - [Next.js Integration Guide](./docs/nextjs-integration.md) — router requirement, webpack recipe, `file:` dep consumption, TypeScript shim, known landmines
+- [Style Generation](./docs/style-generation.md) — maintainer doc for the internal style pipeline
 
 ## Development
 

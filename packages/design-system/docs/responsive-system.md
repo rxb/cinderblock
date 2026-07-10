@@ -128,6 +128,45 @@ Many components have built-in responsive behavior:
 | `large` | 840px | Tablets, small laptops |
 | `xlarge` | 1024px | Laptops, desktops |
 
+## Utility Classes
+
+Most responsive behavior should come from component props (`Flex
+switchDirection`, `List variant`/`itemsInRow`, `Button width`/`variant`) —
+those components generate and apply these utility classes internally. Reach
+for utilities directly mainly for **visibility**:
+
+| Utility | Behavior |
+|---------|----------|
+| `showAt__medium` / `showAt__large` / `showAt__xlarge` | Hidden below the breakpoint, shown from it up (pair with `styles.hide`) |
+| `hideAt__medium` / `hideAt__large` / `hideAt__xlarge` | Shown below the breakpoint, hidden from it up (pair with `styles.show`) |
+
+```javascript
+import { View, ThemeContext } from '@cinderblock/design-system';
+
+function ResponsiveNavigation() {
+  const { styles, ids } = useContext(ThemeContext);
+  return (
+    <>
+      {/* hidden by default, shows on large screens and up */}
+      <View style={styles.hide} dataSet={{ media: ids["showAt__large"] }}>
+        <DesktopNavigation />
+      </View>
+      {/* shows by default, hidden on large screens and up */}
+      <View style={styles.show} dataSet={{ media: ids["hideAt__large"] }}>
+        <MobileNavigation />
+      </View>
+    </>
+  );
+}
+```
+
+Notes:
+- Don't pass `dataSet` to `Flex` — it generates its own internally; use its
+  `direction`/`switchDirection` props.
+- Visibility utilities use "min-width and up" queries; component layout
+  utilities (e.g. `list-item--grid__medium`, `button--grow__medium`) use
+  ranged queries that apply only within their breakpoint band.
+
 ## Generated Media Queries
 
 ### Single Breakpoint (min-width only)

@@ -211,7 +211,6 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
 - [content-components.md](./content-components.md) — Text, images, avatars, icons
 - [ui-components.md](./ui-components.md) — buttons, forms, modals, toasts, menus
 - [utility-components.md](./utility-components.md) — hooks and helpers
-- [responsive-system.md](./responsive-system.md) / [responsive-utilities.md](./responsive-utilities.md) / [responsive-examples.md](./responsive-examples.md)
-- [examples.md](./examples.md) — full-page patterns
-- [style-generation.md](./style-generation.md) — how styles/media queries are generated
+- [responsive-system.md](./responsive-system.md) — breakpoints, utility classes, how the responsive system works
+- [style-generation.md](./style-generation.md) — maintainer doc: how utility styles/media queries are generated
 - [nextjs-integration.md](./nextjs-integration.md) — **read before debugging consumer integration**
