@@ -18,9 +18,9 @@ The core typography component that handles all text rendering with semantic type
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `type` | `string` | `'body'` | Text type (`'pageHead'`, `'sectionHead'`, `'body'`, `'small'`, `'big'`) |
-| `color` | `string` | `'primary'` | Text color variant |
-| `weight` | `string` | `null` | Font weight (`'light'`, `'normal'`, `'strong'`, `'bold'`) |
+| `type` | `string` | `'body'` | Text type (`'pageHead'`, `'sectionHead'`, `'body'`, `'small'`, `'big'`, `'micro'`, `'hero'`, `'pageHeadKicker'`) |
+| `color` | `string` | `'primary'` | Text color variant (`'primary'`, `'secondary'`, `'hint'`, `'tint'`) |
+| `weight` | `string` | `null` | Font weight (`'strong'`) |
 | `inverted` | `boolean` | `false` | Use inverted color scheme |
 | `nowrap` | `boolean` | `false` | Prevent text wrapping |
 | `chunk` | `boolean` | `false` | Add chunk-like spacing |
@@ -28,10 +28,13 @@ The core typography component that handles all text rendering with semantic type
 
 ### Text Types
 
+- **`hero`** - Oversized hero headings
 - **`pageHead`** - Main page headings (H1 equivalent)
+- **`pageHeadKicker`** - Small kicker text above a page heading
 - **`sectionHead`** - Section headings (H2 equivalent)  
 - **`body`** - Standard body text
 - **`small`** - Smaller text for secondary content
+- **`micro`** - Smallest text for fine print
 - **`big`** - Larger text for emphasis
 
 ### Usage
@@ -61,7 +64,7 @@ import { Text, Chunk, Section, Stripe } from '@cinderblock/design-system';
     <Text color="secondary">Secondary colored text</Text>
   </Chunk>
   <Chunk>
-    <Text size="small">Smaller text for captions</Text>
+    <Text type="small">Smaller text for captions</Text>
   </Chunk>
   <Chunk>
     <Text nowrap>This text will not wrap to next line</Text>
@@ -94,7 +97,7 @@ User profile image component with consistent sizing and circular styling.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `size` | `string` | `'medium'` | Avatar size (`'small'`, `'medium'`, `'large'`) |
+| `size` | `string` | `'medium'` | Avatar size (`'xsmall'`, `'small'`, `'mid'`, `'medium'`, `'large'`, `'xlarge'`) |
 | `source` | `object` | `null` | Image source (same as Image component) |
 | `style` | `object` | `{}` | Additional styles |
 
@@ -169,18 +172,20 @@ SVG icon component using the Feather icon library.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `shape` | `string` | `null` | Icon name from Feather icons |
-| `color` | `string` | `null` | Icon color |
-| `size` | `string/number` | `null` | Icon size |
+| `color` | `string` | theme `textSecondary` | Icon color |
+| `size` | `string` | `'medium'` | Icon size (`'xsmall'`, `'small'`, `'medium'`, `'large'`, `'xlarge'`) |
 | `style` | `object` | `{}` | Additional styles |
 
 ### Common Icon Shapes
 
-- `user`, `users` - User/people icons
-- `home`, `settings`, `search` - Navigation icons
-- `edit`, `trash`, `save` - Action icons
-- `chevron-down`, `chevron-up`, `arrow-right` - Direction icons
-- `check`, `x`, `alert-circle` - Status icons
-- `heart`, `star`, `bookmark` - Engagement icons
+Shape names are the PascalCase component names exported by [react-feather](https://github.com/feathericons/react-feather):
+
+- `User`, `Users` - User/people icons
+- `Home`, `Settings`, `Search` - Navigation icons
+- `Edit`, `Trash`, `Save` - Action icons
+- `ChevronDown`, `ChevronUp`, `ArrowRight` - Direction icons
+- `Check`, `X`, `AlertCircle` - Status icons
+- `Heart`, `Star`, `Bookmark` - Engagement icons
 
 ### Usage
 
@@ -189,27 +194,27 @@ import { Icon, Button, Text, Chunk } from '@cinderblock/design-system';
 
 // Basic icons
 <Chunk>
-  <Icon shape="user" />
-  <Icon shape="settings" />
-  <Icon shape="heart" />
+  <Icon shape="User" />
+  <Icon shape="Settings" />
+  <Icon shape="Heart" />
 </Chunk>
 
 // Sized and colored icons
 <Chunk>
-  <Icon shape="star" size={24} color="gold" />
-  <Icon shape="check" size={16} color="green" />
+  <Icon shape="Star" size="large" color="gold" />
+  <Icon shape="Check" size="small" color="green" />
 </Chunk>
 
 // Icons in buttons
 <Chunk>
   <Button onPress={handleSave}>
-    <Icon shape="save" /> Save
+    <Icon shape="Save" /> Save
   </Button>
 </Chunk>
 
 // Icons with text
 <Chunk>
-  <Icon shape="user" />
+  <Icon shape="User" />
   <Text>Profile</Text>
 </Chunk>
 ```
@@ -230,7 +235,7 @@ Responsive image component with consistent sizing behavior.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `size` | `string` | `null` | Predefined size variant |
+| `size` | `string`/`false` | `'medium'` | Predefined size variant (`'xsmall'`, `'small'`, `'medium'`, `'large'`, `'xlarge'`, or `false` for unconstrained) |
 | `source` | `object` | `null` | Image source |
 | `style` | `object` | `{}` | Additional styles |
 
@@ -264,28 +269,30 @@ import { Picture, Chunk, Text } from '@cinderblock/design-system';
 Specialized image components for specific layout needs.
 
 ### ImageRatio
-Images with specific aspect ratios maintained across responsive breakpoints.
+Images with responsive heights maintained across breakpoints.
 
 ### ImageSnap  
 Images that snap to specific sizing behaviors.
+
+Both components take an `image` prop (a URL string, not a source object) and an optional `imageHeight` object with per-breakpoint heights (default `{small: 250, medium: 300, large: 350, xlarge: 450}`). Children are overlaid on the image.
 
 ### Usage
 
 ```javascript
 import { ImageRatio, ImageSnap, Chunk } from '@cinderblock/design-system';
 
-// Aspect ratio maintained image
+// Responsive-height image
 <Chunk>
   <ImageRatio 
-    ratio="16:9"
-    source={{ uri: 'https://example.com/video-thumbnail.jpg' }}
+    image="https://example.com/video-thumbnail.jpg"
+    imageHeight={{ small: 200, large: 350 }}
   />
 </Chunk>
 
 // Snap sizing image
 <Chunk>
   <ImageSnap 
-    source={{ uri: 'https://example.com/product.jpg' }}
+    image="https://example.com/product.jpg"
   />
 </Chunk>
 ```
@@ -359,7 +366,7 @@ Flexible list component supporting linear, grid, and scroll layouts with respons
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `variant` | `string` | `'linear'` | List layout (`'linear'`, `'grid'`, `'scroll'`) |
+| `variant` | `string`/`object` | `'linear'` | List layout (`'linear'`, `'grid'`, `'scroll'`), or a responsive object like `{ small: 'scroll', large: 'grid' }` |
 | `items` | `array` | `[]` | Array of items to render |
 | `renderItem` | `function` | `item => item` | Item render function |
 | `itemsInRow` | `object` | `{}` | Items per row for responsive breakpoints |
@@ -433,9 +440,9 @@ Page and section header component with positioning options.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `position` | `string` | `null` | Header position (`'fixed'`, `'sticky'`) |
-| `type` | `string` | `null` | Header type variant |
-| `maxWidth` | `string` | `null` | Maximum width constraint |
+| `position` | `string` | `'sticky'` | Header position (`'sticky'`, `'fixed'`, `'static'`, `'absolute'`) |
+| `type` | `string` | `'separated'` | Header styling variant (e.g. `'separated'`, `'transparent'`) |
+| `maxWidth` | `number` | `1100` | Maximum content width in pixels |
 | `style` | `object` | `{}` | Additional styles |
 
 ### Usage
@@ -478,7 +485,8 @@ Navigation link component using Next.js router for internal navigation.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `href` | `string` | `null` | Link destination |
-| `onPress` | `function` | `null` | Press handler (for programmatic navigation) |
+| `onPress` | `function` | `null` | Additional callback to run on press |
+| `target` | `string` | `null` | Link target (e.g. `'_blank'`) — disables router navigation |
 | `children` | `node` | `null` | Link content |
 
 ### Usage
@@ -493,14 +501,14 @@ import { Link, Text, Icon } from '@cinderblock/design-system';
 
 // Link with icon
 <Link href="/profile">
-  <Icon shape="user" />
+  <Icon shape="User" />
   <Text>Profile</Text>
 </Link>
 
-// External link
-<Link href="https://example.com">
+// External link (opens in new tab, bypasses router)
+<Link href="https://example.com" target="_blank">
   <Text>External Site</Text>
-  <Icon shape="external-link" />
+  <Icon shape="ExternalLink" />
 </Link>
 ```
 
@@ -520,7 +528,7 @@ Form label component with proper accessibility and styling.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `color` | `string` | `null` | Label color |
+| `color` | `string` | `'secondary'` | Label color |
 | `style` | `object` | `{}` | Additional styles |
 | `children` | `node` | `null` | Label text |
 
@@ -551,56 +559,49 @@ Small tag-like UI elements for categories, labels, or status indicators.
 - Tags and categories
 - Status indicators
 - Compact information display
-- Removable labels
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | `null` | Text content of the chip |
 
 ### Usage
 
 ```javascript
-import { Chip, Flex, FlexItem } from '@cinderblock/design-system';
+import { Chip, Inline } from '@cinderblock/design-system';
 
 // Tag list
-<Flex>
-  <FlexItem>
-    <Chip>React</Chip>
-  </FlexItem>
-  <FlexItem>
-    <Chip>JavaScript</Chip>
-  </FlexItem>
-  <FlexItem>
-    <Chip>Design Systems</Chip>
-  </FlexItem>
-</Flex>
+<Inline>
+  <Chip label="React" />
+  <Chip label="JavaScript" />
+  <Chip label="Design Systems" />
+</Inline>
 ```
 
 ---
 
 ## Menu
 
-Navigation menu component for app navigation.
-
-### Purpose
-- Application navigation
-- Menu structures
-- Hierarchical navigation
-- Consistent menu styling
+Legacy dropdown menu component. **Deprecated** — prefer `Dropdowner`/`DropdownTouch`/`DropdownItem`, which provide centralized state management and better cross-platform support.
 
 ### Usage
 
 ```javascript
-import { Menu, Link, Text } from '@cinderblock/design-system';
+import { DropdownTouch, DropdownItem, Section, Text } from '@cinderblock/design-system';
 
-// Navigation menu
-<Menu>
-  <Link href="/">
-    <Text>Home</Text>
-  </Link>
-  <Link href="/about">
-    <Text>About</Text>
-  </Link>
-  <Link href="/contact">
-    <Text>Contact</Text>
-  </Link>
-</Menu>
+// Recommended dropdown pattern
+<DropdownTouch
+  dropdown={
+    <Section>
+      <DropdownItem href="/profile">Profile</DropdownItem>
+      <DropdownItem href="/settings">Settings</DropdownItem>
+      <DropdownItem onPress={handleLogout}>Sign Out</DropdownItem>
+    </Section>
+  }
+>
+  <Text>User Menu</Text>
+</DropdownTouch>
 ```
 
 ---
@@ -612,10 +613,12 @@ Here's how content components work together to create a rich content layout:
 ```javascript
 import { 
   Stripe,
+  Bounds,
   Section,
   Chunk,
   Flex,
   FlexItem,
+  Inline,
   Text,
   Avatar,
   Picture,
@@ -637,7 +640,8 @@ function ArticlePage() {
     <>
       {/* Article Header */}
       <Stripe>
-        <Section>
+        <Bounds>
+          <Section>
           <Chunk>
             <Text type="pageHead">How to Build Better Interfaces</Text>
           </Chunk>
@@ -658,24 +662,20 @@ function ArticlePage() {
           </Chunk>
 
           <Chunk>
-            <Flex>
-              <FlexItem>
-                <Chip>Design</Chip>
-              </FlexItem>
-              <FlexItem>
-                <Chip>UI/UX</Chip>
-              </FlexItem>
-              <FlexItem>
-                <Chip>Frontend</Chip>
-              </FlexItem>
-            </Flex>
+            <Inline>
+              <Chip label="Design" />
+              <Chip label="UI/UX" />
+              <Chip label="Frontend" />
+            </Inline>
           </Chunk>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
 
       {/* Article Content */}
       <Stripe>
-        <Section>
+        <Bounds>
+          <Section>
           <Chunk>
             <Picture 
               source={{ uri: 'https://example.com/article-hero.jpg' }}
@@ -700,12 +700,14 @@ function ArticlePage() {
               key principles that guide decision-making...
             </Text>
           </Chunk>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
 
       {/* Related Articles */}
       <Stripe style={{ backgroundColor: '#f8f9fa' }}>
-        <Section>
+        <Bounds>
+          <Section>
           <Chunk>
             <Text type="sectionHead">Related Articles</Text>
           </Chunk>
@@ -726,7 +728,7 @@ function ArticlePage() {
                     </Chunk>
                     <Chunk>
                       <Text color="primary">
-                        Read more <Icon shape="arrow-right" />
+                        Read more <Icon shape="ArrowRight" />
                       </Text>
                     </Chunk>
                   </Card>
@@ -734,7 +736,8 @@ function ArticlePage() {
               )}
             />
           </Chunk>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
     </>
   );

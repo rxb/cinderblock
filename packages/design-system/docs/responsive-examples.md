@@ -119,9 +119,12 @@ function ResponsiveTabs({ tabs, activeTab, onTabChange }) {
         <Tabs 
           selectedValue={activeTab}
           onChange={onTabChange}
-          tabs={tabs}
           fullWidth
-        />
+        >
+          {tabs.map(tab => (
+            <Tabs.Item key={tab.value} value={tab.value} label={tab.label} />
+          ))}
+        </Tabs>
       </View>
 
       {/* Mobile Dropdown - Shown on mobile, hidden on medium screens and up */}
@@ -145,7 +148,7 @@ function ResponsiveTabs({ tabs, activeTab, onTabChange }) {
               <Chunk key={tab.value}>
                 <Button 
                   width="full"
-                  variant={tab.value === activeTab ? 'primary' : 'secondary'}
+                  color={tab.value === activeTab ? 'primary' : 'secondary'}
                   onPress={() => {
                     onTabChange(tab.value);
                     setDropdownOpen(false);
@@ -313,7 +316,7 @@ function Dashboard({ metrics, charts, notifications }) {
           <Chunk>
             <List 
               variant={{ small: 'linear', medium: 'grid' }}
-              itemsInRow={{ mobile: 1, tablet: 2, desktop: 4 }}
+              itemsInRow={{ small: 1, medium: 2, large: 4 }}
               items={metrics}
               renderItem={(metric) => (
                 <Card key={metric.id} shadow>
@@ -346,7 +349,7 @@ function Dashboard({ metrics, charts, notifications }) {
       {/* Charts and Analytics */}
       <Stripe style={{ backgroundColor: '#f8f9fa' }}>
         <Section>
-          <Flex switchDirection="large">
+          <Flex direction="column" switchDirection="large">
             {/* Main Chart */}
             <FlexItem>
               <Card>
@@ -452,7 +455,7 @@ function ProductGrid({ products, category }) {
         <Chunk>
           <List 
             variant={{ small: 'linear', medium: 'grid' }}
-            itemsInRow={{ mobile: 1, tablet: 2, desktop: 3, large: 4 }}
+            itemsInRow={{ small: 1, medium: 2, large: 4 }}
             items={products}
             renderItem={(product) => (
               <Card key={product.id} shadow>
@@ -526,12 +529,12 @@ function ProductGrid({ products, category }) {
                   <Chunk>
                     <Flex>
                       <FlexItem>
-                        <Button variant="secondary">
+                        <Button color="secondary">
                           <Icon shape="heart" />
                         </Button>
                       </FlexItem>
                       <FlexItem>
-                        <Button variant="secondary">
+                        <Button color="secondary">
                           <Icon shape="share" />
                         </Button>
                       </FlexItem>
@@ -560,7 +563,7 @@ function CheckoutForm({ cart, shippingMethods, paymentMethods }) {
   return (
     <Stripe>
       <Section>
-        <Flex switchDirection="medium">  
+        <Flex direction="column" switchDirection="medium">  
           {/* Checkout Form */}
           <FlexItem>
             <Chunk>
@@ -678,10 +681,10 @@ Contact form that adapts its layout and field arrangement.
 function ContactForm() {
   const { 
     fields, 
-    setField, 
-    fieldErrors, 
-    submitting, 
-    handleSubmit 
+    setFieldValue, 
+    error, 
+    loading, 
+    setLoading 
   } = useFormState({
     initialFields: {
       name: '',
@@ -697,34 +700,34 @@ function ContactForm() {
 
   return (
     <Stripe>
-      <Section>
-        <Bounds medium>
+      <Bounds medium>
+        <Section>
           <Chunk>
             <Text type="pageHead">Get in Touch</Text>
           </Chunk>
 
-          <form onSubmit={handleSubmit(handleFormSubmit)}>
+          <form onSubmit={handleFormSubmit}>
             {/* Name and Email - Side by side on medium screens and up */}
             <Chunk>
-              <Flex switchDirection="medium">
+              <Flex direction="column" switchDirection="medium">
                 <FlexItem>
                   <Label>Name *</Label>
                   <TextInput 
                     value={fields.name}
-                    onChange={(name) => setField('name', name)}
+                    onChange={(name) => setFieldValue('name', name)}
                     placeholder="Your name"
                   />
-                  <FieldError error={fieldErrors.name} />
+                  <FieldError error={error.fieldErrors?.name} />
                 </FlexItem>
 
                 <FlexItem>
                   <Label>Email *</Label>
                   <TextInput 
                     value={fields.email}
-                    onChange={(email) => setField('email', email)}
+                    onChange={(email) => setFieldValue('email', email)}
                     placeholder="your@email.com"
                   />
-                  <FieldError error={fieldErrors.email} />
+                  <FieldError error={error.fieldErrors?.email} />
                 </FlexItem>
               </Flex>
             </Chunk>
@@ -740,7 +743,7 @@ function ContactForm() {
                     <Label>Company</Label>
                     <TextInput 
                       value={fields.company}
-                      onChange={(company) => setField('company', company)}
+                      onChange={(company) => setFieldValue('company', company)}
                       placeholder="Your company"
                     />
                   </FlexItem>
@@ -749,7 +752,7 @@ function ContactForm() {
                     <Label>Phone</Label>
                     <TextInput 
                       value={fields.phone}
-                      onChange={(phone) => setField('phone', phone)}
+                      onChange={(phone) => setFieldValue('phone', phone)}
                       placeholder="(555) 123-4567"
                     />
                   </FlexItem>
@@ -766,7 +769,7 @@ function ContactForm() {
                 <Label>Company</Label>
                 <TextInput 
                   value={fields.company}
-                  onChange={(company) => setField('company', company)}
+                  onChange={(company) => setFieldValue('company', company)}
                   placeholder="Your company"
                 />
               </Chunk>
@@ -775,7 +778,7 @@ function ContactForm() {
                 <Label>Phone</Label>
                 <TextInput 
                   value={fields.phone}
-                  onChange={(phone) => setField('phone', phone)}
+                  onChange={(phone) => setFieldValue('phone', phone)}
                   placeholder="(555) 123-4567"
                 />
               </Chunk>
@@ -787,12 +790,12 @@ function ContactForm() {
               <TextInput 
                 multiline
                 value={fields.message}
-                onChange={(message) => setField('message', message)}
+                onChange={(message) => setFieldValue('message', message)}
                 placeholder="Tell us about your project..."
                 maxLength={1000}
                 showCounter
               />
-              <FieldError error={fieldErrors.message} />
+              <FieldError error={error.fieldErrors?.message} />
             </Chunk>
 
             {/* Preferred contact method - Only on large screens */}
@@ -804,7 +807,7 @@ function ContactForm() {
                 <Label>Preferred Contact Method</Label>
                 <Picker
                   selectedValue={fields.preferredContact}
-                  onValueChange={(method) => setField('preferredContact', method)}
+                  onValueChange={(method) => setFieldValue('preferredContact', method)}
                 >
                   <Picker.Item label="Email" value="email" />
                   <Picker.Item label="Phone" value="phone" />
@@ -818,15 +821,15 @@ function ContactForm() {
               <Button 
                 type="submit"
                 color="primary"
-                isLoading={submitting}
+                isLoading={loading}
                 width="full"
               >
-                {submitting ? 'Sending...' : 'Send Message'}
+                {loading ? 'Sending...' : 'Send Message'}
               </Button>
             </Chunk>
           </form>
-        </Bounds>
-      </Section>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }
@@ -872,8 +875,8 @@ Prefer built-in responsive behavior over manual utilities:
 
 ```javascript
 // ✅ Good: Built-in responsive behavior
-<Flex switchDirection="large">  // Switches from column to row at large breakpoint
-<List variant={{ small: 'linear', large: 'grid' }} itemsInRow={{ mobile: 1, desktop: 3 }} />
+<Flex switchDirection="large">  // Switches from row to column at large breakpoint
+<List variant={{ small: 'linear', large: 'grid' }} itemsInRow={{ small: 1, large: 3 }} />
 <Button variant={{ small: 'grow', large: 'shrink' }} />
 
 // ⚠️ Only use manual utilities when component props aren't available
@@ -891,7 +894,7 @@ Many components have built-in responsive behavior:
 <Flex direction="column" switchDirection="medium">    // column until medium, then row
 
 // List: variant and itemsInRow use breakpoint objects
-<List variant={{ small: 'linear', large: 'grid' }} itemsInRow={{ mobile: 1, tablet: 2, desktop: 4 }} />
+<List variant={{ small: 'linear', large: 'grid' }} itemsInRow={{ small: 1, medium: 2, large: 4 }} />
 
 // Button: variant affects width/sizing behavior
 <Button variant={{ small: 'grow', large: 'shrink' }} />

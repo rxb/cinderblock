@@ -18,16 +18,17 @@ The primary action component for user interactions. Supports multiple styles, si
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `color` | `string` | `'primary'` | Button color variant |
+| `color` | `string` | `'primary'` | Button color variant (`'primary'`, `'secondary'`) |
 | `size` | `string` | `'medium'` | Button size (`'small'`, `'medium'`, `'large'`) |
 | `inverted` | `boolean` | `false` | Use inverted color scheme |
-| `variant` | `string` | `null` | Style variant |
-| `width` | `string` | `null` | Button width |
-| `href` | `string` | `null` | Link destination (makes it a link) |
-| `onPress` | `function` | `null` | Press handler |
-| `label` | `string` | `null` | Accessible label |
-| `shape` | `string` | `null` | Button shape variant |
-| `isLoading` | `boolean` | `false` | Show loading state |
+| `variant` | `object` | `null` | Responsive width/behavior variant object (e.g. `{small: 'grow', medium: 'shrink'}`), keyed by breakpoint. Overrides `width` if both are set |
+| `width` | `string` | `null` | Shorthand for common responsive widths: `'snap'` (full-width on mobile, shrink on desktop), `'full'` (full-width always). Omit for shrink-to-content on all sizes |
+| `href` | `string` | `null` | Link destination — renders as a `Link` instead of a touchable |
+| `dummy` | `boolean` | `false` | Render as a plain `View` instead of a touchable, for buttons nested inside an already-clickable element |
+| `onPress` | `function` | `() => {}` | Press handler (ignored when `href` or `dummy` is set) |
+| `label` | `string` | `null` | Text rendered next to an optional `shape` icon (alternative to passing `children`) |
+| `shape` | `string` | `null` | Icon shape to display before the label/children |
+| `isLoading` | `boolean` | `false` | Show a centered `ActivityIndicator` and hide (not disable) the content |
 | `children` | `node` | `null` | Button content |
 
 ### Usage
@@ -44,34 +45,33 @@ import { Button, Chunk, Section, Stripe } from '@cinderblock/design-system';
 
 // Different sizes and colors
 <Chunk>
-  <Button size="small" color="secondary">Small Button</Button>
+  <Button size="small" color="secondary" label="Small Button" />
 </Chunk>
 <Chunk>
-  <Button size="medium" color="primary">Medium Button</Button>
+  <Button size="medium" color="primary" label="Medium Button" />
 </Chunk>
 <Chunk>
-  <Button size="large" color="danger">Large Button</Button>
+  <Button size="large" color="secondary" label="Large Button" />
 </Chunk>
 
 // Loading state
 <Chunk>
-  <Button isLoading={true} color="primary">
-    Saving...
-  </Button>
+  <Button isLoading={true} color="primary" label="Saving..." />
 </Chunk>
 
 // Link button
 <Chunk>
-  <Button href="/about">
-    About Us
-  </Button>
+  <Button href="/about" label="About Us" />
 </Chunk>
 
-// Button with icon
+// Button with icon (shape names come from Feather icons, capitalized)
 <Chunk>
-  <Button onPress={handleSave}>
-    <Icon shape="save" /> Save Changes
-  </Button>
+  <Button onPress={handleSave} shape="Save" label="Save Changes" />
+</Chunk>
+
+// Responsive width: full-width on mobile, shrink-to-content on desktop
+<Chunk>
+  <Button width="snap" onPress={handleSubmit} label="Submit" />
 </Chunk>
 ```
 
@@ -144,9 +144,9 @@ Form text input component with auto-expansion and character counting features.
 | `multiline` | `boolean` | `false` | Enable multiline input |
 | `placeholder` | `string` | `null` | Placeholder text |
 | `maxLength` | `number` | `null` | Maximum character count |
-| `showCounter` | `boolean` | `false` | Show character counter |
+| `showCounter` | `boolean` | `false` | Show character counter (requires `maxLength`) |
 | `value` | `string` | `''` | Input value |
-| `onChange` | `function` | `() => {}` | Change handler |
+| `onChange` | `function` | `() => {}` | Change handler — receives the raw DOM change event, not the value directly. Read the text with `event.target.value` |
 | `onFocus` | `function` | `() => {}` | Focus handler |
 | `onBlur` | `function` | `() => {}` | Blur handler |
 
@@ -156,12 +156,13 @@ Form text input component with auto-expansion and character counting features.
 import { TextInput, Chunk, Label } from '@cinderblock/design-system';
 
 // Basic text input
+// Note: onChange receives the DOM event, so read event.target.value
 <Chunk>
   <Label>Name</Label>
   <TextInput 
     placeholder="Enter your name"
     value={name}
-    onChange={setName}
+    onChange={(e) => setName(e.target.value)}
   />
 </Chunk>
 
@@ -174,7 +175,7 @@ import { TextInput, Chunk, Label } from '@cinderblock/design-system';
     maxLength={500}
     showCounter
     value={description}
-    onChange={setDescription}
+    onChange={(e) => setDescription(e.target.value)}
   />
 </Chunk>
 
@@ -185,7 +186,7 @@ import { TextInput, Chunk, Label } from '@cinderblock/design-system';
     placeholder="your@email.com"
     autoExpand={false}
     value={email}
-    onChange={setEmail}
+    onChange={(e) => setEmail(e.target.value)}
   />
 </Chunk>
 ```
@@ -207,8 +208,9 @@ Boolean input component with custom styling and label support.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `value` | `boolean` | `false` | Checkbox state |
-| `onChange` | `function` | `() => {}` | Change handler |
-| `label` | `string` | `null` | Checkbox label |
+| `onChange` | `function` | `null` | Change handler, passed to the underlying react-native-web checkbox (receives a change event; also fired with no arguments when the label is clicked) |
+| `label` | `string` | `null` | Checkbox label (clickable) |
+| `id` | `string` | `null` | Checkbox ID for forms |
 
 ### Usage
 
@@ -219,7 +221,7 @@ import { CheckBox, Chunk } from '@cinderblock/design-system';
 <Chunk>
   <CheckBox 
     value={isChecked}
-    onChange={setIsChecked}
+    onChange={() => setIsChecked(!isChecked)}
     label="I agree to the terms"
   />
 </Chunk>
@@ -228,14 +230,14 @@ import { CheckBox, Chunk } from '@cinderblock/design-system';
 <Chunk>
   <CheckBox 
     value={notifications}
-    onChange={setNotifications}
+    onChange={() => setNotifications(!notifications)}
     label="Email notifications"
   />
 </Chunk>
 <Chunk>
   <CheckBox 
     value={marketing}
-    onChange={setMarketing}
+    onChange={() => setMarketing(!marketing)}
     label="Marketing emails"
   />
 </Chunk>
@@ -254,7 +256,14 @@ Dropdown selection component with custom styling.
 
 ### Props
 
-Standard picker props plus custom styling options.
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `selectedValue` | `any` | `null` | Currently selected value |
+| `onValueChange` | `function` | `null` | Selection change handler (receives the new value) |
+| `style` | `object` | `null` | Additional styles for the select element |
+| `children` | `node` | `null` | `Picker.Item` components |
+
+All other props are passed through to react-native-web's `Picker`. The design system adds input styling and a chevron icon.
 
 ### Usage
 
@@ -292,8 +301,9 @@ Full-screen overlay component for dialogs and modal content.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `visible` | `boolean` | `false` | Whether modal is visible |
-| `onRequestClose` | `function` | `null` | Close request handler |
-| `onCompleteClose` | `function` | `null` | Complete close handler |
+| `onRequestClose` | `function` | `() => console.log('onRequestClose not implemented')` | Called when the backdrop, close (X) button, or Escape key is pressed. You're responsible for setting `visible` to `false` |
+| `onCompleteClose` | `function` | `() => {}` | Called after the close animation finishes |
+| `onPressEnter` | `function` | `() => {}` | Called when Enter is pressed while the modal is visible |
 
 ### Usage
 
@@ -351,9 +361,11 @@ Tab navigation component for switching between content sections.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `selectedValue` | `string` | `null` | Currently selected tab |
-| `onChange` | `function` | `null` | Tab change handler |
-| `fullWidth` | `boolean` | `false` | Full width tabs |
+| `selectedValue` | `string` | first tab's `value` | Currently selected tab |
+| `onChange` | `function` | `null` | Tab change handler — receives the selected tab's `value` |
+| `fullWidth` | `boolean` | `false` | Distribute tabs evenly across the full width |
+
+Tabs are declared as `Tabs.Item` children (there is no `tabs` array prop). Each `Tabs.Item` takes a `value` (unique identifier) and a `label` (display text); selection state and the `onChange` handler are passed down automatically.
 
 ### Usage
 
@@ -363,20 +375,17 @@ import { Tabs, Chunk, Text } from '@cinderblock/design-system';
 function TabExample() {
   const [selectedTab, setSelectedTab] = useState('tab1');
 
-  const tabs = [
-    { value: 'tab1', label: 'Overview' },
-    { value: 'tab2', label: 'Details' },
-    { value: 'tab3', label: 'Settings' }
-  ];
-
   return (
     <>
       <Chunk>
         <Tabs 
           selectedValue={selectedTab}
           onChange={setSelectedTab}
-          tabs={tabs}
-        />
+        >
+          <Tabs.Item value="tab1" label="Overview" />
+          <Tabs.Item value="tab2" label="Details" />
+          <Tabs.Item value="tab3" label="Settings" />
+        </Tabs>
       </Chunk>
       
       <Chunk>
@@ -396,15 +405,23 @@ function TabExample() {
 A collection of components for creating contextual dropdown menus.
 
 ### Components
-- `Dropdowner` - Main dropdown container
-- `DropdownTouch` - Touchable dropdown trigger
-- `DropdownItem` - Individual dropdown items
+- `Dropdowner` - Container that renders all active dropdowns (mount once, near the root)
+- `DropdownTouch` - Touchable trigger that measures its position and opens a dropdown
+- `DropdownItem` - Individual menu item (supports `onPress`, `href`, or `dummy`)
 
 ### Purpose
 - Context menus
 - Action menus
 - Option selection dropdowns
 - Positioned overlay menus
+
+### How it works
+
+The dropdown system is state-agnostic: you own the `dropdowns` array (in React state, Redux, or context) and pass the management functions in as props. `DropdownTouch` wraps your trigger element and takes the dropdown `content` element plus the state functions; the `Dropdowner` container renders whatever is in the `dropdowns` array at the measured position. (See `ConnectedDropdowner` in the kitchensink starter for a Redux-wired example.)
+
+- `DropdownTouch` props: `dropdown` (element to show), `dropdowns`, `addDropdown(content, {x, y, id, side})`, `hideDropdown(id)`, `clearDropdowns()`
+- `Dropdowner` props: `dropdowns`, `hideDropdown(id)`, `removeDropdown(id)`
+- `DropdownItem` props: `onPress` or `href` (or `dummy` to render unclickable), `children`
 
 ### Usage
 
@@ -414,29 +431,51 @@ import {
   DropdownTouch, 
   DropdownItem, 
   Button,
-  Icon,
+  Sectionless,
   Text 
 } from '@cinderblock/design-system';
 
 function DropdownExample() {
-  return (
-    <Dropdowner>
-      <DropdownTouch>
-        <Button>
-          Options <Icon shape="chevron-down" />
-        </Button>
-      </DropdownTouch>
-      
+  // you own this state; could also live in Redux or context
+  const [dropdowns, setDropdowns] = useState([]);
+  const addDropdown = (content, position) =>
+    setDropdowns(prev => [...prev, { ...position, content, visible: true }]);
+  const hideDropdown = (id) =>
+    setDropdowns(prev => prev.map(d => d.id === id ? { ...d, visible: false } : d));
+  const removeDropdown = (id) =>
+    setDropdowns(prev => prev.filter(d => d.id !== id));
+  const clearDropdowns = () => setDropdowns([]);
+
+  const menu = (
+    <Sectionless>
       <DropdownItem onPress={() => console.log('Edit')}>
-        <Icon shape="edit" />
         <Text>Edit</Text>
       </DropdownItem>
-      
       <DropdownItem onPress={() => console.log('Delete')}>
-        <Icon shape="trash" />
         <Text>Delete</Text>
       </DropdownItem>
-    </Dropdowner>
+    </Sectionless>
+  );
+
+  return (
+    <>
+      <DropdownTouch
+        dropdown={menu}
+        dropdowns={dropdowns}
+        addDropdown={addDropdown}
+        hideDropdown={hideDropdown}
+        clearDropdowns={clearDropdowns}
+      >
+        <Button dummy shape="ChevronDown" label="Options" />
+      </DropdownTouch>
+
+      {/* mount once, near the root of the page */}
+      <Dropdowner
+        dropdowns={dropdowns}
+        hideDropdown={hideDropdown}
+        removeDropdown={removeDropdown}
+      />
+    </>
   );
 }
 ```
@@ -451,8 +490,25 @@ Components for handling file and photo uploads.
 
 ### Purpose
 - File upload handling
-- Photo selection and upload
+- Photo selection and upload with preview and removal
 - Form file inputs
+
+### FileInput props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `placeholder` | `string` | `'Pick a file'` | Placeholder text |
+| `shape` | `string` | `'ChevronDown'` | Icon shape shown in the input |
+| `onChangeFile` | `function` | `() => {}` | Receives `{file, preview, filename}` when a file is selected (`preview` is a data URL) |
+| `onChange` | `function` | `() => {}` | Raw change handler for the underlying `<input type="file">` |
+| `inputKey` | `string\|number` | `null` | Change this key to reset/clear the input |
+
+### PhotoInput props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `fileState` | `object` | required | Current file state (`{file, preview, filename}` or `{}`) — you hold this state |
+| `onChangeFile` | `function` | required | Called with the new file state on select, or `{}` on remove |
 
 ### Usage
 
@@ -462,13 +518,19 @@ import { FileInput, PhotoInput, Chunk, Label } from '@cinderblock/design-system'
 // File input
 <Chunk>
   <Label>Upload Document</Label>
-  <FileInput onFileSelect={handleFileSelect} />
+  <FileInput 
+    placeholder="Choose a document..."
+    onChangeFile={(fileState) => setDocument(fileState)} 
+  />
 </Chunk>
 
-// Photo input
+// Photo input (controlled — shows preview thumbnail and a remove button)
 <Chunk>
   <Label>Profile Photo</Label>
-  <PhotoInput onPhotoSelect={handlePhotoSelect} />
+  <PhotoInput 
+    fileState={photoState}
+    onChangeFile={setPhotoState} 
+  />
 </Chunk>
 ```
 
@@ -476,12 +538,23 @@ import { FileInput, PhotoInput, Chunk, Label } from '@cinderblock/design-system'
 
 ## FakeInput
 
-Non-interactive component that looks like an input but isn't editable.
+Touchable component that looks like a text input but acts as a button. Useful for triggering modals, pickers, or other complex input flows while keeping form styling consistent.
 
 ### Purpose
-- Display-only input styling
-- Read-only form fields
-- Input-styled content display
+- Input-styled trigger for modals and pickers
+- Date/location/category selectors
+- Read-only, input-styled display with a press action
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | `null` | Display text (rendered in hint color, like a placeholder) |
+| `shape` | `string` | `null` | Optional icon shape shown at the right edge |
+| `onPress` | `function` | `() => {}` | Press handler |
+| `onFocus` | `function` | `() => {}` | Focus handler |
+| `onBlur` | `function` | `() => {}` | Blur handler |
+| `style` | `object` | `null` | Additional styles |
 
 ### Usage
 
@@ -489,8 +562,12 @@ Non-interactive component that looks like an input but isn't editable.
 import { FakeInput, Chunk, Label } from '@cinderblock/design-system';
 
 <Chunk>
-  <Label>User ID</Label>
-  <FakeInput>12345</FakeInput>
+  <Label>Event Date</Label>
+  <FakeInput
+    label={selectedDate ? selectedDate.toLocaleDateString() : 'Select a date'}
+    shape="Calendar"
+    onPress={() => setShowPicker(true)}
+  />
 </Chunk>
 ```
 
@@ -503,6 +580,7 @@ Here's how UI components work together to create a complete form:
 ```javascript
 import { 
   Stripe,
+  Bounds,
   Section, 
   Chunk, 
   Flex,
@@ -530,74 +608,74 @@ function ContactForm() {
 
   return (
     <Stripe>
-      <Section>
-        <Chunk>
-          <Text type="pageHead">Contact Us</Text>
-        </Chunk>
+      <Bounds>
+        <Section>
+          <Chunk>
+            <Text type="pageHead">Contact Us</Text>
+          </Chunk>
 
-        <Chunk>
-          <Label>Name</Label>
-          <TextInput 
-            placeholder="Your name"
-            value={formData.name}
-            onChange={(name) => setFormData({...formData, name})}
-          />
-        </Chunk>
+          <Chunk>
+            <Label>Name</Label>
+            <TextInput 
+              placeholder="Your name"
+              value={formData.name}
+              onChange={(e) => setFormData({...formData, name: e.target.value})}
+            />
+          </Chunk>
 
-        <Chunk>
-          <Label>Email</Label>
-          <TextInput 
-            placeholder="your@email.com"
-            value={formData.email}
-            onChange={(email) => setFormData({...formData, email})}
-          />
-        </Chunk>
+          <Chunk>
+            <Label>Email</Label>
+            <TextInput 
+              placeholder="your@email.com"
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+            />
+          </Chunk>
 
-        <Chunk>
-          <Label>Country</Label>
-          <Picker
-            selectedValue={formData.country}
-            onValueChange={(country) => setFormData({...formData, country})}
-          >
-            <Picker.Item label="Select Country" value="" />
-            <Picker.Item label="United States" value="us" />
-            <Picker.Item label="Canada" value="ca" />
-          </Picker>
-        </Chunk>
+          <Chunk>
+            <Label>Country</Label>
+            <Picker
+              selectedValue={formData.country}
+              onValueChange={(country) => setFormData({...formData, country})}
+            >
+              <Picker.Item label="Select Country" value="" />
+              <Picker.Item label="United States" value="us" />
+              <Picker.Item label="Canada" value="ca" />
+            </Picker>
+          </Chunk>
 
-        <Chunk>
-          <Label>Message</Label>
-          <TextInput 
-            multiline
-            placeholder="Your message..."
-            maxLength={500}
-            showCounter
-            value={formData.message}
-            onChange={(message) => setFormData({...formData, message})}
-          />
-        </Chunk>
+          <Chunk>
+            <Label>Message</Label>
+            <TextInput 
+              multiline
+              placeholder="Your message..."
+              maxLength={500}
+              showCounter
+              value={formData.message}
+              onChange={(e) => setFormData({...formData, message: e.target.value})}
+            />
+          </Chunk>
 
-        <Chunk>
-          <CheckBox 
-            value={formData.newsletter}
-            onChange={(newsletter) => setFormData({...formData, newsletter})}
-            label="Subscribe to newsletter"
-          />
-        </Chunk>
+          <Chunk>
+            <CheckBox 
+              value={formData.newsletter}
+              onChange={() => setFormData({...formData, newsletter: !formData.newsletter})}
+              label="Subscribe to newsletter"
+            />
+          </Chunk>
 
-        <Chunk>
-          <Flex>
-            <FlexItem>
-              <Button>Cancel</Button>
-            </FlexItem>
-            <FlexItem>
-              <Button color="primary" onPress={handleSubmit}>
-                Send Message
-              </Button>
-            </FlexItem>
-          </Flex>
-        </Chunk>
-      </Section>
+          <Chunk>
+            <Flex>
+              <FlexItem>
+                <Button color="secondary" label="Cancel" />
+              </FlexItem>
+              <FlexItem>
+                <Button color="primary" onPress={handleSubmit} label="Send Message" />
+              </FlexItem>
+            </Flex>
+          </Chunk>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }

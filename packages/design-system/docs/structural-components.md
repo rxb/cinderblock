@@ -11,14 +11,17 @@ Structural components are the foundation of the Cinderblock Design System. They 
 ```
 Page (your app wrapper)
 ├── Stripe (full-width sections)
-│   ├── Section (content areas)
-│   │   ├── Chunk (element spacing)
-│   │   │   └── [Content components]
-│   │   └── Chunk
-│   │       └── [Content components]
-│   └── Section
+│   └── Bounds (max-width constraint, directly under Stripe)
+│       ├── Section (content areas)
+│       │   ├── Chunk (element spacing)
+│       │   │   └── [Content components]
+│       │   └── Chunk
+│       │       └── [Content components]
+│       └── Section
 └── Stripe
 ```
+
+Bounds sits directly under Stripe and constrains content to a readable max-width. It can be legitimately omitted for full-bleed content (a fullscreen photo or map) or app-like layouts where the whole screen is a Flex/FlexItem shell — but for a normal page skeleton, the hierarchy is **Stripe > Bounds > Section > Chunk**.
 
 ---
 
@@ -35,50 +38,58 @@ The outermost structural container. Goes edge-to-edge of the screen and provides
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `image` | `object` | `null` | Background image source |
-| `border` | `string` | `null` | Border style (`'top'`, `'bottom'`, `'both'`) |
-| `imageHeight` | `number` | `null` | Height for background image |
+| `image` | `string` | `null` | Background image URL |
+| `border` | `boolean` | `false` | Add border styling |
+| `imageHeight` | `object` | `{small: 225, medium: 325, large: 400, xlarge: 450}` | Responsive heights for background image |
 | `style` | `object` | `{}` | Additional styles |
 
 ### Usage
 
 ```javascript
-import { Stripe, Section, Chunk, Text } from '@cinderblock/design-system';
+import { Stripe, Bounds, Section, Chunk, Text } from '@cinderblock/design-system';
 
 // Basic stripe
 <Stripe>
-  <Section>
-    <Chunk>
-      <Text type="pageHead">Main Content</Text>
-    </Chunk>
-  </Section>
+  <Bounds>
+    <Section>
+      <Chunk>
+        <Text type="pageHead">Main Content</Text>
+      </Chunk>
+    </Section>
+  </Bounds>
 </Stripe>
 
 // Stripe with background color
 <Stripe style={{ backgroundColor: '#f5f5f5' }}>
-  <Section>
-    <Chunk>
-      <Text>Content on gray background</Text>
-    </Chunk>
-  </Section>
+  <Bounds>
+    <Section>
+      <Chunk>
+        <Text>Content on gray background</Text>
+      </Chunk>
+    </Section>
+  </Bounds>
 </Stripe>
 
 // Multiple stripes for different sections
 <>
   <Stripe>
-    <Section>
-      <Chunk>
-        <Text type="pageHead">Hero Section</Text>
-      </Chunk>
-    </Section>
+    <Bounds>
+      <Section>
+        <Chunk>
+          <Text type="pageHead">Hero Section</Text>
+        </Chunk>
+      </Section>
+    </Bounds>
   </Stripe>
   
-  <Stripe style={{ backgroundColor: '#000', color: '#fff' }}>
-    <Section>
-      <Chunk>
-        <Text type="sectionHead">Dark Section</Text>
-      </Chunk>
-    </Section>
+  <Stripe style={{ backgroundColor: '#000' }}>
+    <Bounds>
+      <Section>
+        <Chunk>
+          <Text type="sectionHead" inverted>Dark Section</Text>
+        </Chunk>
+      </Section>
+    </Bounds>
   </Stripe>
 </>
 ```
@@ -87,7 +98,7 @@ import { Stripe, Section, Chunk, Text } from '@cinderblock/design-system';
 
 ## Section
 
-Content areas within Stripes. Sections provide the content boundaries and can have their own styling.
+Content areas within Stripes (inside Bounds). Sections provide the content boundaries and can have their own styling.
 
 ### Purpose
 - Defines content areas within stripes
@@ -98,8 +109,8 @@ Content areas within Stripes. Sections provide the content boundaries and can ha
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `border` | `string` | `null` | Border style (`'top'`, `'bottom'`, `'both'`) |
-| `borderedContent` | `boolean` | `false` | Whether content has borders |
+| `border` | `boolean` | `false` | Add border around the entire section |
+| `borderedContent` | `boolean` | `false` | Add top border to content (useful for lists) |
 | `style` | `object` | `{}` | Additional styles |
 
 ### Usage
@@ -107,26 +118,30 @@ Content areas within Stripes. Sections provide the content boundaries and can ha
 ```javascript
 // Basic section
 <Stripe>
-  <Section>
-    <Chunk>
-      <Text>Content in a section</Text>
-    </Chunk>
-  </Section>
+  <Bounds>
+    <Section>
+      <Chunk>
+        <Text>Content in a section</Text>
+      </Chunk>
+    </Section>
+  </Bounds>
 </Stripe>
 
 // Multiple sections in one stripe
 <Stripe>
-  <Section>
-    <Chunk>
-      <Text type="pageHead">Main Content</Text>
-    </Chunk>
-  </Section>
-  
-  <Section border="top">
-    <Chunk>
-      <Text type="sectionHead">Related Content</Text>
-    </Chunk>
-  </Section>
+  <Bounds>
+    <Section>
+      <Chunk>
+        <Text type="pageHead">Main Content</Text>
+      </Chunk>
+    </Section>
+    
+    <Section border>
+      <Chunk>
+        <Text type="sectionHead">Related Content</Text>
+      </Chunk>
+    </Section>
+  </Bounds>
 </Stripe>
 ```
 
@@ -147,7 +162,7 @@ The spacing component that prevents elements from touching each other. This is t
 |------|------|---------|-------------|
 | `inline` | `boolean` | `false` | Whether to display inline |
 | `style` | `object` | `{}` | Additional styles |
-| `border` | `string` | `null` | Border style |
+| `border` | `boolean` | `false` | Add border styling |
 
 ### Usage
 
@@ -191,23 +206,28 @@ Flexible layout components for creating responsive row/column layouts.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `direction` | `string` | `'row'` | Flex direction (`'row'`, `'column'`) |
-| `switchDirection` | `boolean` | `false` | Switch to column on mobile |
+| `direction` | `string` | `'row'` | Starting flex direction (`'row'`, `'column'`) |
+| `switchDirection` | `string` | `null` | Breakpoint name at which direction switches (`'small'`, `'medium'`, `'large'`, `'xlarge'`) |
+| `reverseDirection` | `boolean` | `false` | Reverse the starting direction |
+| `reverseSwitchDirection` | `boolean` | `false` | Reverse the switched direction |
 | `wrap` | `boolean` | `false` | Allow wrapping |
-| `justify` | `string` | `'flex-start'` | Justify content |
-| `align` | `string` | `'stretch'` | Align items |
-| `flush` | `boolean` | `false` | Remove padding |
-| `section` | `boolean` | `false` | Add section-level styling |
+| `justify` | `string` | `null` | Justify content |
+| `align` | `string` | `null` | Align items |
+| `flush` | `boolean` | `false` | Remove spacing between items |
+| `nbsp` | `boolean` | `false` | Text-space-like spacing between items |
+| `section` | `boolean` | `false` | Section-like spacing between items |
 
 ### FlexItem Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `shrink` | `boolean` | `false` | Allow shrinking |
-| `growFactor` | `number` | `1` | Flex grow factor |
+| `shrink` | `boolean` | `false` | Shrink to content size |
+| `growFactor` | `number` | `null` | Flex grow factor (`0`–`7`) |
 | `justify` | `string` | `null` | Self justify |
 | `align` | `string` | `null` | Self align |
-| `flush` | `boolean` | `false` | Remove padding |
+| `flush` | `boolean` | `false` | Remove spacing around item |
+| `nbsp` | `boolean` | `false` | Text-space-like spacing around item |
+| `section` | `boolean` | `false` | Section-like spacing around item |
 
 ### Usage
 
@@ -227,10 +247,10 @@ Flexible layout components for creating responsive row/column layouts.
   </Chunk>
 </Section>
 
-// Responsive flex that switches to column on mobile
+// Responsive flex that switches direction at the medium breakpoint
 <Section>
   <Chunk>
-    <Flex switchDirection={true}>
+    <Flex switchDirection="medium">
       <FlexItem>
         <Text type="sectionHead">Main Content</Text>
         <Text>Primary content area</Text>
@@ -262,7 +282,7 @@ Flexible layout components for creating responsive row/column layouts.
 
 ## Bounds
 
-Content width constraints that control the maximum width of content for better readability.
+Content width constraints that control the maximum width of content for better readability. Bounds sits directly under Stripe and wraps Sections: **Stripe > Bounds > Section > Chunk**. Omit Bounds only for full-bleed content (fullscreen photo, map) or app-like Flex/FlexItem screen shells.
 
 ### Purpose
 - Constrains content width for optimal readability
@@ -276,7 +296,8 @@ Content width constraints that control the maximum width of content for better r
 | `large` | `boolean` | `false` | Large content width |
 | `medium` | `boolean` | `false` | Medium content width |
 | `small` | `boolean` | `false` | Small content width |
-| `sparse` | `boolean` | `false` | Extra spacing |
+| `sparse` | `boolean` | `false` | Sparse layout with layered background effects (hero sections, callouts) |
+| `sparseBackgroundStyle` | `object` | `null` | Additional styles for the sparse background layer |
 | `style` | `object` | `{}` | Additional styles |
 
 ### Usage
@@ -284,37 +305,37 @@ Content width constraints that control the maximum width of content for better r
 ```javascript
 // Constrain content width for better readability
 <Stripe>
-  <Section>
-    <Bounds>
+  <Bounds>
+    <Section>
       <Chunk>
         <Text type="pageHead">Article Title</Text>
       </Chunk>
       <Chunk>
         <Text>This long article content will be constrained to an optimal reading width...</Text>
       </Chunk>
-    </Bounds>
-  </Section>
+    </Section>
+  </Bounds>
 </Stripe>
 
 // Different width constraints
 <Stripe>
-  <Section>
-    <Bounds small>
+  <Bounds small>
+    <Section>
       <Chunk>
         <Text>Narrow content</Text>
       </Chunk>
-    </Bounds>
-  </Section>
+    </Section>
+  </Bounds>
 </Stripe>
 
 <Stripe>
-  <Section>
-    <Bounds large>
+  <Bounds large>
+    <Section>
       <Chunk>
         <Text>Wide content</Text>
       </Chunk>
-    </Bounds>
-  </Section>
+    </Section>
+  </Bounds>
 </Stripe>
 ```
 
@@ -377,20 +398,20 @@ Alternative container component that provides layout without section-specific st
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `isFirstChild` | `boolean` | `false` | Whether this is the first child |
-| `noBorder` | `boolean` | `false` | Remove borders |
+| `noBorder` | `boolean` | `false` | Legacy prop for border control (unused) |
 | `style` | `object` | `{}` | Additional styles |
 
 ### Usage
 
 ```javascript
-// Alternative container
-<Stripe>
+// Alternative container (e.g. inside a Card or Modal)
+<Card>
   <Sectionless>
     <Chunk>
       <Text>Content without section styling</Text>
     </Chunk>
   </Sectionless>
-</Stripe>
+</Card>
 ```
 
 ---
@@ -402,11 +423,11 @@ Here's how structural components work together to create a complete page layout:
 ```javascript
 import { 
   Stripe, 
+  Bounds, 
   Section, 
   Chunk, 
   Flex, 
   FlexItem, 
-  Bounds, 
   Text, 
   Button, 
   Avatar 
@@ -417,8 +438,8 @@ function ExamplePage() {
     <>
       {/* Hero Section */}
       <Stripe>
-        <Section>
-          <Bounds>
+        <Bounds>
+          <Section>
             <Chunk>
               <Text type="pageHead">Welcome to Our App</Text>
             </Chunk>
@@ -428,61 +449,65 @@ function ExamplePage() {
             <Chunk>
               <Button color="primary">Get Started</Button>
             </Chunk>
-          </Bounds>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
 
       {/* Feature Section */}
       <Stripe style={{ backgroundColor: '#f8f9fa' }}>
-        <Section>
-          <Chunk>
-            <Text type="sectionHead">Features</Text>
-          </Chunk>
-          <Chunk>
-            <Flex switchDirection={true}>
-              <FlexItem>
-                <Chunk>
-                  <Text weight="strong">Easy to Use</Text>
-                </Chunk>
-                <Chunk>
-                  <Text>Simple and intuitive interface.</Text>
-                </Chunk>
-              </FlexItem>
-              <FlexItem>
-                <Chunk>
-                  <Text weight="strong">Responsive</Text>
-                </Chunk>
-                <Chunk>
-                  <Text>Works on all devices.</Text>
-                </Chunk>
-              </FlexItem>
-            </Flex>
-          </Chunk>
-        </Section>
+        <Bounds>
+          <Section>
+            <Chunk>
+              <Text type="sectionHead">Features</Text>
+            </Chunk>
+            <Chunk>
+              <Flex switchDirection="medium">
+                <FlexItem>
+                  <Chunk>
+                    <Text weight="strong">Easy to Use</Text>
+                  </Chunk>
+                  <Chunk>
+                    <Text>Simple and intuitive interface.</Text>
+                  </Chunk>
+                </FlexItem>
+                <FlexItem>
+                  <Chunk>
+                    <Text weight="strong">Responsive</Text>
+                  </Chunk>
+                  <Chunk>
+                    <Text>Works on all devices.</Text>
+                  </Chunk>
+                </FlexItem>
+              </Flex>
+            </Chunk>
+          </Section>
+        </Bounds>
       </Stripe>
 
       {/* Team Section */}
       <Stripe>
-        <Section>
-          <Chunk>
-            <Text type="sectionHead">Our Team</Text>
-          </Chunk>
-          <Chunk>
-            <Flex>
-              <FlexItem>
-                <Avatar source={{ uri: 'https://example.com/team1.jpg' }} />
-              </FlexItem>
-              <FlexItem>
-                <Chunk>
-                  <Text weight="strong">Jane Doe</Text>
-                </Chunk>
-                <Chunk>
-                  <Text>Lead Developer</Text>
-                </Chunk>
-              </FlexItem>
-            </Flex>
-          </Chunk>
-        </Section>
+        <Bounds>
+          <Section>
+            <Chunk>
+              <Text type="sectionHead">Our Team</Text>
+            </Chunk>
+            <Chunk>
+              <Flex>
+                <FlexItem>
+                  <Avatar source={{ uri: 'https://example.com/team1.jpg' }} />
+                </FlexItem>
+                <FlexItem>
+                  <Chunk>
+                    <Text weight="strong">Jane Doe</Text>
+                  </Chunk>
+                  <Chunk>
+                    <Text>Lead Developer</Text>
+                  </Chunk>
+                </FlexItem>
+              </Flex>
+            </Chunk>
+          </Section>
+        </Bounds>
       </Stripe>
     </>
   );

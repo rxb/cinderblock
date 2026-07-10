@@ -88,14 +88,11 @@ stylesForSingleBreakpoints('hideAt', { display: 'none' })
 stylesForSingleBreakpoints('flex--row', { flexDirection: 'row' })
 stylesForSingleBreakpoints('flex--column', { flexDirection: 'column' })
 
-// Button variants
-stylesForSingleBreakpoints('button--grow', { 
-  alignSelf: 'stretch', 
-  flex: 1 
-})
+// Note: button variants (button--grow, button--shrink) use the ranged
+// stylesForBreakpoints instead, since Button specifies a variant per breakpoint
 ```
 
-### `stylesForBreakpoints(baseKey, styles, single = false)`
+### `stylesForBreakpoints(baseKey, styles, single)`
 
 Creates utilities for specific breakpoint ranges (min-width and max-width).
 
@@ -401,32 +398,14 @@ For more complex responsive behavior:
 
 ### Efficient Generation
 
-- **Lazy evaluation** - Utilities are only generated when the style object is created
+- **One-time generation** - All utilities are generated once when `buildStyles()` runs, then shared via ThemeContext
 - **Deduplication** - Identical media queries are automatically consolidated
-- **Tree shaking** - Unused utilities are eliminated in production builds
+- **Note** - The full utility set is always generated; utilities are not tree-shaken per usage
 
 ### Memory Usage
 
 - **Shared objects** - Common style objects are reused across utilities
-- **Minimal overhead** - Only the styles you use contribute to bundle size
 - **CSS optimization** - React Native Web optimizes the generated CSS
-
-### Development vs Production
-
-```javascript
-// Development: All utilities available for debugging
-if (__DEV__) {
-  // Include debug utilities
-  debugStyles = {
-    ...stylesForSingleBreakpoints('debug-showAt', {
-      outline: '2px solid red'
-    })
-  };
-}
-
-// Production: Only utilities actually used
-// Webpack/Metro will tree-shake unused utilities automatically
-```
 
 ## Best Practices
 

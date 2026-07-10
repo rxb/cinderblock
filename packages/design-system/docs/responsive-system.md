@@ -98,16 +98,18 @@ function ResponsiveElement() {
 Many components have built-in responsive behavior:
 
 ```javascript
-// Flex automatically switches direction on mobile
-<Flex switchDirection={true}>
-  <FlexItem>Desktop: side by side</FlexItem>
-  <FlexItem>Mobile: stacked</FlexItem>
+// Flex switches direction at a given breakpoint (switchDirection takes a breakpoint name, not a boolean)
+// direction="column" starts stacked; at "large" it switches to row
+<Flex direction="column" switchDirection="large">
+  <FlexItem>Mobile: stacked / Desktop: side by side</FlexItem>
+  <FlexItem>Second item</FlexItem>
 </Flex>
 
 // List shows different items per row at different breakpoints
+// (itemsInRow keys are breakpoint names: small, medium, large, xlarge)
 <List 
   variant="grid"
-  itemsInRow={{ mobile: 1, tablet: 2, desktop: 3 }}
+  itemsInRow={{ small: 1, medium: 2, large: 3 }}
   items={products}
 />
 
@@ -212,7 +214,7 @@ dataSet={{ media: ids["showAt__large"] }}
 
 - **Zero runtime cost** - Media queries compile to CSS, no JavaScript evaluation
 - **Automatic optimization** - Duplicate media queries are consolidated  
-- **Small bundle size** - Only generates CSS for utilities you actually use
+- **Small CSS footprint** - Utilities are generated once from a compact set of breakpoint definitions
 - **Native performance** - Leverages browser's built-in media query engine
 
 ## Best Practices
@@ -221,11 +223,11 @@ dataSet={{ media: ids["showAt__large"] }}
 
 ```javascript
 // Good: Use component-level responsive props
-<Flex switchDirection={true}>
+<Flex switchDirection="large">
   <FlexItem>Content</FlexItem>
 </Flex>
 
-<List itemsInRow={{ mobile: 1, desktop: 2 }} />
+<List itemsInRow={{ small: 1, large: 2 }} />
 ```
 
 ### ✅ DO: Use Utility Classes for Show/Hide
@@ -279,7 +281,7 @@ Many responsive issues can be solved with component props:
 
 ```javascript
 // Debug: Check if switchDirection is working
-<Flex switchDirection={true} style={{ border: '1px solid red' }}>
+<Flex switchDirection="large" style={{ border: '1px solid red' }}>
   <FlexItem>Item 1</FlexItem>
   <FlexItem>Item 2</FlexItem>
 </Flex>

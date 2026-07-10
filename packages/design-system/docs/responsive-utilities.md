@@ -99,13 +99,11 @@ Control flex direction at different breakpoints.
 
 ```javascript
 function ResponsiveLayout() {
-  const { styles, ids } = useContext(ThemeContext);
-  
+  // Flex applies these classes for you — prefer its props over manual utilities.
+  // direction="column" starts stacked; switchDirection="large" switches to row
+  // (Flex generates its own dataSet internally, so don't pass dataSet to it)
   return (
-    <Flex 
-      style={[styles['flex--column'], styles['flex--row__large']]}
-      dataSet={{ media: ids["flex--row__large"] }}
-    >
+    <Flex direction="column" switchDirection="large">
       <FlexItem>
         {/* Stacked on mobile, side-by-side on desktop */}
         <Text>Main Content</Text>
@@ -122,31 +120,29 @@ function ResponsiveLayout() {
 
 Button behavior that changes at breakpoints.
 
-| Utility | Breakpoint | Behavior |
+These use ranged (breakpoint-to-breakpoint) queries, not "and up" queries — each applies only within its own breakpoint band unless you set it at multiple breakpoints.
+
+| Utility | Breakpoint range | Behavior |
 |---------|------------|----------|
-| `button--grow__medium` | 480px+ | Full-width button on medium screens and up |
-| `button--shrink__large` | 840px+ | Auto-width button on large screens and up |
-| `buttonText--iconOnly__small` | 0px+ | Hide button text, show only icon |
+| `button--grow__medium` | 480px - 839px | Full-width button within the medium range |
+| `button--shrink__large` | 840px - 1023px | Auto-width button within the large range |
+| `buttonText--iconOnly__small` | 0px - 479px | Hide button text, show only icon, within the small range |
 
 #### Usage
 
 ```javascript
 function ResponsiveButton() {
-  const { styles, ids } = useContext(ThemeContext);
-  
+  // Button applies these classes internally from its variant prop —
+  // e.g. variant={{ small: 'grow', medium: 'shrink' }} generates
+  // button--grow__small and button--shrink__medium.
+  // The width shorthand covers the common cases:
+  // width="full" → grow everywhere; width="snap" → grow on small, shrink from medium up
   return (
     <Button 
-      style={styles['button--grow']}
-      dataSet={{ media: ids["button--grow__medium"] }}
-    >
-      <Icon shape="save" />
-      <Text 
-        style={styles['buttonText']}
-        dataSet={{ media: ids["buttonText--iconOnly__small"] }}
-      >
-        Save Document
-      </Text>
-    </Button>
+      shape="save"
+      label="Save Document"
+      width="snap"
+    />
   );
 }
 ```
@@ -173,7 +169,7 @@ function ResponsiveGrid() {
   return (
     <List 
       variant="grid"
-      itemsInRow={{ mobile: 1, tablet: 2, desktop: 4 }}
+      itemsInRow={{ small: 1, medium: 2, large: 4 }}
       items={products}
       renderItem={(product) => (
         <Card key={product.id}>
@@ -402,7 +398,7 @@ The utilities generate CSS like this:
 
 ```javascript
 // Good: Use built-in responsive behavior
-<Flex switchDirection={true}>
+<Flex switchDirection="large">
   <FlexItem>Content</FlexItem>
 </Flex>
 
@@ -419,7 +415,6 @@ The utilities generate CSS like this:
 
 - **Zero runtime cost** - Utilities compile to CSS, no JavaScript overhead
 - **Automatic deduplication** - Identical media queries are consolidated
-- **Tree shaking** - Only utilities you use are included in the final CSS
 - **Browser optimization** - Leverages native CSS media query performance
 
 The responsive utility system provides a powerful way to create adaptive layouts while maintaining consistency with Cinderblock's structural hierarchy approach.

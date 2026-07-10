@@ -41,8 +41,8 @@ function LandingPage() {
     <>
       {/* Hero Section */}
       <Stripe>
-        <Section>
-          <Bounds>
+        <Bounds>
+          <Section>
             <Chunk>
               <Text type="pageHead">
                 Build Better Apps Faster
@@ -59,22 +59,23 @@ function LandingPage() {
                 Get Started
               </Button>
             </Chunk>
-          </Bounds>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
 
       {/* Features Section */}
       <Stripe style={{ backgroundColor: '#f8f9fa' }}>
-        <Section>
+        <Bounds>
+          <Section>
           <Chunk>
             <Text type="sectionHead">Features</Text>
           </Chunk>
           <Chunk>
-            <Flex switchDirection={true}>
+            <Flex switchDirection="medium">
               <FlexItem>
                 <Card>
                   <Chunk>
-                    <Icon shape="zap" size={32} />
+                    <Icon shape="Zap" size="large" />
                   </Chunk>
                   <Chunk>
                     <Text weight="strong">Fast Development</Text>
@@ -87,7 +88,7 @@ function LandingPage() {
               <FlexItem>
                 <Card>
                   <Chunk>
-                    <Icon shape="smartphone" size={32} />
+                    <Icon shape="Smartphone" size="large" />
                   </Chunk>
                   <Chunk>
                     <Text weight="strong">Responsive</Text>
@@ -100,7 +101,7 @@ function LandingPage() {
               <FlexItem>
                 <Card>
                   <Chunk>
-                    <Icon shape="heart" size={32} />
+                    <Icon shape="Heart" size="large" />
                   </Chunk>
                   <Chunk>
                     <Text weight="strong">Accessible</Text>
@@ -117,8 +118,8 @@ function LandingPage() {
 
       {/* CTA Section */}
       <Stripe>
-        <Section>
-          <Bounds small>
+        <Bounds small>
+          <Section>
             <Chunk>
               <Text type="sectionHead">Ready to get started?</Text>
             </Chunk>
@@ -132,8 +133,8 @@ function LandingPage() {
                 </FlexItem>
               </Flex>
             </Chunk>
-          </Bounds>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
     </>
   );
@@ -150,8 +151,8 @@ function ArticleLayout() {
     <>
       {/* Article Header */}
       <Stripe>
-        <Section>
-          <Bounds>
+        <Bounds>
+          <Section>
             <Chunk>
               <Text type="pageHead">
                 The Future of Design Systems
@@ -171,14 +172,14 @@ function ArticleLayout() {
                 </FlexItem>
               </Flex>
             </Chunk>
-          </Bounds>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
 
       {/* Article Content */}
       <Stripe>
-        <Section>
-          <Bounds>
+        <Bounds>
+          <Section>
             <Chunk>
               <Picture 
                 source={{ uri: '/article-hero.jpg' }}
@@ -212,14 +213,14 @@ function ArticleLayout() {
                 </Chunk>
                 <Chunk>
                   <Text>
-                    Always start with structure (Stripe, Section, Chunk) 
+                    Always start with structure (Stripe, Bounds, Section, Chunk) 
                     before adding content components.
                   </Text>
                 </Chunk>
               </Card>
             </Chunk>
-          </Bounds>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
     </>
   );
@@ -266,7 +267,7 @@ function DashboardLayout() {
 
           {/* Metrics Grid */}
           <Chunk>
-            <Flex switchDirection={true}>
+            <Flex switchDirection="medium">
               {metrics.map((metric) => (
                 <FlexItem key={metric.label}>
                   <Card shadow>
@@ -331,11 +332,12 @@ Complete contact form with validation and submission handling.
 function ContactForm() {
   const {
     fields,
-    setField,
-    fieldErrors,
-    setFieldErrors,
-    submitting,
-    handleSubmit
+    setFieldValue,
+    resetFields,
+    loading,
+    setLoading,
+    error,
+    setError
   } = useFormState({
     initialFields: {
       name: '',
@@ -346,16 +348,18 @@ function ContactForm() {
     },
     onChange: (fields) => {
       // Real-time validation
-      const errors = {};
+      const fieldErrors = {};
       if (fields.name && fields.name.length < 2) {
-        errors.name = 'Name must be at least 2 characters';
+        fieldErrors.name = 'Name must be at least 2 characters';
       }
       if (fields.email && !fields.email.includes('@')) {
-        errors.email = 'Please enter a valid email';
+        fieldErrors.email = 'Please enter a valid email';
       }
-      setFieldErrors(errors);
+      setError({ fieldErrors });
     }
   });
+
+  const fieldErrors = error?.fieldErrors || {};
 
   const onSubmit = async () => {
     // Validate required fields
@@ -365,11 +369,12 @@ function ContactForm() {
     if (!fields.message) errors.message = 'Message is required';
     
     if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
+      setError({ fieldErrors: errors });
       return;
     }
 
     try {
+      setLoading(true);
       await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -377,21 +382,19 @@ function ContactForm() {
       });
       
       // Reset form on success
-      setField('name', '');
-      setField('email', '');
-      setField('company', '');
-      setField('message', '');
-      setField('newsletter', false);
+      resetFields();
       
-    } catch (error) {
-      setFieldErrors({ submit: 'Failed to send message. Please try again.' });
+    } catch (err) {
+      setError({ fieldErrors: { submit: 'Failed to send message. Please try again.' } });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <Stripe>
-      <Section>
-        <Bounds medium>
+      <Bounds medium>
+        <Section>
           <Chunk>
             <Text type="pageHead">Get in Touch</Text>
           </Chunk>
@@ -403,80 +406,78 @@ function ContactForm() {
             </Text>
           </Chunk>
 
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Chunk>
-              <Label>Name *</Label>
-              <TextInput 
-                value={fields.name}
-                onChange={(name) => setField('name', name)}
-                placeholder="Your full name"
-              />
-              <FieldError error={fieldErrors.name} />
-            </Chunk>
+          <Chunk>
+            <Label>Name *</Label>
+            <TextInput 
+              value={fields.name}
+              onChange={(e) => setFieldValue('name', e.target.value)}
+              placeholder="Your full name"
+            />
+            <FieldError error={fieldErrors.name} />
+          </Chunk>
 
-            <Chunk>
-              <Label>Email *</Label>
-              <TextInput 
-                value={fields.email}
-                onChange={(email) => setField('email', email)}
-                placeholder="your@email.com"
-              />
-              <FieldError error={fieldErrors.email} />
-            </Chunk>
+          <Chunk>
+            <Label>Email *</Label>
+            <TextInput 
+              value={fields.email}
+              onChange={(e) => setFieldValue('email', e.target.value)}
+              placeholder="your@email.com"
+            />
+            <FieldError error={fieldErrors.email} />
+          </Chunk>
 
-            <Chunk>
-              <Label>Company</Label>
-              <TextInput 
-                value={fields.company}
-                onChange={(company) => setField('company', company)}
-                placeholder="Your company (optional)"
-              />
-            </Chunk>
+          <Chunk>
+            <Label>Company</Label>
+            <TextInput 
+              value={fields.company}
+              onChange={(e) => setFieldValue('company', e.target.value)}
+              placeholder="Your company (optional)"
+            />
+          </Chunk>
 
-            <Chunk>
-              <Label>Message *</Label>
-              <TextInput 
-                multiline
-                value={fields.message}
-                onChange={(message) => setField('message', message)}
-                placeholder="Tell us about your project..."
-                maxLength={1000}
-                showCounter
-              />
-              <FieldError error={fieldErrors.message} />
-            </Chunk>
+          <Chunk>
+            <Label>Message *</Label>
+            <TextInput 
+              multiline
+              value={fields.message}
+              onChange={(e) => setFieldValue('message', e.target.value)}
+              placeholder="Tell us about your project..."
+              maxLength={1000}
+              showCounter
+            />
+            <FieldError error={fieldErrors.message} />
+          </Chunk>
 
-            <Chunk>
-              <CheckBox 
-                value={fields.newsletter}
-                onChange={(newsletter) => setField('newsletter', newsletter)}
-                label="Subscribe to our newsletter for updates"
-              />
-            </Chunk>
+          <Chunk>
+            <CheckBox 
+              value={fields.newsletter}
+              onChange={() => setFieldValue('newsletter', !fields.newsletter)}
+              label="Subscribe to our newsletter for updates"
+            />
+          </Chunk>
 
-            <Chunk>
-              <Flex>
-                <FlexItem>
-                  <Button type="button">
-                    Cancel
-                  </Button>
-                </FlexItem>
-                <FlexItem>
-                  <Button 
-                    type="submit" 
-                    color="primary"
-                    isLoading={submitting}
-                  >
-                    {submitting ? 'Sending...' : 'Send Message'}
-                  </Button>
-                </FlexItem>
-              </Flex>
-            </Chunk>
+          <Chunk>
+            <Flex>
+              <FlexItem>
+                <Button color="secondary">
+                  Cancel
+                </Button>
+              </FlexItem>
+              <FlexItem>
+                <Button 
+                  color="primary"
+                  isLoading={loading}
+                  onPress={onSubmit}
+                >
+                  Send Message
+                </Button>
+              </FlexItem>
+            </Flex>
+          </Chunk>
 
-            <FieldError error={fieldErrors.submit} />
-          </form>
-        </Bounds>
-      </Section>
+          <FieldError error={fieldErrors.submit} />
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }
@@ -493,9 +494,9 @@ function MultiStepForm() {
   
   const {
     fields,
-    setField,
-    fieldErrors,
-    setFieldErrors
+    setFieldValue,
+    error,
+    setError
   } = useFormState({
     initialFields: {
       // Step 1: Personal Info
@@ -514,6 +515,8 @@ function MultiStepForm() {
     }
   });
 
+  const fieldErrors = error?.fieldErrors || {};
+
   const validateStep = (step) => {
     const errors = {};
     
@@ -530,7 +533,7 @@ function MultiStepForm() {
         break;
     }
     
-    setFieldErrors(errors);
+    setError({ fieldErrors: errors });
     return Object.keys(errors).length === 0;
   };
 
@@ -546,8 +549,8 @@ function MultiStepForm() {
 
   return (
     <Stripe>
-      <Section>
-        <Bounds medium>
+      <Bounds medium>
+        <Section>
           <Chunk>
             <Text type="pageHead">Create Account</Text>
           </Chunk>
@@ -582,12 +585,12 @@ function MultiStepForm() {
               </Chunk>
               
               <Chunk>
-                <Flex switchDirection={true}>
+                <Flex switchDirection="medium">
                   <FlexItem>
                     <Label>First Name</Label>
                     <TextInput 
                       value={fields.firstName}
-                      onChange={(firstName) => setField('firstName', firstName)}
+                      onChange={(e) => setFieldValue('firstName', e.target.value)}
                       placeholder="John"
                     />
                     <FieldError error={fieldErrors.firstName} />
@@ -596,7 +599,7 @@ function MultiStepForm() {
                     <Label>Last Name</Label>
                     <TextInput 
                       value={fields.lastName}
-                      onChange={(lastName) => setField('lastName', lastName)}
+                      onChange={(e) => setFieldValue('lastName', e.target.value)}
                       placeholder="Doe"
                     />
                     <FieldError error={fieldErrors.lastName} />
@@ -608,7 +611,7 @@ function MultiStepForm() {
                 <Label>Email</Label>
                 <TextInput 
                   value={fields.email}
-                  onChange={(email) => setField('email', email)}
+                  onChange={(e) => setFieldValue('email', e.target.value)}
                   placeholder="john@example.com"
                 />
                 <FieldError error={fieldErrors.email} />
@@ -627,19 +630,19 @@ function MultiStepForm() {
                 <Label>Street Address</Label>
                 <TextInput 
                   value={fields.address}
-                  onChange={(address) => setField('address', address)}
+                  onChange={(e) => setFieldValue('address', e.target.value)}
                   placeholder="123 Main St"
                 />
                 <FieldError error={fieldErrors.address} />
               </Chunk>
 
               <Chunk>
-                <Flex switchDirection={true}>
+                <Flex switchDirection="medium">
                   <FlexItem>
                     <Label>City</Label>
                     <TextInput 
                       value={fields.city}
-                      onChange={(city) => setField('city', city)}
+                      onChange={(e) => setFieldValue('city', e.target.value)}
                       placeholder="San Francisco"
                     />
                     <FieldError error={fieldErrors.city} />
@@ -648,7 +651,7 @@ function MultiStepForm() {
                     <Label>Country</Label>
                     <Picker
                       selectedValue={fields.country}
-                      onValueChange={(country) => setField('country', country)}
+                      onValueChange={(country) => setFieldValue('country', country)}
                     >
                       <Picker.Item label="Select Country" value="" />
                       <Picker.Item label="United States" value="us" />
@@ -672,7 +675,7 @@ function MultiStepForm() {
               <Chunk>
                 <CheckBox 
                   value={fields.notifications}
-                  onChange={(notifications) => setField('notifications', notifications)}
+                  onChange={() => setFieldValue('notifications', !fields.notifications)}
                   label="Send me email notifications"
                 />
               </Chunk>
@@ -680,7 +683,7 @@ function MultiStepForm() {
               <Chunk>
                 <CheckBox 
                   value={fields.marketing}
-                  onChange={(marketing) => setField('marketing', marketing)}
+                  onChange={() => setFieldValue('marketing', !fields.marketing)}
                   label="Send me marketing emails"
                 />
               </Chunk>
@@ -710,8 +713,8 @@ function MultiStepForm() {
               </FlexItem>
             </Flex>
           </Chunk>
-        </Bounds>
-      </Section>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }
@@ -752,7 +755,7 @@ function ProductGrid() {
     <Stripe>
       <Section>
         <Chunk>
-          <Flex justify="space-between" align="center" switchDirection={true}>
+          <Flex justify="space-between" align="center" switchDirection="medium">
             <FlexItem>
               <Text type="pageHead">Products</Text>
             </FlexItem>
@@ -846,7 +849,7 @@ function TeamDirectory() {
 
         {/* Search and Filter */}
         <Chunk>
-          <Flex switchDirection={true}>
+          <Flex switchDirection="medium">
             <FlexItem>
               <TextInput 
                 placeholder="Search team members..."
@@ -960,7 +963,7 @@ function ResponsiveNav() {
           {isMobile && (
             <FlexItem>
               <Button onPress={() => setMobileMenuOpen(!mobileMenuOpen)}>
-                <Icon shape={mobileMenuOpen ? 'x' : 'menu'} />
+                <Icon shape={mobileMenuOpen ? 'X' : 'Menu'} />
               </Button>
             </FlexItem>
           )}
@@ -1117,7 +1120,7 @@ function InteractiveFeedback() {
                 <FlexItem>
                   <Button onPress={() => setLikes(likes + 1)}>
                     <Bounce watchProp={likes}>
-                      <Icon shape="heart" /> {likes}
+                      <Icon shape="Heart" /> {likes}
                     </Bounce>
                   </Button>
                 </FlexItem>
@@ -1125,7 +1128,7 @@ function InteractiveFeedback() {
                   <Button onPress={() => setBookmarked(!bookmarked)}>
                     <Bounce watchProp={bookmarked}>
                       <Icon 
-                        shape={bookmarked ? 'bookmark' : 'bookmark'} 
+                        shape="Bookmark" 
                         color={bookmarked ? 'primary' : 'secondary'}
                       />
                     </Bounce>
@@ -1134,7 +1137,7 @@ function InteractiveFeedback() {
                 <FlexItem>
                   <Button onPress={() => setShared(!shared)}>
                     <Bounce watchProp={shared}>
-                      <Icon shape="share" />
+                      <Icon shape="Share" />
                     </Bounce>
                   </Button>
                 </FlexItem>
@@ -1157,14 +1160,16 @@ function InteractiveFeedback() {
 ```javascript
 // ✅ GOOD: Proper hierarchy
 <Stripe>
-  <Section>
-    <Chunk>
-      <Text type="pageHead">Title</Text>
-    </Chunk>
-    <Chunk>
-      <Text>Content with proper spacing</Text>
-    </Chunk>
-  </Section>
+  <Bounds>
+    <Section>
+      <Chunk>
+        <Text type="pageHead">Title</Text>
+      </Chunk>
+      <Chunk>
+        <Text>Content with proper spacing</Text>
+      </Chunk>
+    </Section>
+  </Bounds>
 </Stripe>
 ```
 
@@ -1187,7 +1192,7 @@ function InteractiveFeedback() {
 
 ```javascript
 // ✅ GOOD: Built-in responsive behavior
-<Flex switchDirection={true}>
+<Flex switchDirection="medium">
   <FlexItem>Content 1</FlexItem>
   <FlexItem>Content 2</FlexItem>
 </Flex>
@@ -1227,17 +1232,19 @@ function InteractiveFeedback() {
 
 // ✅ GOOD: Proper structure
 <Stripe>
-  <Section>
-    <Chunk>
-      <Text type="pageHead">Title</Text>
-    </Chunk>
-    <Chunk>
-      <Text>Content with proper spacing</Text>
-    </Chunk>
-    <Chunk>
-      <Button>Action</Button>
-    </Chunk>
-  </Section>
+  <Bounds>
+    <Section>
+      <Chunk>
+        <Text type="pageHead">Title</Text>
+      </Chunk>
+      <Chunk>
+        <Text>Content with proper spacing</Text>
+      </Chunk>
+      <Chunk>
+        <Button>Action</Button>
+      </Chunk>
+    </Section>
+  </Bounds>
 </Stripe>
 ```
 
@@ -1289,7 +1296,7 @@ function InteractiveFeedback() {
 </div>
 
 // ✅ GOOD: Responsive layout
-<Flex switchDirection={true}>
+<Flex switchDirection="medium">
   <FlexItem>Content 1</FlexItem>
   <FlexItem>Content 2</FlexItem>
 </Flex>
@@ -1301,7 +1308,7 @@ function InteractiveFeedback() {
 
 The Cinderblock Design System shines when you:
 
-1. **Embrace the structural hierarchy** - Use Stripe > Section > Chunk consistently
+1. **Embrace the structural hierarchy** - Use Stripe > Bounds > Section > Chunk consistently (omit Bounds for full-bleed content or app-like Flex/FlexItem shells)
 2. **Let components handle spacing** - Avoid inline margins and padding
 3. **Use semantic text types** - pageHead, sectionHead, body for proper hierarchy
 4. **Leverage built-in responsive behavior** - switchDirection, itemsInRow, etc.

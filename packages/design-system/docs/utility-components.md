@@ -194,7 +194,7 @@ function LikeButton() {
     <Chunk>
       <Button onPress={() => setLikes(likes + 1)}>
         <Bounce watchProp={likes}>
-          <Icon shape="heart" /> {likes}
+          <Icon shape="Heart" /> {likes}
         </Bounce>
       </Button>
     </Chunk>
@@ -207,7 +207,7 @@ function NotificationBadge() {
 
   return (
     <Bounce watchProp={notifications} scale={1.5}>
-      <Icon shape="bell" />
+      <Icon shape="Bell" />
       {notifications > 0 && (
         <Text>{notifications}</Text>
       )}
@@ -225,131 +225,114 @@ function NotificationBadge() {
 
 ## useFormState
 
-Comprehensive form state management hook with validation, error handling, and submission states.
+Comprehensive form state management hook with error handling and loading states.
 
 ### Purpose
 - Form state management
-- Field validation
-- Error handling and display
-- Submission state tracking
+- Field value get/set helpers
+- Error handling and display (converts Feathers.js validation errors into `error.fieldErrors`)
+- Loading state tracking
 
 ### Parameters
 
-| Parameter | Type | Default | Description |
-|-----------|------|---------|-------------|
+Options object:
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
 | `initialFields` | `object` | `{}` | Initial form field values |
-| `onChange` | `function` | `null` | Form change handler |
-| `toastableErrors` | `boolean` | `false` | Show errors as toasts |
-| `addToast` | `function` | `null` | Toast addition function |
+| `onChange` | `function` | `() => {}` | Called (debounced) whenever fields change; receives the fields object |
+| `toastableErrors` | `object` | `{}` | Map of error `name` → toast message to show when that error is set |
+| `addToast` | `function` | `console.error` | Toast function used for toastable errors |
 
 ### Returns
 
 | Property | Type | Description |
 |----------|------|-------------|
 | `fields` | `object` | Current form field values |
-| `setField` | `function` | Set individual field value |
-| `setFields` | `function` | Set multiple field values |
-| `fieldErrors` | `object` | Field-specific error messages |
-| `setFieldErrors` | `function` | Set field errors |
-| `submitting` | `boolean` | Whether form is submitting |
-| `setSubmitting` | `function` | Set submission state |
-| `handleSubmit` | `function` | Form submission handler |
+| `setFieldValue` | `function` | `setFieldValue(key, value)` — set one field |
+| `getFieldValue` | `function` | `getFieldValue(key)` — get one field (returns `''` if unset) |
+| `setFieldValues` | `function` | `setFieldValues({...})` — merge multiple field values |
+| `resetFields` | `function` | Reset to `initialFields` |
+| `loading` | `boolean` | Loading state |
+| `setLoading` | `function` | Set loading state |
+| `error` | `object` | Current error; API validation errors are exposed as `error.fieldErrors[fieldName]` |
+| `setError` | `function` | Set error (Feathers.js errors are converted automatically) |
+
+Note: there is no built-in submit handler — write your own submit function using `setLoading`/`setError`.
 
 ### Usage
 
 ```javascript
-import { useFormState, TextInput, Button, Label, Chunk, Text } from '@cinderblock/design-system';
+import { useFormState, TextInput, Button, Label, Chunk, FieldError } from '@cinderblock/design-system';
 
 function ContactForm() {
-  const {
-    fields,
-    setField,
-    fieldErrors,
-    setFieldErrors,
-    submitting,
-    handleSubmit
-  } = useFormState({
+  const formState = useFormState({
     initialFields: {
       name: '',
       email: '',
       message: ''
     },
     onChange: (fields) => {
-      // Validation on change
-      const errors = {};
-      if (!fields.name) errors.name = 'Name is required';
-      if (!fields.email) errors.email = 'Email is required';
-      if (fields.email && !fields.email.includes('@')) {
-        errors.email = 'Invalid email format';
-      }
-      setFieldErrors(errors);
+      // fires (debounced) as fields are edited
+      console.log('Form changed:', fields);
     }
   });
 
-  const onSubmit = async () => {
+  const handleSubmit = async () => {
+    formState.setLoading(true);
     try {
       await fetch('/api/contact', {
         method: 'POST',
-        body: JSON.stringify(fields)
+        body: JSON.stringify(formState.fields)
       });
-      // Success handling
+      formState.resetFields();
     } catch (error) {
-      setFieldErrors({ submit: 'Failed to send message' });
+      formState.setError(error); // validation errors land in error.fieldErrors
     }
+    formState.setLoading(false);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <>
       <Chunk>
         <Label>Name</Label>
         <TextInput 
-          value={fields.name}
-          onChange={(name) => setField('name', name)}
+          value={formState.getFieldValue('name')}
+          onChange={(e) => formState.setFieldValue('name', e.target.value)}
           placeholder="Your name"
         />
-        {fieldErrors.name && (
-          <Text color="error">{fieldErrors.name}</Text>
-        )}
+        <FieldError error={formState.error.fieldErrors?.name} />
       </Chunk>
 
       <Chunk>
         <Label>Email</Label>
         <TextInput 
-          value={fields.email}
-          onChange={(email) => setField('email', email)}
+          value={formState.getFieldValue('email')}
+          onChange={(e) => formState.setFieldValue('email', e.target.value)}
           placeholder="your@email.com"
         />
-        {fieldErrors.email && (
-          <Text color="error">{fieldErrors.email}</Text>
-        )}
+        <FieldError error={formState.error.fieldErrors?.email} />
       </Chunk>
 
       <Chunk>
         <Label>Message</Label>
         <TextInput 
           multiline
-          value={fields.message}
-          onChange={(message) => setField('message', message)}
+          value={formState.getFieldValue('message')}
+          onChange={(e) => formState.setFieldValue('message', e.target.value)}
           placeholder="Your message..."
         />
       </Chunk>
 
       <Chunk>
         <Button 
-          type="submit" 
-          isLoading={submitting}
+          onPress={handleSubmit}
+          isLoading={formState.loading}
           color="primary"
-        >
-          {submitting ? 'Sending...' : 'Send Message'}
-        </Button>
+          label="Send Message"
+        />
       </Chunk>
-
-      {fieldErrors.submit && (
-        <Chunk>
-          <Text color="error">{fieldErrors.submit}</Text>
-        </Chunk>
-      )}
-    </form>
+    </>
   );
 }
 ```
@@ -362,14 +345,25 @@ Drag-and-drop reordering component for interactive list management.
 
 ### Purpose
 - Interactive list reordering
-- Drag-and-drop functionality
-- Touch-friendly reordering
-- Custom drag handles
+- Drag-and-drop functionality (web only, via react-dnd)
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `id` | `string\|number` | required | Unique identifier for the item |
+| `index` | `number` | required | Current position of the item |
+| `moveItem` | `function` | required | `moveItem(dragIndex, hoverIndex)` — reorder your items array |
+| `children` | `node` | `null` | Content to make draggable |
+
+Reorderable wraps a single item — render one per list item, inside a `DndProvider`. Requires the optional peer dependencies `react-dnd` and `react-dnd-html5-backend`; without them it renders children without drag functionality and logs a warning.
 
 ### Usage
 
 ```javascript
-import { Reorderable, List, Card, Text, Icon } from '@cinderblock/design-system';
+import { Reorderable, Card, Sectionless, Chunk, Text } from '@cinderblock/design-system';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 function ReorderableList() {
   const [items, setItems] = useState([
@@ -378,27 +372,28 @@ function ReorderableList() {
     { id: 3, text: 'Third item' }
   ]);
 
-  const handleReorder = (newOrder) => {
-    setItems(newOrder);
-  };
+  const moveItem = useCallback((dragIndex, hoverIndex) => {
+    const dragItem = items[dragIndex];
+    const newItems = [...items];
+    newItems.splice(dragIndex, 1);
+    newItems.splice(hoverIndex, 0, dragItem);
+    setItems(newItems);
+  }, [items]);
 
   return (
-    <Reorderable 
-      items={items}
-      onReorder={handleReorder}
-      renderItem={(item) => (
-        <Card key={item.id}>
-          <Flex>
-            <FlexItem>
-              <Icon shape="menu" /> {/* Drag handle */}
-            </FlexItem>
-            <FlexItem>
-              <Text>{item.text}</Text>
-            </FlexItem>
-          </Flex>
-        </Card>
-      )}
-    />
+    <DndProvider backend={HTML5Backend}>
+      {items.map((item, i) => (
+        <Reorderable key={item.id} id={item.id} index={i} moveItem={moveItem}>
+          <Card>
+            <Sectionless>
+              <Chunk>
+                <Text>{item.text}</Text>
+              </Chunk>
+            </Sectionless>
+          </Card>
+        </Reorderable>
+      ))}
+    </DndProvider>
   );
 }
 ```
@@ -407,7 +402,7 @@ function ReorderableList() {
 
 ## Prompter
 
-User confirmation and prompt dialog system.
+Queue-based modal prompt system for confirmations and lightweight dialogs.
 
 ### Purpose
 - User confirmations
@@ -415,38 +410,65 @@ User confirmation and prompt dialog system.
 - Decision prompts
 - Destructive action confirmations
 
+### How it works
+
+Like Toaster and Dropdowner, Prompter is state-agnostic: you own a `prompts` array (React state, Redux, or context) and pass management functions in as props. Each prompt object provides its own `content` element; the first prompt in the queue is displayed. There are no `title`/`message`/`onConfirm` props — you compose the prompt body yourself.
+
+### Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `prompts` | `array` | Queue of prompt objects: `{id, content, showable, dismissable?, onPressEnter?, onRequestClose?, onCompleteClose?}` |
+| `hidePrompt` | `function` | `hidePrompt(id)` — set that prompt's `showable` to `false` (starts the close animation) |
+| `removePrompt` | `function` | `removePrompt(id)` — remove the prompt from the array after closing |
+
+Prompt object fields: `content` (element, receives injected `onRequestClose`/`onCompleteClose` props), `showable` (boolean, controls visibility), `dismissable` (default `true`; when `false`, backdrop click and Escape are ignored), `onPressEnter` (Enter key handler).
+
 ### Usage
 
 ```javascript
-import { Prompter, Button, Chunk } from '@cinderblock/design-system';
+import { Prompter, Button, Chunk, Section, Text } from '@cinderblock/design-system';
 
 function DeleteButton() {
-  const [showPrompt, setShowPrompt] = useState(false);
+  const [prompts, setPrompts] = useState([]);
 
-  const handleDelete = () => {
-    setShowPrompt(true);
-  };
+  const hidePrompt = (id) =>
+    setPrompts(prev => prev.map(p => p.id === id ? { ...p, showable: false } : p));
+  const removePrompt = (id) =>
+    setPrompts(prev => prev.filter(p => p.id !== id));
 
-  const confirmDelete = () => {
-    // Perform deletion
-    console.log('Item deleted');
-    setShowPrompt(false);
+  const showDeletePrompt = () => {
+    const id = Date.now();
+    const content = (
+      <Section>
+        <Chunk><Text type="sectionHead">Confirm deletion</Text></Chunk>
+        <Chunk><Text>This action cannot be undone.</Text></Chunk>
+        <Chunk>
+          <Button color="secondary" onPress={() => hidePrompt(id)} label="Cancel" />
+        </Chunk>
+        <Chunk>
+          <Button
+            onPress={() => {
+              console.log('Item deleted');
+              hidePrompt(id);
+            }}
+            label="Delete"
+          />
+        </Chunk>
+      </Section>
+    );
+    setPrompts(prev => [...prev, { id, content, showable: true }]);
   };
 
   return (
     <>
-      <Button color="danger" onPress={handleDelete}>
-        Delete Item
-      </Button>
+      <Button onPress={showDeletePrompt} label="Delete Item" />
 
+      {/* mount once, near the root of the page */}
       <Prompter
-        visible={showPrompt}
-        title="Confirm Deletion"
-        message="Are you sure you want to delete this item? This action cannot be undone."
-        confirmText="Delete"
-        cancelText="Cancel"
-        onConfirm={confirmDelete}
-        onCancel={() => setShowPrompt(false)}
+        prompts={prompts}
+        hidePrompt={hidePrompt}
+        removePrompt={removePrompt}
       />
     </>
   );
@@ -465,45 +487,57 @@ Toast notification system for temporary message display.
 - Information alerts
 - Non-blocking feedback
 
+### How it works
+
+Toaster is state-agnostic — there is no `useToast` hook exported by the library. You own the `toasts` array (React state, Redux, or context) and pass management functions in as props. Each toast is `{id, message, visible, autoHide?, hideDelay?}`; `autoHide` defaults to `true` and `hideDelay` defaults to `2500` ms. Mount one Toaster near the root of the app. (See `ConnectedToaster` in the kitchensink starter for a Redux-wired example.)
+
+### Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `toasts` | `array` | Toast objects to display |
+| `hideToast` | `function` | `hideToast(id)` — set that toast's `visible` to `false` (starts the exit animation) |
+| `removeToast` | `function` | `removeToast(id)` — remove the toast from the array after hiding |
+
 ### Usage
 
 ```javascript
-import { Toaster, Button, useToast } from '@cinderblock/design-system';
+import { Toaster, Button, Chunk } from '@cinderblock/design-system';
 
 function MyComponent() {
-  const { addToast } = useToast();
+  const [toasts, setToasts] = useState([]);
 
-  const showSuccess = () => {
-    addToast({
-      type: 'success',
-      message: 'Operation completed successfully!',
-      duration: 3000
-    });
+  const addToast = (message, options = {}) => {
+    const id = Date.now();
+    setToasts(prev => [...prev, { id, message, visible: true, ...options }]);
   };
-
-  const showError = () => {
-    addToast({
-      type: 'error',
-      message: 'Something went wrong. Please try again.',
-      duration: 5000
-    });
-  };
+  const hideToast = (id) =>
+    setToasts(prev => prev.map(t => t.id === id ? { ...t, visible: false } : t));
+  const removeToast = (id) =>
+    setToasts(prev => prev.filter(t => t.id !== id));
 
   return (
     <>
       <Chunk>
-        <Button onPress={showSuccess}>
-          Show Success Toast
-        </Button>
+        <Button
+          onPress={() => addToast('Operation completed successfully!')}
+          label="Show Success Toast"
+        />
       </Chunk>
       
       <Chunk>
-        <Button onPress={showError}>
-          Show Error Toast
-        </Button>
+        <Button
+          onPress={() => addToast('Something went wrong.', { hideDelay: 5000 })}
+          label="Show Error Toast"
+        />
       </Chunk>
 
-      <Toaster />
+      {/* mount once, near the root of the app */}
+      <Toaster
+        toasts={toasts}
+        hideToast={hideToast}
+        removeToast={removeToast}
+      />
     </>
   );
 }
@@ -520,6 +554,13 @@ Form validation error display component.
 - Validation feedback
 - Accessible error messaging
 - Consistent error styling
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `error` | `string` | `null` | Error message; renders nothing when falsy, so it's safe to include unconditionally |
+| `style` | `object` | `null` | Additional styles for the error text |
 
 ### Usage
 
@@ -554,31 +595,30 @@ function ValidatedInput({ value, onChange, error, label, ...props }) {
 
 ## Map
 
-Map integration component for location display and interaction.
+Placeholder map component. The current implementation renders an empty `View` — the Leaflet integration is commented out in the source (`components/Map.js`) to avoid bundle size and compatibility issues.
 
-### Purpose
-- Location display
-- Interactive maps
-- Geographic data visualization
-- Location selection
+### Purpose (when the Leaflet implementation is enabled)
+- Location display with OpenStreetMap tiles
+- Marker clustering
+- Popup support and bounds fitting
 
-### Usage
+### Intended usage (Leaflet implementation, currently disabled)
 
 ```javascript
 import { Map, Chunk } from '@cinderblock/design-system';
 
-function LocationPicker() {
-  const [selectedLocation, setSelectedLocation] = useState(null);
-
+function StoreLocations() {
   return (
     <Chunk>
       <Map
-        center={{ lat: 37.7749, lng: -122.4194 }}
+        center={[37.7749, -122.4194]}    // [lat, lon] array
         zoom={12}
-        onLocationSelect={setSelectedLocation}
         markers={[
-          { lat: 37.7749, lng: -122.4194, title: 'San Francisco' }
+          { lat: 37.7749, lon: -122.4194, title: 'San Francisco' }
         ]}
+        cluster={true}
+        fitBounds={true}
+        style={{ height: 400, width: '100%' }}
       />
     </Chunk>
   );
@@ -594,11 +634,13 @@ Here's how utility/behavioral components work together to create an interactive 
 ```javascript
 import { 
   Stripe,
+  Bounds,
   Section,
   Chunk,
   Flex,
   FlexItem,
   Text,
+  TextInput,
   Button,
   Card,
   LoadingBlock,
@@ -612,16 +654,28 @@ function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [showStats, setShowStats] = useState(false);
   const [notifications, setNotifications] = useState(0);
-  
-  const {
-    fields,
-    setField,
-    fieldErrors,
-    submitting,
-    handleSubmit
-  } = useFormState({
+
+  // toast state (Toaster is state-agnostic; see Toaster section)
+  const [toasts, setToasts] = useState([]);
+  const addToast = (message) =>
+    setToasts(prev => [...prev, { id: Date.now(), message, visible: true }]);
+  const hideToast = (id) =>
+    setToasts(prev => prev.map(t => t.id === id ? { ...t, visible: false } : t));
+  const removeToast = (id) =>
+    setToasts(prev => prev.filter(t => t.id !== id));
+
+  const formState = useFormState({
     initialFields: { message: '' }
   });
+
+  const sendMessage = async () => {
+    formState.setLoading(true);
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    formState.resetFields();
+    formState.setLoading(false);
+    addToast('Message sent!');
+  };
 
   // Simulate loading
   useEffect(() => {
@@ -641,7 +695,8 @@ function Dashboard() {
   return (
     <>
       <Stripe>
-        <Section>
+        <Bounds>
+          <Section>
           <Chunk>
             <Flex justify="space-between" align="center">
               <FlexItem>
@@ -649,9 +704,10 @@ function Dashboard() {
               </FlexItem>
               <FlexItem>
                 <Bounce watchProp={notifications}>
-                  <Button onPress={() => setNotifications(n => n + 1)}>
-                    🔔 {notifications}
-                  </Button>
+                  <Button
+                    onPress={() => setNotifications(n => n + 1)}
+                    label={`🔔 ${notifications}`}
+                  />
                 </Bounce>
               </FlexItem>
             </Flex>
@@ -691,37 +747,35 @@ function Dashboard() {
                   <Text type="sectionHead">Quick Actions</Text>
                 </Chunk>
                 
-                <form onSubmit={handleSubmit(async () => {
-                  // Simulate API call
-                  await new Promise(resolve => setTimeout(resolve, 1000));
-                  setField('message', '');
-                })}>
-                  <Chunk>
-                    <TextInput
-                      placeholder="Send a message..."
-                      value={fields.message}
-                      onChange={(message) => setField('message', message)}
-                      multiline
-                    />
-                  </Chunk>
-                  
-                  <Chunk>
-                    <Button 
-                      type="submit"
-                      isLoading={submitting}
-                      color="primary"
-                    >
-                      {submitting ? 'Sending...' : 'Send Message'}
-                    </Button>
-                  </Chunk>
-                </form>
+                <Chunk>
+                  <TextInput
+                    placeholder="Send a message..."
+                    value={formState.getFieldValue('message')}
+                    onChange={(e) => formState.setFieldValue('message', e.target.value)}
+                    multiline
+                  />
+                </Chunk>
+
+                <Chunk>
+                  <Button 
+                    onPress={sendMessage}
+                    isLoading={formState.loading}
+                    color="primary"
+                    label="Send Message"
+                  />
+                </Chunk>
               </Card>
             </Chunk>
           </RevealBlock>
-        </Section>
+          </Section>
+        </Bounds>
       </Stripe>
 
-      <Toaster />
+      <Toaster
+        toasts={toasts}
+        hideToast={hideToast}
+        removeToast={removeToast}
+      />
     </>
   );
 }
