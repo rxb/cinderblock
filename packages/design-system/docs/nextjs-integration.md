@@ -150,6 +150,22 @@ The essential parts:
 Third-party providers (e.g. Clerk's `ClerkProvider`) wrap *outside*
 `ThemeContext.Provider` in `_app` with no interference.
 
+**Pin the canvas to light.** Cinderblock components assume a light page:
+`Stripe` is transparent by default, `Card` and text colors are designed
+against white. If the app's global CSS gives `html`/`body` no background,
+dark-mode browsers paint a black canvas behind the page and the whole app
+renders "dark" by accident. Add to `_document`'s web-only CSS block:
+
+```css
+html {
+  color-scheme: light;
+  background-color: white;
+}
+```
+
+and give content stripes an explicit background (e.g.
+`<Stripe style={{ backgroundColor: SWATCHES.notwhite }}>`).
+
 ## 5. TypeScript consumers
 
 The library is untyped JS. Consumers need a module shim:

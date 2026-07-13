@@ -317,38 +317,57 @@ Content container component with optional shadows and borders.
 | `style` | `object` | `{}` | Additional styles |
 | `children` | `node` | `null` | Card content |
 
+### ⚠️ Card has NO built-in padding
+
+`Card` provides only the border, radius, and background. Interior padding
+comes from a `Sectionless` wrapper — the standard idiom is always:
+
+```
+Card > Sectionless > Chunk > content
+```
+
+If you put `Chunk`s directly inside a `Card`, the content sits flush against
+the card border. This is the single most common Card mistake.
+
 ### Usage
 
 ```javascript
-import { Card, Chunk, Text, Button } from '@cinderblock/design-system';
+import { Card, Sectionless, Chunk, Text, Button } from '@cinderblock/design-system';
 
-// Basic card
+// Basic card — note the Sectionless providing interior padding
 <Chunk>
   <Card>
-    <Chunk>
-      <Text type="sectionHead">Card Title</Text>
-    </Chunk>
-    <Chunk>
-      <Text>Card content goes here...</Text>
-    </Chunk>
-    <Chunk>
-      <Button>Card Action</Button>
-    </Chunk>
+    <Sectionless>
+      <Chunk>
+        <Text type="sectionHead">Card Title</Text>
+      </Chunk>
+      <Chunk>
+        <Text>Card content goes here...</Text>
+      </Chunk>
+      <Chunk>
+        <Button label="Card Action" />
+      </Chunk>
+    </Sectionless>
   </Card>
 </Chunk>
 
 // Card with shadow
 <Chunk>
   <Card shadow>
-    <Chunk>
-      <Text weight="strong">Featured Content</Text>
-    </Chunk>
-    <Chunk>
-      <Text>This card has a drop shadow for emphasis.</Text>
-    </Chunk>
+    <Sectionless>
+      <Chunk>
+        <Text weight="strong">Featured Content</Text>
+      </Chunk>
+      <Chunk>
+        <Text>This card has a drop shadow for emphasis.</Text>
+      </Chunk>
+    </Sectionless>
   </Card>
 </Chunk>
 ```
+
+Omit `Sectionless` only when the content should genuinely bleed to the card
+edge — a full-bleed image header, a map, or an edge-to-edge divider list.
 
 ---
 
@@ -404,9 +423,14 @@ const users = [
   itemsInRow={{ small: 1, medium: 2, large: 3 }}
   renderItem={(product) => (
     <Card key={product.id}>
+      {/* image bleeds to the card edge; text gets Sectionless padding */}
       <Picture source={{ uri: product.image }} />
-      <Text weight="strong">{product.name}</Text>
-      <Text>${product.price}</Text>
+      <Sectionless>
+        <Chunk>
+          <Text weight="strong">{product.name}</Text>
+          <Text>${product.price}</Text>
+        </Chunk>
+      </Sectionless>
     </Card>
   )}
 />
@@ -418,7 +442,11 @@ const users = [
   scrollItemWidth={200}
   renderItem={(category) => (
     <Card key={category.id}>
-      <Text>{category.name}</Text>
+      <Sectionless>
+        <Chunk>
+          <Text>{category.name}</Text>
+        </Chunk>
+      </Sectionless>
     </Card>
   )}
 />
@@ -720,17 +748,19 @@ function ArticlePage() {
               renderItem={(article) => (
                 <Link href={`/articles/${article.id}`} key={article.id}>
                   <Card>
-                    <Chunk>
-                      <Text weight="strong">{article.title}</Text>
-                    </Chunk>
-                    <Chunk>
-                      <Text color="secondary">{article.excerpt}</Text>
-                    </Chunk>
-                    <Chunk>
-                      <Text color="primary">
-                        Read more <Icon shape="ArrowRight" />
-                      </Text>
-                    </Chunk>
+                    <Sectionless>
+                      <Chunk>
+                        <Text weight="strong">{article.title}</Text>
+                      </Chunk>
+                      <Chunk>
+                        <Text color="secondary">{article.excerpt}</Text>
+                      </Chunk>
+                      <Chunk>
+                        <Text color="primary">
+                          Read more <Icon shape="ArrowRight" />
+                        </Text>
+                      </Chunk>
+                    </Sectionless>
                   </Card>
                 </Link>
               )}

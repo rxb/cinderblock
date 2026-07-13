@@ -743,27 +743,29 @@ function Dashboard() {
           <RevealBlock visible={showStats} delay={600}>
             <Chunk>
               <Card>
-                <Chunk>
-                  <Text type="sectionHead">Quick Actions</Text>
-                </Chunk>
-                
-                <Chunk>
-                  <TextInput
-                    placeholder="Send a message..."
-                    value={formState.getFieldValue('message')}
-                    onChange={(e) => formState.setFieldValue('message', e.target.value)}
-                    multiline
-                  />
-                </Chunk>
+                <Sectionless>
+                  <Chunk>
+                    <Text type="sectionHead">Quick Actions</Text>
+                  </Chunk>
 
-                <Chunk>
-                  <Button 
-                    onPress={sendMessage}
-                    isLoading={formState.loading}
-                    color="primary"
-                    label="Send Message"
-                  />
-                </Chunk>
+                  <Chunk>
+                    <TextInput
+                      placeholder="Send a message..."
+                      value={formState.getFieldValue('message')}
+                      onChange={(e) => formState.setFieldValue('message', e.target.value)}
+                      multiline
+                    />
+                  </Chunk>
+
+                  <Chunk>
+                    <Button 
+                      onPress={sendMessage}
+                      isLoading={formState.loading}
+                      color="primary"
+                      label="Send Message"
+                    />
+                  </Chunk>
+                </Sectionless>
               </Card>
             </Chunk>
           </RevealBlock>

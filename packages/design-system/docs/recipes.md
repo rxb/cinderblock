@@ -20,7 +20,7 @@ Main content and a sidebar that sit side-by-side on large screens and stack
       <Flex direction="column" switchDirection="large" section>
         <FlexItem growFactor={1} section>
           <Chunk>
-            <Card shadow>{/* main content */}</Card>
+            <Card shadow><Sectionless>{/* main content */}</Sectionless></Card>
           </Chunk>
         </FlexItem>
         <FlexItem shrink section>
@@ -53,7 +53,7 @@ The single most common pattern. Works with paginated/infinite data.
   renderItem={(item, i) => (
     <Chunk key={i}>
       <Link href={itemUrl(item)}>
-        <Card>{/* card content */}</Card>
+        <Card><Sectionless>{/* card content */}</Sectionless></Card>
       </Link>
     </Chunk>
   )}
@@ -314,7 +314,7 @@ and toggle feedback:
 {items.map((item, index) => (
   <RevealBlock key={item.id} visible={visible} delay={index * 100}>
     <Chunk>
-      <Card>{/* item */}</Card>
+      <Card><Sectionless>{/* item */}</Sectionless></Card>
     </Chunk>
   </RevealBlock>
 ))}
@@ -342,3 +342,17 @@ const Page = ({ children }) => (
 Cinderblock has no state-management dependency — the app supplies state and
 add/hide/remove actions (Redux in starterkit, but anything works). Then any
 component can `dispatch(addToast('Saved!'))` or `dispatch(addPrompt(<MyPrompt />))`.
+
+Without Redux, a ~50-line React context works fine: a provider that owns the
+`toasts`/`prompts` arrays, renders `<Toaster>`/`<Prompter>` after `children`,
+and exposes `addToast(message)` / `addPrompt(render)` through a hook. For
+prompts, have `addPrompt` take a render callback and inject the close function:
+
+```jsx
+const addPrompt = (render) => {
+  const id = nextId++;
+  const close = () => hidePrompt(id);
+  setPrompts(prev => [...prev, { id, content: render(close), showable: true }]);
+};
+// usage: addPrompt(close => <ConfirmThing onConfirm={() => { doIt(); close(); }} onCancel={close} />)
+```

@@ -53,6 +53,10 @@ Structure:
 - `Section` — logical grouping with vertical rhythm; `border`, `borderedContent`.
 - `Chunk` — paragraph-level spacing unit; `inline` for a horizontal chunk.
 - `Card` — bordered/elevated container (`shadow`); often the item inside `List`.
+  **Card has NO built-in padding** — the interior is always
+  `Card > Sectionless > Chunk`; bare `Chunk`s inside a `Card` sit flush
+  against the border. Omit the `Sectionless` only for deliberate full-bleed
+  content (image headers, maps, edge-to-edge divider lists).
 - `Inline` — inline-flow row of small elements (icon + text), wraps by default
   (`nowrap` to prevent).
 
@@ -82,7 +86,10 @@ Interaction:
   `shape` (icon-only button, feather icon name), `isLoading` (spinner swaps in
   for the label), `inverted`, `dummy` (visual-only, no press handling — use
   when wrapped by another touchable like `DropdownTouch`).
-- `Touch` (bare pressable), `Link` (navigation), `Tabs`, `Menu`.
+- `Touch` (bare pressable), `Link` (navigation), `Tabs`, `Menu`. When using
+  `Touch` for a custom control (pill, row, icon target), pass
+  `accessibilityRole="button"` so it announces and keyboard-activates like
+  the built-in `Button`.
 - `Dropdowner` / `DropdownTouch` / `DropdownItem` — dropdown menus.
   `DropdownItem` takes `href` or `onPress`; onPress handlers should call the
   injected `onRequestClose()` after their side effect.
@@ -204,11 +211,19 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
 6. **Hand-rolled flexbox styles.** Use `Flex`/`FlexItem` props
    (`switchDirection`, `growFactor`, `shrink`) rather than `style={{display:
    'flex', ...}}`.
+7. **Bare `Chunk`s inside a `Card`.** `Card` has no padding of its own; the
+   interior idiom is `Card > Sectionless > Chunk`. Without the `Sectionless`,
+   content sits flush against the card border.
+8. **Assuming a page background.** `Stripe` is transparent by default and the
+   components assume a light canvas. Give content stripes an explicit
+   background (e.g. `SWATCHES.notwhite`) and set `color-scheme: light` (plus a
+   white `html` background) in the app's global CSS — otherwise dark-mode
+   browsers paint a black canvas behind the page.
 
 ## Doc index
 
-- [structural-components.md](./structural-components.md) — Stripe, Bounds, Section, Chunk, Card, Inline
-- [content-components.md](./content-components.md) — Text, images, avatars, icons
+- [structural-components.md](./structural-components.md) — Stripe, Bounds, Section, Chunk, Sectionless, Inline
+- [content-components.md](./content-components.md) — Text, images, avatars, icons, Card, List
 - [ui-components.md](./ui-components.md) — buttons, forms, modals, toasts, menus
 - [utility-components.md](./utility-components.md) — hooks and helpers
 - [responsive-system.md](./responsive-system.md) — breakpoints, utility classes, how the responsive system works
