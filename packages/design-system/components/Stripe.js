@@ -1,5 +1,6 @@
-import React, {useMemo, useContext} from 'react';
-import { View, Image, ImageBackground } from '../primitives';
+import React, {useContext} from 'react';
+import { View } from '../primitives';
+import ImageBackground from './ImageBackground';
 import ThemeContext from '../ThemeContext';
 import {useMediaContext} from './UseMediaContext';
 import { BREAKPOINTS, METRICS } from '../styles/designConstants';
@@ -33,6 +34,9 @@ const getCombinedStyles = (media, styles) => {
  * @param {Object} props - Component props
  * @param {string} [props.image] - Background image URL for hero sections
  * @param {Object} [props.imageHeight] - Responsive heights: {small: 225, medium: 325, large: 400, xlarge: 450}
+ * @param {string} [props.imageFit='cover'] - How the image scales within the stripe
+ * @param {string|Object} [props.imagePosition='center'] - Image focal position, e.g. 'top' or {top: 0, left: '35%'}
+ * @param {Object} [props.imageStyle] - Additional styles for the background image
  * @param {boolean} [props.border] - Add border styling to the stripe
  * @param {Object} [props.style] - Additional styles to apply
  * @param {React.Ref} [props.forwardedRef] - Forwarded ref for the container
@@ -81,8 +85,11 @@ const Stripe = (props) => {
 	const {
 		children,
 		image,               // Background image URL
+		imageFit = 'cover',  // Cross-platform equivalent of object-fit
 		border,              // Boolean - add border styling
 		imageHeight = {small: 225, medium: 325, large: 400, xlarge: 450}, // Responsive heights
+		imagePosition = 'center', // Cross-platform equivalent of object-position
+		imageStyle,
 		style,
 		forwardedRef,        // Forwarded ref for container
 		...other
@@ -98,7 +105,10 @@ const Stripe = (props) => {
 		return(
 			<ImageBackground
 				ref={forwardedRef}
-				source={{uri: image}}
+				source={image}
+				contentFit={imageFit}
+				contentPosition={imagePosition}
+				imageStyle={imageStyle}
 				style={[styles['stripe'], borderStyle, style, imageHeightStyle]}
 				dataSet={{ media: ids['stripe']}} 
 				{...other}

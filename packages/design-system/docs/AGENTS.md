@@ -40,13 +40,15 @@ Rules:
   padding without the vertical rhythm — the standard idiom inside `Card`s,
   compact header/chrome bars, and toolbars.
 - `Stripe` natively supports hero background images: `image`, `imageStyle`,
-  and `imageHeight` as a breakpoint object (e.g. `{small: 488, large: 590}`).
+  `imageFit`, `imagePosition`, and `imageHeight` as a breakpoint object (e.g.
+  `{small: 488, large: 590}`). Use `imagePosition="top"` to keep the top of a
+  covered image visible consistently across native and web.
 
 ## Component index (what to reach for)
 
 Structure:
 - `Stripe` — full-width horizontal band; background color/image (`image`,
-  `imageHeight`, `border`, `style`).
+  `imageHeight`, `imageFit`, `imagePosition`, `border`, `style`).
 - `Bounds` — centers content and caps width. `small` / `medium` / `large` for
   narrower caps (auth/settings forms use `small`); `sparse` for a floating-card
   page look (`sparseBackgroundStyle` to style the backdrop).

@@ -41,6 +41,9 @@ The outermost structural container. Goes edge-to-edge of the screen and provides
 | `image` | `string` | `null` | Background image URL |
 | `border` | `boolean` | `false` | Add border styling |
 | `imageHeight` | `object` | `{small: 225, medium: 325, large: 400, xlarge: 450}` | Responsive heights for background image |
+| `imageFit` | `string` | `'cover'` | Cross-platform image scaling (`cover`, `contain`, `fill`, `none`, or `scale-down`) |
+| `imagePosition` | `string \| object` | `'center'` | Cross-platform focal position, such as `'top'`, `'bottom right'`, or `{top: 0, left: '35%'}` |
+| `imageStyle` | `object` | `{}` | Additional styles applied to the background image |
 | `style` | `object` | `{}` | Additional styles |
 
 ### Usage
@@ -66,6 +69,19 @@ import { Stripe, Bounds, Section, Chunk, Text } from '@cinderblock/design-system
       <Chunk>
         <Text>Content on gray background</Text>
       </Chunk>
+    </Section>
+  </Bounds>
+</Stripe>
+
+// Top-aligned hero image. Positioning behaves consistently on native and web.
+<Stripe
+  image="/hero.jpg"
+  imagePosition="top"
+  imageHeight={{ small: 300, large: 500 }}
+>
+  <Bounds>
+    <Section>
+      <Chunk><Text type="hero">Hero content</Text></Chunk>
     </Section>
   </Bounds>
 </Stripe>

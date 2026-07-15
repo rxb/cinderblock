@@ -120,6 +120,7 @@ deriving a slug from a title field).
 ```jsx
 <Stripe
   image="https://example.com/hero.jpg"
+  imagePosition="top"
   imageHeight={{ small: 488, medium: 588, large: 590 }}
   style={{ backgroundColor: '#FFD324' }}
 >

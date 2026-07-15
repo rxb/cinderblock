@@ -16,6 +16,7 @@ import FlexItem from './components/FlexItem';
 import Header from './components/Header';
 import Icon from './components/Icon';
 import ImageRatio from './components/ImageRatio';
+import ImageBackground from './components/ImageBackground';
 import ImageSnap from './components/ImageSnap';
 import Inline from './components/Inline';
 import Touch from './components/Touch';
@@ -72,6 +73,7 @@ export {
 	Icon,
 	Inline,
 	Image,
+	ImageBackground,
 	ImageSnap,
 	ImageRatio,
 	Touch,
