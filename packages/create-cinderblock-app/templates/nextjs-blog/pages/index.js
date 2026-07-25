@@ -31,7 +31,7 @@ import {
 	View,
 	ThemeContext,
 	designConstants
-} from 'cinderblock';
+} from '@cinderblock/design-system';
 
 
 import fs from 'fs/promises';
@@ -40,7 +40,7 @@ import path from 'path';
 import {glob} from 'glob'
 import { MDXRemote } from 'next-mdx-remote';
 import { serialize } from 'next-mdx-remote/serialize';
-import {MEDIA_QUERIES_SINGLE} from 'cinderblock/styles/designConstants';
+import {MEDIA_QUERIES_SINGLE} from '@cinderblock/design-system/styles/designConstants';
 import StyleSheet from 'react-native-media-query';
 import POSTS_CONFIG from "../posts/config.json" assert { type: "json" };
 
@@ -109,6 +109,27 @@ export default function Home(props) {
 
   return (
     <>
+        <Stripe
+          image="/computer_dinosaur.jpeg"
+          imageFit="cover"
+          imagePosition="top"
+          imageStyle={{ opacity: 0.55 }}
+          imageHeight={{ small: 320, medium: 420, large: 520 }}
+          style={{ backgroundColor: SWATCHES.backgroundDark }}
+        >
+          <Bounds>
+            <Section>
+              <Chunk>
+                <Text type="hero" inverted>Cinderblock Blog</Text>
+              </Chunk>
+              <Chunk>
+                <Text inverted>
+                  A cross-platform hero Stripe with a top-aligned background image.
+                </Text>
+              </Chunk>
+            </Section>
+          </Bounds>
+        </Stripe>
         <Stripe>
 
             <PostList posts={props.posts} />
@@ -154,5 +175,4 @@ export default function Home(props) {
     </>
   )
 }
-
 

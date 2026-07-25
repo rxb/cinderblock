@@ -88,6 +88,11 @@ const getStyleKeys = (props, media) => {
  * - Set a starting direction (row/column) that applies from mobile up
  * - Switch to a different direction at a specific breakpoint
  * - Control spacing, alignment, and wrapping behavior
+ * - Rely on plain FlexItems to divide available space equally
+ *
+ * The `section` gutter is an advanced exception for layouts where Section's
+ * horizontal inset conflicts with ordinary Flex spacing. Do not use it as the
+ * default gutter for routine rows or columns.
  * 
  * @param {Object} props - Component props
  * @param {('row'|'column')} [props.direction='row'] - Starting flex direction
@@ -112,7 +117,7 @@ const getStyleKeys = (props, media) => {
  * 
  * @example  
  * // Start as column, switch to row at medium breakpoint
- * <Flex direction="column" switchDirection="medium" align="center">
+ * <Flex direction="column" switchDirection="medium">
  *   <FlexItem>Top item</FlexItem>
  *   <FlexItem>Bottom item</FlexItem>
  * </Flex>

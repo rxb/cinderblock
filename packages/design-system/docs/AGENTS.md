@@ -13,14 +13,15 @@ in this directory (see the index at the bottom).
 ```jsx
 import { Stripe, Bounds, Section, Chunk, Text } from '@cinderblock/design-system';
 
-<Stripe>                        {/* edge-to-edge background band */}
+<Stripe>                        {/* major edge-to-edge visual region */}
   <Bounds>                      {/* max-width constraint, centered */}
-    <Section>                   {/* logical section, usually has a head */}
-      <Chunk><Text type="sectionHead">Heading</Text></Chunk>
-      <Chunk><Text>Paragraph-ish content. Chunk provides the spacing.</Text></Chunk>
+    <Section>                   {/* page-level content group and inset */}
+      <Chunk><Text type="pageHead">Page title</Text></Chunk>
+      <Chunk><Text>Introductory content. No H2 is required here.</Text></Chunk>
     </Section>
     <Section>
-      ...
+      <Chunk><Text type="sectionHead">A peer H2-level group</Text></Chunk>
+      <Chunk><Text>Content belonging to that heading.</Text></Chunk>
     </Section>
   </Bounds>
 </Stripe>
@@ -28,14 +29,30 @@ import { Stripe, Bounds, Section, Chunk, Text } from '@cinderblock/design-system
 
 Rules:
 
-- **Order is always `Stripe > Bounds > Section > Chunk > content`.** Never put
-  `Bounds` inside `Section`.
-- A page is usually several `Stripe`s stacked vertically (hero stripe, content
-  stripe, footer stripe), each with its own `Bounds`.
+- The ordinary content path is **`Stripe > Bounds > Section > Chunk >
+  content`**. Never put `Bounds` inside `Section`. `Flex`/`FlexItem` may sit
+  between levels when they arrange peer Sections or peer Stripes.
+- **Pages own their Stripes, Bounds, and Sections.** A shared `Page` or
+  application shell owns metadata, global header/navigation, and app-level
+  overlays, then renders page children directly. Do not put one catch-all
+  Stripe or Section in the shell: that prevents pages from composing multiple
+  visual regions or H2-level groups.
+- A page may have only one `Stripe`; additional Stripes are less common but
+  fully supported for heroes, background changes, full-bleed media, maps, or
+  other major visual regions. Each ordinary content Stripe has its own Bounds.
+- `Section` is the page-outline and spacing unit. The first Section commonly
+  contains the `pageHead` (H1) and needs no `sectionHead`. Each additional peer
+  `sectionHead` (H2) normally begins another Section. Do not put several
+  unrelated H2-level groups in one Section merely because they share a Stripe.
 - **Omit `Bounds` only for full-bleed content** — a fullscreen photo, a map,
   or an app-like screen whose entire layout is a `Flex`/`FlexItem` shell.
 - Every leaf piece of content lives in a `Chunk`. Don't put two paragraphs in
   one `Chunk`; the `Chunk` *is* the spacing unit.
+- **Section is the normal page-content container; Card is optional.** Use a
+  Card only when content should read as a distinct object, record, selectable
+  choice, or visually unified unit. A Card lives inside the appropriate
+  Section and does not replace it. Ordinary page copy, forms, instructions,
+  and status content usually need no Card.
 - `Sectionless` replaces `Section` when you need section-style horizontal
   padding without the vertical rhythm — the standard idiom inside `Card`s,
   compact header/chrome bars, and toolbars.
@@ -47,14 +64,20 @@ Rules:
 ## Component index (what to reach for)
 
 Structure:
-- `Stripe` — full-width horizontal band; background color/image (`image`,
-  `imageHeight`, `imageFit`, `imagePosition`, `border`, `style`).
+- `Stripe` — major full-width visual region; background color/image (`image`,
+  `imageHeight`, `imageFit`, `imagePosition`, `border`, `style`). It often
+  marks a large content transition, but can also provide full-bleed visual or
+  interactive content without introducing a heading.
 - `Bounds` — centers content and caps width. `small` / `medium` / `large` for
   narrower caps (auth/settings forms use `small`); `sparse` for a floating-card
   page look (`sparseBackgroundStyle` to style the backdrop).
-- `Section` — logical grouping with vertical rhythm; `border`, `borderedContent`.
+- `Section` — H2-level content grouping with vertical rhythm and horizontal
+  inset; `border`, `borderedContent`. It is still required for a page that has
+  only an H1.
 - `Chunk` — paragraph-level spacing unit; `inline` for a horizontal chunk.
 - `Card` — bordered/elevated container (`shadow`); often the item inside `List`.
+  It is an optional object-like grouping inside a Section, not the default page
+  content wrapper.
   **Card has NO built-in padding** — the interior is always
   `Card > Sectionless > Chunk`; bare `Chunk`s inside a `Card` sit flush
   against the border. Omit the `Sectionless` only for deliberate full-bleed
@@ -64,12 +87,17 @@ Structure:
 
 Layout:
 - `Flex` / `FlexItem` — flexbox rows/columns with responsive direction
-  switching. `Flex` props: `direction` ('row' default | 'column'),
+  switching. A plain `FlexItem` already grows with relative weight `1`, so
+  plain siblings divide the row equally. Use `shrink` to fit content, an empty
+  plain `FlexItem` as a spacer, and `growFactor` only for explicit unequal
+  ratios such as `1:2`. `Flex` props: `direction` ('row' default | 'column'),
   `switchDirection="<breakpoint>"` (flips direction at that breakpoint),
   `reverseDirection`, `reverseSwitchDirection`, `wrap`, `justify`, `align`,
-  `flush` (no gutter), `nbsp` (text-space-sized gutter), `section`
-  (section-sized gutter). `FlexItem` props: `shrink` (fit content),
-  `growFactor` (0–7), `justify`, `align`, `flush`, `nbsp`, `section`.
+  `flush` (no gutter), `nbsp` (text-space-sized gutter), and the advanced
+  `section` gutter. `FlexItem` props: `shrink` (fit content), `growFactor`
+  (relative weight `1`–`7`), `justify`, `align`, `flush`, `nbsp`, `section`.
+  Avoid `section` by default; it exists for rare layouts that must compensate
+  for Section-scale horizontal insets.
 - `List` — data-driven list that renders `items` via `renderItem`. `variant`
   is `'linear' | 'grid' | 'scroll'` **or a responsive object** like
   `{ small: 'scroll', medium: 'grid' }`. Grid uses `itemsInRow`
@@ -129,17 +157,90 @@ Three tools, in order of preference:
 
 ## Common patterns
 
-Two-column detail page (stacks on small screens):
+Two equal content groups (stacked on small screens, side by side on large):
+
+```jsx
+<Stripe>
+  <Bounds>
+    <Flex direction="column" switchDirection="large">
+      <FlexItem>
+        <Section>
+          <Chunk><Text type="sectionHead">Today</Text></Chunk>
+          <Chunk>{/* first content group */}</Chunk>
+        </Section>
+      </FlexItem>
+      <FlexItem>
+        <Section>
+          <Chunk><Text type="sectionHead">Assigned routine</Text></Chunk>
+          <Chunk>{/* second content group */}</Chunk>
+        </Section>
+      </FlexItem>
+    </Flex>
+  </Bounds>
+</Stripe>
+```
+
+Header with opposite-edge content:
+
+```jsx
+<Header>
+  <Flex>
+    <FlexItem shrink>{/* logo */}</FlexItem>
+    <FlexItem /> {/* grows to consume the available space */}
+    <FlexItem shrink>{/* navigation or actions */}</FlexItem>
+  </Flex>
+</Header>
+```
+
+Unequal `1:2` content ratio:
+
+```jsx
+<Flex>
+  <FlexItem growFactor={1}>
+    <Chunk>{/* one third */}</Chunk>
+  </FlexItem>
+  <FlexItem growFactor={2}>
+    <Chunk>{/* two thirds */}</Chunk>
+  </FlexItem>
+</Flex>
+```
+
+Responsive full-bleed split region:
+
+```jsx
+<Flex direction="column" switchDirection="large" flush>
+  <FlexItem flush>
+    <Stripe>
+      <Bounds>
+        <Section>
+          <Chunk>{/* list or other first region */}</Chunk>
+        </Section>
+      </Bounds>
+    </Stripe>
+  </FlexItem>
+  <FlexItem flush>
+    <Stripe>
+      <Bounds>
+        <Section>
+          <Chunk>{/* map, image, or other second region */}</Chunk>
+        </Section>
+      </Bounds>
+    </Stripe>
+  </FlexItem>
+</Flex>
+```
+
+Fixed-width action sidebar:
 
 ```jsx
 <Stripe>
   <Bounds>
     <Section>
-      <Flex direction="column" switchDirection="large" section>
-        <FlexItem growFactor={1} section>
-          <Chunk>{/* main content */}</Chunk>
+      <Flex direction="column" switchDirection="large">
+        <FlexItem>
+          <Chunk>{/* main content; plain item already grows */}</Chunk>
         </FlexItem>
-        <FlexItem shrink section>
+        <FlexItem shrink>
           <Chunk>{/* sidebar, e.g. minWidth: 320 via style */}</Chunk>
         </FlexItem>
       </Flex>
@@ -221,6 +322,18 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
    background (e.g. `SWATCHES.notwhite`) and set `color-scheme: light` (plus a
    white `html` background) in the app's global CSS — otherwise dark-mode
    browsers paint a black canvas behind the page.
+9. **Putting a catch-all Stripe or Section in the shared page shell.** That
+   silently limits every page to one background region and one content group.
+   The page shell should render page-owned structural children directly.
+10. **Using `growFactor={1}` on ordinary FlexItems.** Plain FlexItems already
+    have equal weight `1`. Specify factors only when expressing an unequal
+    ratio.
+11. **Using `section` as the normal Flex gutter.** The ordinary Flex gutter is
+    the default. `section` is an advanced escape hatch for unusual nested
+    Section layouts and should not appear in routine rows or columns.
+12. **Wrapping ordinary page content in Cards.** Section already provides the
+    normal page grouping and spacing. Reserve Card for content with a real
+    object-like boundary; never use it merely to create a white content box.
 
 ## Doc index
 

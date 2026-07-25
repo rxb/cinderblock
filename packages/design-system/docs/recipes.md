@@ -2,8 +2,9 @@
 
 These patterns are distilled from production apps built on Cinderblock (the
 original `starterkit` testbed and its knockoff pages). Each is a condensed
-skeleton: swap in your own data and handlers. All follow the canonical
-hierarchy `Stripe > Bounds > Section > Chunk`.
+skeleton: swap in your own data and handlers. Ordinary content follows the
+canonical hierarchy `Stripe > Bounds > Section > Chunk`; Flex/FlexItem may sit
+between levels when arranging peer Sections or peer Stripes.
 
 > Older codebases may use `variant="hscroll"` on `List`; the current API name
 > is `'scroll'`.
@@ -17,13 +18,13 @@ Main content and a sidebar that sit side-by-side on large screens and stack
 <Stripe style={{ backgroundColor: SWATCHES.notwhite }}>
   <Bounds>
     <Section>
-      <Flex direction="column" switchDirection="large" section>
-        <FlexItem growFactor={1} section>
+      <Flex direction="column" switchDirection="large">
+        <FlexItem>
           <Chunk>
             <Card shadow><Sectionless>{/* main content */}</Sectionless></Card>
           </Chunk>
         </FlexItem>
-        <FlexItem shrink section>
+        <FlexItem shrink>
           <View style={{ minWidth: 320 }}>
             <Chunk>{/* primary actions */}</Chunk>
             <Chunk border>{/* linked row */}</Chunk>
@@ -37,8 +38,10 @@ Main content and a sidebar that sit side-by-side on large screens and stack
 ```
 
 Key ideas: `direction="column" switchDirection="large"` = stacked until
-`large`; `growFactor={1}` main column vs `shrink` sidebar; `section` on
-Flex/FlexItem keeps section-scale gutters; `Chunk border` makes divider rows.
+`large`; the plain main FlexItem already grows while `shrink` fits the sidebar
+to its content; `Chunk border` makes divider rows. The default Flex gutter is
+appropriate here—do not add `section` unless a specific nested-Section inset
+requires compensation.
 
 ## 2. Responsive card feed (scroll on mobile, grid on desktop)
 
@@ -115,7 +118,9 @@ const submitForm = async () => {
 `formState.setFieldValues({a, b})` sets multiple fields atomically (e.g.
 deriving a slug from a title field).
 
-## 5. Full-bleed hero Stripe with background image
+## 5. Full-bleed Stripe patterns
+
+### Hero with a background image
 
 ```jsx
 <Stripe
@@ -136,10 +141,43 @@ deriving a slug from a title field).
 A floating card straddling the hero's bottom edge: give the next Stripe's
 first Card a negative top margin (e.g. `style={{marginTop: -68}}`).
 
+### Responsive split region
+
+For a map/list, photo/content, or other pair of full-bleed visual regions, put
+one Stripe in each FlexItem. They stack on small screens and sit side by side
+at the selected breakpoint:
+
+```jsx
+<Flex direction="column" switchDirection="large" flush>
+  <FlexItem flush>
+    <Stripe style={{ backgroundColor: SWATCHES.notwhite }}>
+      <Bounds>
+        <Section>
+          <Chunk>{/* list or primary content */}</Chunk>
+        </Section>
+      </Bounds>
+    </Stripe>
+  </FlexItem>
+  <FlexItem flush>
+    <Stripe>
+      <Bounds>
+        <Section>
+          <Chunk>{/* map, photo, or interactive region */}</Chunk>
+        </Section>
+      </Bounds>
+    </Stripe>
+  </FlexItem>
+</Flex>
+```
+
+This is an intentional exception to visually stacking peer Stripes. Each
+FlexItem still owns a complete Stripe subtree.
+
 ## 6. Compact header / chrome bar
 
 `Sectionless` instead of `Section` skips the vertical rhythm — right for
-toolbars and site headers.
+toolbars and site headers. Plain FlexItems grow, so a blank one is the spacer
+between two content-sized (`shrink`) items.
 
 ```jsx
 <Stripe style={{ paddingVertical: 0 }}>
@@ -325,13 +363,16 @@ and toggle feedback:
 
 ## 15. App-level wiring (Page wrapper)
 
-Every page renders inside a shared `Page` component that mounts the global
-singletons once:
+Every page renders inside a shared `Page` component that owns global chrome and
+mounts global singletons once. It must not own the page's Stripe, Bounds, or
+Section structure:
 
 ```jsx
-const Page = ({ children }) => (
+const Page = ({ title, children }) => (
   <View style={{ minHeight: '100vh', flex: 1 }}>
-    {children}
+    <Head><title>{title}</title></Head>
+    <SiteHeader />
+    <View accessibilityRole="main">{children}</View>
     <LoginModal />
     <ConnectedToaster />   {/* <Toaster toasts={state.toasts} ... /> */}
     <ConnectedPrompter />  {/* <Prompter prompts={state.prompts} ... /> */}
@@ -339,6 +380,35 @@ const Page = ({ children }) => (
   </View>
 );
 ```
+
+The route component supplies its own page structure:
+
+```jsx
+<Page title="Patient detail">
+  <Stripe>
+    <Bounds>
+      <Section>
+        <Chunk><Text type="pageHead">Patient name</Text></Chunk>
+      </Section>
+      <Section>
+        <Chunk><Text type="sectionHead">Today</Text></Chunk>
+        <Chunk>{/* progress */}</Chunk>
+      </Section>
+    </Bounds>
+  </Stripe>
+  <Stripe style={{ backgroundColor: SWATCHES.backgroundShade }}>
+    <Bounds>
+      <Section>
+        <Chunk><Text type="sectionHead">Assigned routine</Text></Chunk>
+        <Chunk>{/* routine */}</Chunk>
+      </Section>
+    </Bounds>
+  </Stripe>
+</Page>
+```
+
+This boundary is deliberate: the shell is shared, while each page controls how
+many visual regions and H2-level groups it needs.
 
 Cinderblock has no state-management dependency — the app supplies state and
 add/hide/remove actions (Redux in starterkit, but anything works). Then any

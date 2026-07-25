@@ -69,50 +69,50 @@ const getItemStyles = (styleKeys, styles) => {
  * Provides fine-grained control over how items behave in flexbox layouts.
  * 
  * FlexItem is designed to work within Flex containers and provides:
- * - Flexible sizing with grow/shrink behavior
+ * - Equal flexible sizing by default (`flex: 1`)
+ * - Explicit relative sizing with grow factors
  * - Individual alignment overrides
  * - Spacing modifiers independent of container settings
  * - Performance-optimized style calculation
  * 
  * @param {Object} props - Component props
- * @param {boolean} [props.shrink] - Allow item to shrink smaller than content size
- * @param {number} [props.growFactor] - Flex grow factor (0-7) for space distribution
+ * @param {boolean} [props.shrink] - Fit the item to its content instead of taking an equal share
+ * @param {number} [props.growFactor] - Explicit relative flex weight (1-7); plain items already use weight 1
  * @param {boolean} [props.isFirstChild] - Apply first-child specific styling
  * @param {string} [props.justify] - Override container justify-content for this item
  * @param {string} [props.align] - Override container align-items for this item  
  * @param {boolean} [props.flush] - Remove spacing around this item
  * @param {boolean} [props.nbsp] - Use text-space-like spacing around this item
- * @param {boolean} [props.section] - Use section-like spacing around this item
+ * @param {boolean} [props.section] - Advanced Section-scale spacing exception
  * @param {Object} [props.style] - Additional styles to apply
  * @param {Object} [props.dataSet] - Data attributes for media queries
  * @param {React.ReactNode} props.children - Content to display within the flex item
  * 
  * @example
- * // Basic flex layout with growing/shrinking items
+ * // Opposite-edge content with a flexible spacer
  * <Flex>
- *   <FlexItem shrink><Text>Fixed width content</Text></FlexItem>
- *   <FlexItem growFactor={1}><TextInput placeholder="Grows to fill space" /></FlexItem>
- *   <FlexItem shrink><Button>Action</Button></FlexItem>
+ *   <FlexItem shrink><Text>Brand</Text></FlexItem>
+ *   <FlexItem />
+ *   <FlexItem shrink><Button>Account</Button></FlexItem>
  * </Flex>
  * 
  * @example
  * // Proportional space distribution with grow factors
  * <Flex>
- *   <FlexItem growFactor={1}>One part</FlexItem>
- *   <FlexItem growFactor={2}>Two parts (twice as wide)</FlexItem>
- *   <FlexItem growFactor={1}>One part</FlexItem>
+ *   <FlexItem growFactor={1}>One third</FlexItem>
+ *   <FlexItem growFactor={2}>Two thirds</FlexItem>
  * </Flex>
  * 
  * @example
  * // Individual item alignment overrides
- * <Flex align="center">
- *   <FlexItem><Text>Centered</Text></FlexItem>
- *   <FlexItem align="start"><Text>Top aligned</Text></FlexItem>
- *   <FlexItem align="end"><Text>Bottom aligned</Text></FlexItem>
+ * <Flex>
+ *   <FlexItem align="flex-start"><Text>Top aligned</Text></FlexItem>
+ *   <FlexItem align="center"><Text>Centered</Text></FlexItem>
+ *   <FlexItem align="flex-end"><Text>Bottom aligned</Text></FlexItem>
  * </Flex>
  * 
  * @example
- * // Spacing control for specific items
+ * // Spacing control for specific items. `section` is an advanced exception.
  * <Flex>
  *   <FlexItem><Text>Normal spacing</Text></FlexItem>
  *   <FlexItem flush><Text>No spacing</Text></FlexItem>

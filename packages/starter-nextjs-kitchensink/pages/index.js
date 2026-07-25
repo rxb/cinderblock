@@ -109,6 +109,27 @@ export default function Home(props) {
 
   return (
     <>
+        <Stripe
+          image="/computer_dinosaur.jpeg"
+          imageFit="cover"
+          imagePosition="top"
+          imageStyle={{ opacity: 0.55 }}
+          imageHeight={{ small: 320, medium: 420, large: 520 }}
+          style={{ backgroundColor: SWATCHES.backgroundDark }}
+        >
+          <Bounds>
+            <Section>
+              <Chunk>
+                <Text type="hero" inverted>Cinderblock Kitchensink</Text>
+              </Chunk>
+              <Chunk>
+                <Text inverted>
+                  A cross-platform hero Stripe with a top-aligned background image.
+                </Text>
+              </Chunk>
+            </Section>
+          </Bounds>
+        </Stripe>
         <Stripe>
 
             <PostList posts={props.posts} />
@@ -154,5 +175,4 @@ export default function Home(props) {
     </>
   )
 }
-
 

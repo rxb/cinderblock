@@ -10,7 +10,7 @@ import {
 	removePrompt
 } from '../actions';
 
-import { Prompter } from 'cinderblock';
+import { Prompter } from '@cinderblock/design-system';
 
 const ConnectedPrompter = (props) => (<Prompter {...props} />);
 

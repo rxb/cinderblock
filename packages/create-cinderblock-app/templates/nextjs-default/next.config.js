@@ -2,7 +2,14 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports = {
-  transpilePackages: ['@cinderblock/design-system', 'react-native-media-query', 'react-native-web'],
+  transpilePackages: [
+    '@cinderblock/design-system',
+    'expo',
+    'expo-image',
+    'expo-modules-core',
+    'react-native-media-query',
+    'react-native-web'
+  ],
 
   webpack: (config, options) => {
     // (a) The edge runtime (middleware) must keep Next's own react resolution.
@@ -12,6 +19,12 @@ module.exports = {
     if (options.nextRuntime === 'edge') {
       return config;
     }
+
+    config.plugins.push(
+      new options.webpack.DefinePlugin({
+        __DEV__: JSON.stringify(options.dev)
+      })
+    );
 
     // (b) no fs on client and that's ok
     config.resolve.fallback = { fs: false };
@@ -40,7 +53,14 @@ module.exports = {
       }
     });
 
-    config.resolve.extensions = ['.web.js', '.js', ...config.resolve.extensions];
+    config.resolve.extensions = [
+      '.web.js',
+      '.web.jsx',
+      '.web.ts',
+      '.web.tsx',
+      '.js',
+      ...config.resolve.extensions
+    ];
 
     return config;
   }

@@ -6,6 +6,14 @@ import { StyleSheet, View } from '../primitives';
  * Cross-platform background image container with explicit fit and focal-point
  * controls. Unlike React Native's basic ImageBackground, contentPosition is
  * implemented consistently on Android, iOS, tvOS, and web by expo-image.
+ *
+ * @param {Object} props
+ * @param {string|Object|number} props.source - Expo Image-compatible source
+ * @param {string} [props.contentFit='cover'] - Image scaling behavior
+ * @param {string|Object} [props.contentPosition='center'] - Image focal position
+ * @param {Object} [props.imageStyle] - Styles applied to the image layer
+ * @param {Object} [props.style] - Styles applied to the containing view
+ * @param {React.ReactNode} props.children - Content overlaid on the image
  */
 const ImageBackground = React.forwardRef((props, ref) => {
 	const {

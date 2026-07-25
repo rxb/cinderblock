@@ -7,7 +7,6 @@ import {
   FlexItem,
   Header,
   Link,
-  Stripe,
   Text,
   View
 } from '@cinderblock/design-system';
@@ -73,10 +72,8 @@ function Page({
         </Flex>
       </Header>
 
-      {/* Main Content */}
-      <Stripe>
-        {children}
-      </Stripe>
+      {/* Pages compose their own Stripes so backgrounds can change by section. */}
+      {children}
     </View>
   );
 }

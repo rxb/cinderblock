@@ -41,7 +41,7 @@ import {
 	TextInput,
 	View,
 	ThemeContext
-} from 'cinderblock';
+} from '@cinderblock/design-system';
 import {Layout, SiteMenu} from './rgb/Layout';
 
 import ConnectedToaster from './ConnectedToaster';

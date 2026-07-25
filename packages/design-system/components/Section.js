@@ -27,12 +27,12 @@ const getCombinedStyles = (props) => {
 }
 
 /**
- * Structural component that provides vertical spacing and optional borders for content organization.
- * Part of the Cinderblock hierarchy: Stripe > Section > Chunk.
+ * Structural component for one page-outline content group.
+ * Part of the ordinary Cinderblock hierarchy: Stripe > Bounds > Section > Chunk.
  * 
- * Section creates consistent vertical spacing between content blocks and can add
- * visual separation with borders. Multiple Sections within a Stripe create a
- * structured content flow.
+ * Section creates consistent vertical rhythm and horizontal inset, and can add
+ * visual separation with borders. A page with only a pageHead/H1 still has one
+ * Section. Each additional peer sectionHead/H2 normally begins another Section.
  * 
  * @param {Object} props - Component props
  * @param {boolean} [props.border] - Add border around the entire section
@@ -42,10 +42,17 @@ const getCombinedStyles = (props) => {
  * @param {React.ReactNode} props.children - Content to display within the section
  * 
  * @example
- * // Basic section with content
+ * // Page title section; no H2 is required
  * <Section>
- *   <Chunk><Text type="sectionHead">Features</Text></Chunk>
- *   <Chunk><Text>Description of features...</Text></Chunk>
+ *   <Chunk><Text type="pageHead">Account</Text></Chunk>
+ *   <Chunk><Text>Primary page content...</Text></Chunk>
+ * </Section>
+ *
+ * @example
+ * // Peer H2-level section
+ * <Section>
+ *   <Chunk><Text type="sectionHead">Preferences</Text></Chunk>
+ *   <Chunk><Text>Content belonging to this heading...</Text></Chunk>
  * </Section>
  * 
  * @example

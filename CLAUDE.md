@@ -22,6 +22,9 @@ workspaces monorepo:
    aliases bypass the package `exports` field and break exports-only packages
    (uuid ≥ 11). If you touch the starters' `next.config.js`, preserve this and
    the `nextRuntime === 'edge'` early-return (protects consumers' middleware).
+4. **Pages own their structural content.** Shared Page/application shells own
+   metadata, global navigation, and overlays, then render children directly.
+   Do not put a catch-all Stripe, Bounds, or Section in a shared shell.
 
 ## Key docs
 
@@ -30,7 +33,8 @@ workspaces monorepo:
   landmines, `file:` dep consumption, TS shim, verification checklist).
 - `packages/design-system/docs/AGENTS.md` — **start here for component
   usage**: canonical page skeleton (`Stripe > Bounds > Section > Chunk`),
-  component index, responsive model, anti-patterns. Verified against source.
+  page/shell ownership, Flex defaults, responsive model, and anti-patterns.
+  Verified against source.
 - `packages/design-system/docs/recipes.md` — real-world page patterns; live
   versions in the kitchensink starter under `pages/recipes/`.
 - `packages/design-system/docs/*.md` — component API references and patterns.

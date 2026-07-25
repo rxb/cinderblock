@@ -1,37 +1,58 @@
 const path = require('path');
-
-
+const fs = require('fs');
 
 module.exports = {
+  transpilePackages: [
+    '@cinderblock/design-system',
+    'expo',
+    'expo-image',
+    'expo-modules-core',
+    'react-native-media-query',
+    'react-native-web'
+  ],
 
-  // nextjs 13 can transpile packages
-  // https://beta.nextjs.org/docs/api-reference/next.config.js#transpilepackages
-  transpilePackages: ['cinderblock', 'react-native-media-query', 'react-native-web'],
-  
-	webpack: (config, options) => {
+  webpack: (config, options) => {
+    if (options.nextRuntime === 'edge') {
+      return config;
+    }
 
-		// no fs on client and that's ok
-		config.resolve.fallback = { fs: false };
+    config.plugins.push(
+      new options.webpack.DefinePlugin({
+        __DEV__: JSON.stringify(options.dev)
+      })
+    );
 
-		// Transform all direct `react-native` imports to `react-native-web`
-		config.resolve.alias = {
-			...(config.resolve.alias || {}),
-			'react-native$': 'react-native-web'
-		}
+    config.resolve.fallback = { fs: false };
+    config.resolve.symlinks = false;
 
-		// for peer dependencies in transpiling 
-		// TODO: this doesn't seem sustainable
-		const peerDependencies = ['react', 'react-dom', 'prop-types', 'react-native-web', 'uuid', 'react-feather', 'body-scroll-lock', 'react-dnd', 'validator', 'dayjs', 'react-native-media-query', 'css-mediaquery'];
-		peerDependencies.forEach( item => {
-			config.resolve.alias[item] = path.resolve(__dirname, '.', 'node_modules', item);
-		});
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      'react-native$': 'react-native-web'
+    };
 
-		config.resolve.extensions = [
-			'.web.js',
-			'.js',
-			...config.resolve.extensions,
-		]
+    const singletons = [
+      'react',
+      'react-dom',
+      'prop-types',
+      'react-native-web',
+      'react-native-media-query'
+    ];
+    singletons.forEach((item) => {
+      const resolved = path.resolve(__dirname, 'node_modules', item);
+      if (fs.existsSync(resolved)) {
+        config.resolve.alias[item] = resolved;
+      }
+    });
 
-		return config
-	},
+    config.resolve.extensions = [
+      '.web.js',
+      '.web.jsx',
+      '.web.ts',
+      '.web.tsx',
+      '.js',
+      ...config.resolve.extensions
+    ];
+
+    return config;
+  }
 };

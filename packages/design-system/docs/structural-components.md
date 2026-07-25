@@ -9,30 +9,150 @@ Structural components are the foundation of the Cinderblock Design System. They 
 ## The Structural Hierarchy
 
 ```
-Page (your app wrapper)
-├── Stripe (full-width sections)
-│   └── Bounds (max-width constraint, directly under Stripe)
-│       ├── Section (content areas)
-│       │   ├── Chunk (element spacing)
-│       │   │   └── [Content components]
-│       │   └── Chunk
-│       │       └── [Content components]
-│       └── Section
-└── Stripe
+Page shell (metadata, global header/navigation, overlays)
+└── Page-owned content
+    ├── Stripe (major full-width visual region)
+    │   └── Bounds (max-width constraint, directly under Stripe)
+    │       ├── Section (one page-outline content group)
+    │       │   ├── Chunk (element spacing)
+    │       │   │   └── [Content components]
+    │       │   └── Chunk
+    │       │       └── [Content components]
+    │       └── Section
+    └── Stripe
 ```
 
-Bounds sits directly under Stripe and constrains content to a readable max-width. It can be legitimately omitted for full-bleed content (a fullscreen photo or map) or app-like layouts where the whole screen is a Flex/FlexItem shell — but for a normal page skeleton, the hierarchy is **Stripe > Bounds > Section > Chunk**.
+The ordinary content path is **Stripe > Bounds > Section > Chunk**. Bounds
+sits directly under Stripe and constrains content to a readable max-width. It
+can be omitted for full-bleed content (a fullscreen photo or map) or app-like
+layouts where the whole screen is a Flex/FlexItem shell.
+
+Flex and FlexItem are layout adapters rather than additional hierarchy levels.
+They may sit between structural levels when they arrange peer regions:
+
+```
+Stripe
+└── Bounds
+    └── Flex
+        ├── FlexItem
+        │   └── Section
+        └── FlexItem
+            └── Section
+```
+
+Each arranged region still keeps its own internal structural order.
+
+## Page ownership versus the shared shell
+
+A shared Page component or application shell should own only things that are
+truly global:
+
+- metadata and route-level concerns;
+- the site or application header and navigation;
+- global modals, prompts, dropdowns, toasts, and loading UI;
+- the outer main-content landmark.
+
+It should then render `children` directly. Individual pages own their Stripes,
+Bounds, Sections, page title, and section headings:
+
+```jsx
+const Page = ({ title, children }) => (
+  <View style={{ minHeight: '100vh', flex: 1 }}>
+    <Head><title>{title}</title></Head>
+    <SiteHeader />
+    <View accessibilityRole="main">{children}</View>
+    <AppOverlays />
+  </View>
+);
+
+const PatientDetail = () => (
+  <Page title="Patient">
+    <Stripe>{/* page-owned title and primary content */}</Stripe>
+    <Stripe>{/* optional second background or full-bleed region */}</Stripe>
+  </Page>
+);
+```
+
+Do not make the shell render one catch-all Stripe, Bounds, or Section around
+every page. That makes multiple backgrounds, full-bleed content, and multiple
+peer Sections awkward or impossible.
+
+## Headings and Sections
+
+Section is the structural counterpart to an H2-level content group; it is not
+a heading by itself.
+
+- A page with only a `pageHead` (H1) still has one Section.
+- The first Section commonly contains the `pageHead`, introduction, and
+  primary content without a `sectionHead`.
+- Each additional peer `sectionHead` (H2) normally starts a new Section.
+- Several unrelated H2-level groups should not be placed in one Section merely
+  because they share a Stripe or background.
+- When H2-level groups sit side by side at larger widths, place each Section
+  inside its own FlexItem.
+
+Section also supplies the page's vertical rhythm and horizontal inset. In the
+current implementation the horizontal inset is created with margin rather
+than padding, which matters when nesting Sections inside other layouts.
+
+## Section is primary; Card is optional
+
+Section is the normal unit of page content. Most pages can be composed entirely
+from Stripes, Bounds, Sections, Chunks, and their leaf content without using a
+Card at all.
+
+Card adds a stronger visual and conceptual boundary. Use it when a group should
+behave like an object:
+
+- a patient, product, article, or other repeatable record;
+- a selectable preview or option;
+- a summary with its own identity and actions;
+- a deliberately unified callout that should be perceived as one thing.
+
+Do not add a Card merely because content needs spacing, a background, or a place
+to live. Ordinary instructions, paragraphs, forms, progress, page-level status,
+and H2-level groups belong directly in their Section.
+
+A Card does not replace Section. It appears inside the appropriate page
+structure:
+
+```jsx
+<Stripe>
+  <Bounds>
+    <Section>
+      <Chunk><Text type="sectionHead">Patients</Text></Chunk>
+      <Chunk>
+        <Card>
+          <Sectionless>
+            <Chunk><Text type="big" weight="strong">Evelyn Brooks</Text></Chunk>
+            <Chunk><Text>3 of 3 exercises complete</Text></Chunk>
+          </Sectionless>
+        </Card>
+      </Chunk>
+    </Section>
+  </Bounds>
+</Stripe>
+```
+
+Inside a Card, use Sectionless for interior padding. A card title should use
+ordinary emphasized text unless it truly begins a new page-outline section.
 
 ---
 
 ## Stripe
 
-The outermost structural container. Goes edge-to-edge of the screen and provides the background context for your content.
+The largest page-owned structural container. It spans the full available width
+and provides the visual background context for a major region.
 
 ### Purpose
-- Creates horizontal sections across the full page width
-- Provides background styling and context
-- Acts as the main sectioning element (like HTML `<article>`)
+- Creates major horizontal regions across the full page width
+- Provides background styling, images, maps, or other full-bleed content
+- Lets a page change visual context without coupling that decision to the
+  shared application shell
+
+A Stripe often accompanies a large content transition, but it does not require
+a new heading. Heroes, full-bleed photos, maps, and responsive application
+regions are all legitimate Stripes.
 
 ### Props
 
@@ -114,12 +234,13 @@ import { Stripe, Bounds, Section, Chunk, Text } from '@cinderblock/design-system
 
 ## Section
 
-Content areas within Stripes (inside Bounds). Sections provide the content boundaries and can have their own styling.
+H2-level content areas within Stripes, normally inside Bounds. Sections provide
+the page's vertical rhythm, horizontal inset, and optional visual boundaries.
 
 ### Purpose
-- Defines content areas within stripes
-- Provides content boundaries and optional borders
-- Semantic sectioning (like HTML `<section>`)
+- Groups content that belongs to one page-outline level
+- Provides vertical spacing, horizontal inset, and optional borders
+- Holds a page H1 when no H2 is needed, or begins a peer H2-level group
 
 ### Props
 
@@ -132,12 +253,15 @@ Content areas within Stripes (inside Bounds). Sections provide the content bound
 ### Usage
 
 ```javascript
-// Basic section
+// Page with an H1 and no H2
 <Stripe>
   <Bounds>
     <Section>
       <Chunk>
-        <Text>Content in a section</Text>
+        <Text type="pageHead">Account</Text>
+      </Chunk>
+      <Chunk>
+        <Text>This page does not need an H2, but it still needs a Section.</Text>
       </Chunk>
     </Section>
   </Bounds>
@@ -152,9 +276,12 @@ Content areas within Stripes (inside Bounds). Sections provide the content bound
       </Chunk>
     </Section>
     
-    <Section border>
+    <Section>
       <Chunk>
         <Text type="sectionHead">Related Content</Text>
+      </Chunk>
+      <Chunk>
+        <Text>Content belonging to this H2-level group.</Text>
       </Chunk>
     </Section>
   </Bounds>
@@ -228,27 +355,27 @@ Flexible layout components for creating responsive row/column layouts.
 | `reverseSwitchDirection` | `boolean` | `false` | Reverse the switched direction |
 | `wrap` | `boolean` | `false` | Allow wrapping |
 | `justify` | `string` | `null` | Justify content |
-| `align` | `string` | `null` | Align items |
+| `align` | `string` | `'stretch'` | Align items |
 | `flush` | `boolean` | `false` | Remove spacing between items |
 | `nbsp` | `boolean` | `false` | Text-space-like spacing between items |
-| `section` | `boolean` | `false` | Section-like spacing between items |
+| `section` | `boolean` | `false` | Advanced Section-scale gutter; avoid for ordinary layouts |
 
 ### FlexItem Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `shrink` | `boolean` | `false` | Shrink to content size |
-| `growFactor` | `number` | `null` | Flex grow factor (`0`–`7`) |
+| `growFactor` | `number` | `1` effectively | Explicit relative flex weight (`1`–`7`); plain items already use weight `1` |
 | `justify` | `string` | `null` | Self justify |
 | `align` | `string` | `null` | Self align |
 | `flush` | `boolean` | `false` | Remove spacing around item |
 | `nbsp` | `boolean` | `false` | Text-space-like spacing around item |
-| `section` | `boolean` | `false` | Section-like spacing around item |
+| `section` | `boolean` | `false` | Advanced Section-scale inset compensation |
 
 ### Usage
 
 ```javascript
-// Basic flex layout
+// Equal columns: plain FlexItems already grow with equal weight
 <Section>
   <Chunk>
     <Flex>
@@ -279,20 +406,44 @@ Flexible layout components for creating responsive row/column layouts.
   </Chunk>
 </Section>
 
-// Justified flex layout
-<Section>
-  <Chunk>
-    <Flex justify="space-between" align="center">
-      <FlexItem>
-        <Text type="sectionHead">Title</Text>
-      </FlexItem>
-      <FlexItem>
-        <Button>Action</Button>
-      </FlexItem>
-    </Flex>
-  </Chunk>
-</Section>
+// Opposite-edge header content: shrink + flexible spacer + shrink
+<Header>
+  <Flex>
+    <FlexItem shrink><Text weight="strong">Brand</Text></FlexItem>
+    <FlexItem />
+    <FlexItem shrink><Button>Account</Button></FlexItem>
+  </Flex>
+</Header>
+
+// Explicit 1:2 ratio. Factors describe relative shares.
+<Flex>
+  <FlexItem growFactor={1}><Text>One third</Text></FlexItem>
+  <FlexItem growFactor={2}><Text>Two thirds</Text></FlexItem>
+</Flex>
 ```
+
+### Sizing rules
+
+- Plain FlexItems divide available space equally. `growFactor={1}` is therefore
+  redundant unless it is paired with a different factor.
+- Use `shrink` when an item should fit its content instead of taking an equal
+  share.
+- Place an empty plain `<FlexItem />` between two `shrink` items to push them
+  to opposite edges.
+- Use `growFactor` only to express an explicit ratio such as `1:2` or `2:3`.
+- Use `shrink` rather than `growFactor={0}` for a non-growing item.
+- `align="stretch"` is the effective default and normally does not need to be
+  written.
+
+### The advanced `section` gutter
+
+The `section` prop on Flex and FlexItem changes the normal gutter to a much
+larger, Section-scale inset. It exists for unusual layouts where Section's
+horizontal inset interacts with the Flex gutter. It is not the normal way to
+space cards, columns, label/value rows, or header content.
+
+Start without `section`. Add it only after identifying a specific nested
+Section spacing problem, and document that reason near the layout.
 
 ---
 

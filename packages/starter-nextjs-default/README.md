@@ -16,6 +16,7 @@ This starter provides the essential foundation for new projects without the comp
 
 ### 🎨 **Basic Components**
 - Header navigation example
+- Cross-platform hero Stripe with image focal positioning
 - Responsive layout patterns
 - Form component demonstration
 - Card-based content sections
@@ -57,6 +58,8 @@ npm run dev
 
 ### Update the Homepage
 Edit `pages/index.js` to customize the main landing page with your content.
+The included hero demonstrates `imageFit="cover"` and
+`imagePosition="top"`, which use the same focal positioning on native and web.
 
 ### Add New Pages
 Create new files in the `pages/` directory. Next.js automatically creates routes based on the file structure.

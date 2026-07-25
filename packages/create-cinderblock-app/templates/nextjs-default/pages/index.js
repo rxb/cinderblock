@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Bounds,
   Button,
   Card,
   Chunk,
@@ -8,6 +9,7 @@ import {
   Icon,
   Link,
   Section,
+  Stripe,
   Text
 } from '@cinderblock/design-system';
 import Page from '../components/Page';
@@ -15,15 +17,24 @@ import Page from '../components/Page';
 export default function Home() {
   return (
     <Page currentPage="home">
+      <Stripe
+        image="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=1800&q=80"
+        imageFit="cover"
+        imagePosition="top"
+        imageStyle={{ opacity: 0.45 }}
+        imageHeight={{ small: 360, medium: 420, large: 500 }}
+        style={{ backgroundColor: '#172033' }}
+      >
+        <Bounds>
         <Section>
           <Chunk>
-            <Text type="pageHead" align="center">
+            <Text type="pageHead" align="center" inverted>
               Welcome to Cinderblock
             </Text>
           </Chunk>
           
           <Chunk>
-            <Text align="center">
+            <Text align="center" inverted>
               A powerful design system for building beautiful React applications.
             </Text>
           </Chunk>
@@ -38,7 +49,11 @@ export default function Home() {
             </Flex>
           </Chunk>
         </Section>
+        </Bounds>
+      </Stripe>
 
+      <Stripe>
+        <Bounds>
         {/* Feature Cards */}
         <Section>
           <Chunk>
@@ -164,6 +179,8 @@ export default function Home() {
             </Card>
           </Chunk>
         </Section>
+        </Bounds>
+      </Stripe>
     </Page>
   );
 }

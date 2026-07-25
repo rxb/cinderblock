@@ -21,6 +21,7 @@ This project showcases **all** features, components, and patterns available in t
 - Form components (TextInput, CheckBox, Picker, etc.)
 - Navigation (Header, Tabs, Dropdowner, etc.)
 - Media components (Image, Avatar, Icon, etc.)
+- Cross-platform image-backed Stripe with explicit fit and focal positioning
 - Feedback components (Modal, Toast, Prompter, etc.)
 - Animation components (Bounce, RevealBlock, etc.)
 

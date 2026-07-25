@@ -25,11 +25,14 @@ const getCombinedStyles = (media, styles) => {
 }
 
 /**
- * Top-level structural component that creates major page sections with optional background images.
- * The largest unit in the Cinderblock hierarchy: Stripe > Section > Chunk.
+ * Page-owned structural component for a major full-width visual region.
+ * The ordinary hierarchy inside it is Stripe > Bounds > Section > Chunk.
  * 
- * Stripe defines major content areas of a page and provides responsive background image
- * support with adaptive heights. Multiple Stripes stack vertically to create page structure.
+ * Stripe provides visual background context and responsive background-image
+ * support with adaptive heights. Multiple Stripes may stack vertically, or
+ * peer Stripes may sit in FlexItems for a responsive full-bleed split region.
+ * Shared Page/application shells should render page-owned Stripes as children
+ * rather than supplying one catch-all Stripe.
  * 
  * @param {Object} props - Component props
  * @param {string} [props.image] - Background image URL for hero sections
@@ -45,37 +48,41 @@ const getCombinedStyles = (media, styles) => {
  * @example
  * // Basic content stripe
  * <Stripe>
- *   <Section>
- *     <Chunk><Text type="pageHead">Welcome</Text></Chunk>
- *     <Chunk><Text>Learn about our platform...</Text></Chunk>
- *   </Section>
+ *   <Bounds>
+ *     <Section>
+ *       <Chunk><Text type="pageHead">Welcome</Text></Chunk>
+ *       <Chunk><Text>Learn about our platform...</Text></Chunk>
+ *     </Section>
+ *   </Bounds>
  * </Stripe>
  * 
  * @example
  * // Hero stripe with background image
  * <Stripe 
  *   image="https://example.com/hero.jpg"
+ *   imageFit="cover"
+ *   imagePosition="top"
  *   imageHeight={{small: 300, large: 500}}
  * >
- *   <Section>
- *     <Bounds>
+ *   <Bounds>
+ *     <Section>
  *       <Chunk><Text type="pageHead" color="white">Hero Title</Text></Chunk>
  *       <Chunk><Button color="primary">Get Started</Button></Chunk>
- *     </Bounds>
- *   </Section>
+ *     </Section>
+ *   </Bounds>
  * </Stripe>
  * 
  * @example
  * // Multiple stripes for page structure
  * <>
  *   <Stripe image="/hero.jpg">
- *     <Section>// Hero content</Section>
+ *     <Bounds><Section>// Hero content</Section></Bounds>
  *   </Stripe>
  *   <Stripe>
- *     <Section>// Features content</Section>
+ *     <Bounds><Section>// Features content</Section></Bounds>
  *   </Stripe>
  *   <Stripe style={{backgroundColor: '#f8f9fa'}}>
- *     <Section>// Testimonials content</Section>
+ *     <Bounds><Section>// Testimonials content</Section></Bounds>
  *   </Stripe>
  * </>
  */

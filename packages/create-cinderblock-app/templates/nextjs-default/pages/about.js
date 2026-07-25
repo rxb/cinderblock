@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Bounds,
   Button,
   Card,
   Chunk,
@@ -8,6 +9,7 @@ import {
   Icon,
   Link,
   Section,
+  Stripe,
   Text,
   TextInput
 } from '@cinderblock/design-system';
@@ -16,6 +18,8 @@ import Page from '../components/Page';
 export default function About() {
   return (
     <Page currentPage="about">
+      <Stripe>
+        <Bounds>
         <Section>
           <Chunk>
             <Text type="pageHead">About This Starter</Text>
@@ -205,6 +209,8 @@ export default function About() {
             </Flex>
           </Chunk>
         </Section>
+        </Bounds>
+      </Stripe>
     </Page>
   );
 }

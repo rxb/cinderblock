@@ -299,15 +299,63 @@ import { ImageRatio, ImageSnap, Chunk } from '@cinderblock/design-system';
 
 ---
 
+## ImageBackground
+
+Cross-platform background image container for content overlays. It uses Expo
+Image so fitting and focal positioning behave consistently on Android, iOS,
+tvOS, and web.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `source` | `string \| object` | — | Image URL, source object, or local asset |
+| `contentFit` | `string` | `'cover'` | Image scaling: `cover`, `contain`, `fill`, `none`, or `scale-down` |
+| `contentPosition` | `string \| object` | `'center'` | Focal position such as `'top'`, `'bottom right'`, or `{top: 0, left: '35%'}` |
+| `imageStyle` | `object` | `{}` | Styles applied to the image layer |
+| `style` | `object` | `{}` | Styles applied to the containing view |
+
+```jsx
+import { ImageBackground, Section, Chunk, Text } from '@cinderblock/design-system';
+
+<ImageBackground
+  source="/hero.jpg"
+  contentFit="cover"
+  contentPosition="top"
+  style={{ height: 400 }}
+>
+  <Section>
+    <Chunk><Text type="hero" inverted>Top-aligned hero</Text></Chunk>
+  </Section>
+</ImageBackground>
+```
+
+For full-width page heroes, prefer `Stripe` and its `imageFit` and
+`imagePosition` convenience props.
+
+---
+
 ## Card
 
-Content container component with optional shadows and borders.
+Optional object-like content container with borders and shadows. Card adds a
+stronger visual and conceptual boundary than ordinary Section content.
 
 ### Purpose
-- Content grouping and organization
-- Visual hierarchy and separation
+- Repeatable records such as patients, products, or articles
+- Selectable choices, previews, and summaries with their own identity
+- Deliberately unified object-like content
 - Optional depth with shadows
-- Consistent content containers
+
+### Section comes first
+
+`Section` is the primary page-content unit. Card does not replace Section and
+should not wrap ordinary page copy, forms, instructions, progress, or every
+H2-level group merely to create a white box.
+
+Use Card only when the content benefits from being perceived as a distinct
+object. The normal placement is:
+
+```
+Stripe > Bounds > Section > Chunk > Card > Sectionless > Chunk > content
+```
 
 ### Props
 
@@ -332,24 +380,26 @@ the card border. This is the single most common Card mistake.
 ### Usage
 
 ```javascript
-import { Card, Sectionless, Chunk, Text, Button } from '@cinderblock/design-system';
+import { Card, Section, Sectionless, Chunk, Text, Button } from '@cinderblock/design-system';
 
-// Basic card — note the Sectionless providing interior padding
-<Chunk>
-  <Card>
-    <Sectionless>
-      <Chunk>
-        <Text type="sectionHead">Card Title</Text>
-      </Chunk>
-      <Chunk>
-        <Text>Card content goes here...</Text>
-      </Chunk>
-      <Chunk>
-        <Button label="Card Action" />
-      </Chunk>
-    </Sectionless>
-  </Card>
-</Chunk>
+// Object-like record inside the page's Section
+<Section>
+  <Chunk>
+    <Card>
+      <Sectionless>
+        <Chunk>
+          <Text type="big" weight="strong">Patient name</Text>
+        </Chunk>
+        <Chunk>
+          <Text>Record summary goes here...</Text>
+        </Chunk>
+        <Chunk>
+          <Button label="Open record" />
+        </Chunk>
+      </Sectionless>
+    </Card>
+  </Chunk>
+</Section>
 
 // Card with shadow
 <Chunk>

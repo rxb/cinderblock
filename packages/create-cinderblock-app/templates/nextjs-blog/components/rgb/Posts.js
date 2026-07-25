@@ -31,7 +31,7 @@ import {
 	View,
 	ThemeContext,
 	designConstants
-} from 'cinderblock';
+} from '@cinderblock/design-system';
 
 import dayjs from 'dayjs';
 

@@ -10,7 +10,9 @@ integration misbehaves, check this file first.
 | Requirement | Why |
 |---|---|
 | **Pages Router** (not App Router) | SSR style extraction lives in `Document.getInitialProps` |
-| `transpilePackages` for the design system + RNW + media-query | packages ship untranspiled JS |
+| `transpilePackages` for the design system, Expo packages, React Native, RNW, and media-query | packages ship untranspiled JS/TypeScript; keeping React Native in Webpack's graph lets the web alias apply during Pages SSR |
+| Define `__DEV__` from Next's `options.dev` value | Expo modules expect Metro's development global |
+| Prefer `.web.ts` / `.web.tsx` during module resolution | Expo Image ships platform-specific TypeScript entry points |
 | Webpack alias `react-native$` → `react-native-web` | RNW convention |
 | Skip ALL custom webpack config when `nextRuntime === 'edge'` | breaks middleware (e.g. Clerk) otherwise |
 | Path-alias ONLY stateful singletons | path aliases bypass the package `exports` field |
@@ -37,7 +39,15 @@ const path = require('path');
 const fs = require('fs');
 
 module.exports = {
-  transpilePackages: ['@cinderblock/design-system', 'react-native-media-query', 'react-native-web'],
+  transpilePackages: [
+    '@cinderblock/design-system',
+    'expo',
+    'expo-image',
+    'expo-modules-core',
+    'react-native',
+    'react-native-media-query',
+    'react-native-web'
+  ],
 
   webpack: (config, options) => {
     // (a) The edge runtime (middleware) must keep Next's own react resolution.
@@ -47,6 +57,13 @@ module.exports = {
     if (options.nextRuntime === 'edge') {
       return config;
     }
+
+    // Metro normally supplies this global for Expo modules.
+    config.plugins.push(
+      new options.webpack.DefinePlugin({
+        __DEV__: JSON.stringify(options.dev)
+      })
+    );
 
     // (b) no fs on client and that's ok
     config.resolve.fallback = { fs: false };
@@ -75,7 +92,14 @@ module.exports = {
       }
     });
 
-    config.resolve.extensions = ['.web.js', '.js', ...config.resolve.extensions];
+    config.resolve.extensions = [
+      '.web.js',
+      '.web.jsx',
+      '.web.ts',
+      '.web.tsx',
+      '.js',
+      ...config.resolve.extensions
+    ];
 
     return config;
   }
@@ -95,6 +119,17 @@ History of each rule:
   became exports-map-only, and the old starter config aliased *every* peer dep
   by path, producing `Module not found: Can't resolve 'uuid'`. The fix is to
   alias only what genuinely needs to be a singleton.
+- **Expo Image transpilation and extensions** — `expo-image` publishes
+  platform-specific TypeScript source. Next must transpile the Expo packages
+  and resolve `.web.ts` / `.web.tsx` before the generic native files.
+- **React Native in `transpilePackages`** — Expo installs `react-native`
+  transitively. During Pages Router production builds, Next may otherwise
+  externalize that package before Webpack applies the `react-native$` alias.
+  Node then attempts to parse native Flow syntax while collecting page data
+  and fails with `Unexpected token 'typeof'`. Keeping `react-native` inside
+  Webpack's graph allows the alias to resolve it to `react-native-web`.
+- **`__DEV__`** — Metro defines this global automatically; Next does not. Map
+  it to `options.dev` so Expo modules work during SSR and production builds.
 
 ## 3. Consuming the package
 
@@ -116,7 +151,8 @@ Gives live-editing of the library from the consumer app. Two consequences:
    target lives inside another workspace/monorepo (it assumes the target's own
    tree provides them — but with `resolve.symlinks = false`, resolution happens
    in the consumer's tree). Copy the `dependencies` of this package:
-   `body-scroll-lock`, `dayjs`, `prop-types`, `react-feather`,
+   `@react-native/assets-registry`, `body-scroll-lock`, `dayjs`, `expo`,
+   `expo-image`, `prop-types`, `react-feather`,
    `react-native-media-query`, `react-native-web`, `uuid`, `validator`, and the
    optional `react-dnd` + `react-dnd-html5-backend` (required — `index.js`
    imports `Reorderable` unconditionally).

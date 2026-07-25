@@ -221,7 +221,9 @@ This template showcases the full capabilities of the Cinderblock Design System w
   'nextjs-blog': {
     source: STARTER_NEXTJS_BLOG_PATH,
     destination: path.join(TEMPLATES_PATH, 'nextjs-blog'),
-    enabled: true,
+    // The authored starter is currently an empty placeholder. Keep the
+    // populated legacy template intact until a real source project exists.
+    enabled: false,
     transformations: {
       // Replace workspace dependency with published version
       packageJson: (content) => {
