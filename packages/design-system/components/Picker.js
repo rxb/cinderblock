@@ -46,8 +46,9 @@ import ThemeContext from '../ThemeContext';
  *   return (
  *     <Section>
  *       <Chunk>
- *         <Label>Job Role</Label>
+ *         <Label htmlFor="role">Job Role</Label>
  *         <Picker
+ *           id="role"
  *           selectedValue={formState.getFieldValue('role')}
  *           onValueChange={(value) => formState.setFieldValue('role', value)}
  *         >
@@ -61,8 +62,9 @@ import ThemeContext from '../ThemeContext';
  *       </Chunk>
  * 
  *       <Chunk>
- *         <Label>Department</Label>
+ *         <Label htmlFor="department">Department</Label>
  *         <Picker
+ *           id="department"
  *           selectedValue={formState.getFieldValue('department')}
  *           onValueChange={(value) => formState.setFieldValue('department', value)}
  *         >
@@ -88,8 +90,9 @@ import ThemeContext from '../ThemeContext';
  * 
  *   return (
  *     <Chunk>
- *       <Label>Office Location</Label>
+ *       <Label htmlFor="location">Office Location</Label>
  *       <Picker
+ *         id="location"
  *         selectedValue={selectedLocation}
  *         onValueChange={setSelectedLocation}
  *         enabled={locations.length > 0}
@@ -144,6 +147,7 @@ class Picker extends React.Component {
 	render() {
 		const {
 			children,
+			innerRef,
 			style,
 			...otherProps
 		} = this.props;
@@ -153,13 +157,14 @@ class Picker extends React.Component {
 			{ ({styles, SWATCHES}) => (
 			<View style={{position: 'relative'}}>
 				<PickerWeb 
+					ref={innerRef}
 					style={[{appearance: 'none'}, styles.input, styles.text, style]} 
 					{...otherProps} 
 					>
 					{children}
 				</PickerWeb>
 				<View style={styles['input-icon']}>
-					<Icon shape="ChevronDown" color={SWATCHES.textHint} />
+					<Icon shape="ChevronDown" color={SWATCHES.textHint} aria-hidden />
 				</View>
 			</View>
 			)}
@@ -170,4 +175,9 @@ class Picker extends React.Component {
 
 Picker.Item = PickerWeb.Item;
 
-export default Picker;
+const ForwardedPicker = React.forwardRef((props, ref) => (
+	<Picker innerRef={ref} {...props} />
+));
+ForwardedPicker.Item = Picker.Item;
+
+export default ForwardedPicker;

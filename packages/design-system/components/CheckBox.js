@@ -1,158 +1,95 @@
-import React, {useContext} from 'react';
-import { StyleSheet, Touchable, CheckBox as CheckBoxWeb } from '../primitives';
+import React, {useContext, useId} from 'react';
+import { Platform, StyleSheet, Touchable, CheckBox as CheckBoxNative } from '../primitives';
 import Label from './Label';
-import Text from './Text';
 import Inline from './Inline';
 import ThemeContext from '../ThemeContext';
 
 /**
- * Form checkbox input component with label and focus state management.
- * Provides accessible checkbox functionality with design system integration.
- * 
- * CheckBox wraps React Native Web's checkbox with additional styling, focus management,
- * and label handling. It includes performance optimizations to prevent unnecessary
- * re-renders during focus changes and provides accessible label interaction.
- * 
- * Note: Due to React Native Web limitations, this component uses a controlled input
- * pattern and includes workarounds for focus styling and label clicking.
- * 
+ * Boolean form control with a directly associated label.
+ *
+ * `onChange` always receives the next boolean value. On web the component uses
+ * a native checkbox and label, so clicking the label, pressing Space, and
+ * submitting the control through ordinary form interactions all work as
+ * expected.
+ *
+ * @param {Object} props - Component props
+ * @param {string} [props.id] - Stable ID used to associate the label and input; generated when omitted
+ * @param {string|React.ReactNode} props.label - Visible checkbox label
+ * @param {boolean} props.value - Current checked state
+ * @param {Function} props.onChange - Called with the next boolean value
+ * @param {boolean} [props.disabled=false] - Disable the checkbox
+ *
  * @example
- * // Basic checkbox with controlled state
- * const [agreed, setAgreed] = useState(false);
- * 
- * <CheckBox 
- *   value={agreed}
- *   onChange={setAgreed}
- *   label="I agree to the terms and conditions"
+ * <CheckBox
+ *   id="reminders"
+ *   value={reminders}
+ *   onChange={setReminders}
+ *   label="Send me reminders"
  * />
- * 
- * @example
- * // Form with multiple checkboxes
- * function PreferencesForm() {
- *   const [preferences, setPreferences] = useState({
- *     newsletter: false,
- *     notifications: false,
- *     marketing: false
- *   });
- *   
- *   const updatePreference = (key, value) => {
- *     setPreferences(prev => ({ ...prev, [key]: value }));
- *   };
- *   
- *   return (
- *     <Section>
- *       <Chunk><Text type="sectionHead">Email Preferences</Text></Chunk>
- *       
- *       <Chunk>
- *         <CheckBox 
- *           value={preferences.newsletter}
- *           onChange={(value) => updatePreference('newsletter', value)}
- *           label="Weekly newsletter"
- *         />
- *       </Chunk>
- *       
- *       <Chunk>
- *         <CheckBox 
- *           value={preferences.notifications}
- *           onChange={(value) => updatePreference('notifications', value)}
- *           label="Push notifications"
- *         />
- *       </Chunk>
- *       
- *       <Chunk>
- *         <CheckBox 
- *           value={preferences.marketing}
- *           onChange={(value) => updatePreference('marketing', value)}
- *           label="Marketing emails"
- *         />
- *       </Chunk>
- *     </Section>
- *   );
- * }
- * 
- * @example
- * // Checkbox in forms with validation
- * <Chunk>
- *   <CheckBox 
- *     value={acceptedTerms}
- *     onChange={setAcceptedTerms}
- *     label="I have read and accept the privacy policy"
- *   />
- *   <FieldError error={!acceptedTerms ? 'You must accept the terms to continue' : null} />
- * </Chunk>
  */
+const CheckBox = (props) => {
+	const { SWATCHES } = useContext(ThemeContext);
+	const {
+		id,
+		label,
+		onChange = () => {},
+		value = false,
+		disabled = false,
+		style,
+		...other
+	} = props;
+	const generatedId = useId();
+	const controlId = id || generatedId;
 
-class CheckBox extends React.Component {
+	const inputStyle = StyleSheet.flatten([
+		{
+			width: 24,
+			height: 24,
+			accentColor: SWATCHES.tint,
+			cursor: disabled ? 'default' : 'pointer'
+		},
+		style
+	]);
 
-	constructor(props){
-		super(props);
-		this.state = {
-			hasFocus: false,          // Track focus state for styling
-			lastManualUpdate: null    // Timestamp for manual label clicks
-		}
-	}
-
-	shouldComponentUpdate(nextProps, nextState){
-		// Performance optimization: prevent unnecessary re-renders
-		// Only update when specific state/props change
-		
-		if(this.state.hasFocus != nextState.hasFocus){
-			return true;  // Focus state changed - update for styling
-		}
-		if(this.props.value != nextProps.value){
-			return true;  // Checkbox value changed - update display
-		}
-		if(this.state.lastManualUpdate != nextState.lastManualUpdate){
-			// Manual label click occurred - force update
-			// This is a workaround for React Native Web checkbox limitations
-			return true;
-		}
-		return false;  // No relevant changes - skip re-render
-	}
-
-	render(){
-		const {
-			id,          // Checkbox ID (for forms)
-			label,       // Display text for the checkbox
-			onChange,    // Value change callback
-			...other     // Additional props (value, disabled, etc.)
-		} = this.props;
+	if(Platform.OS === 'web'){
+		const input = React.createElement('input', {
+			...other,
+			id: controlId,
+			type: 'checkbox',
+			checked: Boolean(value),
+			disabled,
+			onChange: event => onChange(event.target.checked),
+			style: inputStyle
+		});
 
 		return (
-			<ThemeContext.Consumer>
-				{ ({styles, SWATCHES}) => (
-					<Inline style={[styles.pseudoLineHeight, {alignItems: 'center'}]}>
-						{/* Native checkbox input */}
-						<CheckBoxWeb
-							ref={ ref => this.checkbox = ref}
-							style={{
-								width: 24,
-								height: 24,
-							}}
-							onFocus={()=>{
-								this.setState({hasFocus: true});  // Track focus for styling
-							}}
-							onBlur={()=>{
-								this.setState({hasFocus: false}); // Remove focus styling
-							}}
-							onChange={onChange}
-							color={SWATCHES.tint}
-							{...other}
-							/>
-						{/* Clickable label text */}
-						<Touchable onPress={()=>{
-							// Workaround: trigger update when label is clicked
-							// React Native Web doesn't handle label clicks automatically
-							this.setState({lastManualUpdate: new Date().getTime() }, this.props.onChange)
-						}}>
-							<Text accessibilityRole="label">{label}</Text>
-						</Touchable>
-					</Inline>
-				)}
-			</ThemeContext.Consumer>
+			<Inline style={{alignItems: 'center'}}>
+				{input}
+				<Label htmlFor={controlId} style={{cursor: disabled ? 'default' : 'pointer'}}>
+					{label}
+				</Label>
+			</Inline>
 		);
 	}
-}
 
+	return (
+		<Inline style={{alignItems: 'center'}}>
+			<CheckBoxNative
+				{...other}
+				value={Boolean(value)}
+				disabled={disabled}
+				onValueChange={onChange}
+				color={SWATCHES.tint}
+				style={inputStyle}
+			/>
+			<Touchable
+				disabled={disabled}
+				onPress={() => onChange(!Boolean(value))}
+			>
+				<Label>{label}</Label>
+			</Touchable>
+		</Inline>
+	);
+};
 
 export default CheckBox;

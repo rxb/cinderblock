@@ -14,45 +14,50 @@ import ThemeContext from '../ThemeContext';
  * 
  * @param {Object} props - Component props
  * @param {string|null|undefined} props.error - Error message to display (falsy values render nothing)
+ * @param {string} [props.id] - ID referenced by the input's `aria-describedby`
+ * @param {boolean} [props.announce=true] - Announce newly rendered errors to assistive technology
  * @param {Object} [props.style] - Additional styles to apply to the error text
  * 
  * @example
  * // Basic form field with error handling
  * <Chunk>
- *   <Label>Email Address</Label>
+ *   <Label htmlFor="email">Email Address</Label>
  *   <TextInput 
+ *     id="email"
  *     value={email}
- *     onChange={setEmail}
+ *     onChange={(event) => setEmail(event.target.value)}
  *     placeholder="your@email.com"
+ *     aria-invalid={Boolean(emailError)}
+ *     aria-describedby={emailError ? 'email-error' : undefined}
  *   />
- *   <FieldError error={emailError} />
+ *   <FieldError id="email-error" error={emailError} />
  * </Chunk>
  * 
  * @example
  * // Form validation with multiple fields
  * function ContactForm() {
- *   const [fields, setField, fieldErrors, submitting, handleSubmit] = useFormState({
+ *   const formState = useFormState({
  *     initialFields: { name: '', email: '', message: '' }
  *   });
  *   
  *   return (
- *     <form onSubmit={handleSubmit(submitForm)}>
+ *     <form onSubmit={submitForm}>
  *       <Chunk>
- *         <Label>Name</Label>
- *         <TextInput value={fields.name} onChange={(name) => setField('name', name)} />
- *         <FieldError error={fieldErrors.name} />
+ *         <Label htmlFor="name">Name</Label>
+ *         <TextInput id="name" value={formState.fields.name} onChange={(event) => formState.setFieldValue('name', event.target.value)} />
+ *         <FieldError id="name-error" error={formState.error.fieldErrors?.name} />
  *       </Chunk>
  *       
  *       <Chunk>
- *         <Label>Email</Label>
- *         <TextInput value={fields.email} onChange={(email) => setField('email', email)} />
- *         <FieldError error={fieldErrors.email} />
+ *         <Label htmlFor="email">Email</Label>
+ *         <TextInput id="email" value={formState.fields.email} onChange={(event) => formState.setFieldValue('email', event.target.value)} />
+ *         <FieldError id="email-error" error={formState.error.fieldErrors?.email} />
  *       </Chunk>
  *       
  *       <Chunk>
- *         <Label>Message</Label>
- *         <TextInput multiline value={fields.message} onChange={(message) => setField('message', message)} />
- *         <FieldError error={fieldErrors.message} />
+ *         <Label htmlFor="message">Message</Label>
+ *         <TextInput id="message" multiline value={formState.fields.message} onChange={(event) => formState.setFieldValue('message', event.target.value)} />
+ *         <FieldError id="message-error" error={formState.error.fieldErrors?.message} />
  *       </Chunk>
  *     </form>
  *   );
@@ -61,11 +66,12 @@ import ThemeContext from '../ThemeContext';
  * @example
  * // Custom error styling
  * <Chunk>
- *   <Label>Password</Label>
+ *   <Label htmlFor="password">Password</Label>
  *   <TextInput 
+ *     id="password"
  *     secureTextEntry
  *     value={password}
- *     onChange={setPassword}
+ *     onChange={event => setPassword(event.target.value)}
  *   />
  *   <FieldError 
  *     error={passwordError} 
@@ -78,9 +84,9 @@ import ThemeContext from '../ThemeContext';
  * const emailError = !isValidEmail(email) ? 'Please enter a valid email address' : null;
  * 
  * <Chunk>
- *   <Label>Email</Label>
- *   <TextInput value={email} onChange={setEmail} />
- *   <FieldError error={emailError} />  // Only renders when emailError is truthy
+ *   <Label htmlFor="email">Email</Label>
+ *   <TextInput id="email" value={email} onChange={event => setEmail(event.target.value)} />
+ *   <FieldError id="email-error" error={emailError} />  // Only renders when emailError is truthy
  * </Chunk>
  */
 const FieldError = (props) => {
@@ -88,6 +94,8 @@ const FieldError = (props) => {
 	const {
 		style,       // Additional styles for error text
 		error,       // Error message (string) or falsy value
+		id,
+		announce = true,
 		...other
 	} = props;
 
@@ -102,8 +110,12 @@ const FieldError = (props) => {
 				shape="AlertCircle"
 				size="small"
 				color="red"
+				aria-hidden
 				/>
 			<Text
+				id={id}
+				role={announce ? 'alert' : undefined}
+				aria-atomic={announce ? true : undefined}
 				type="small"
 				style={[styles['textError'], style]}
 				{...other}

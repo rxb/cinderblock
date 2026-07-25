@@ -1,31 +1,7 @@
-import React, {Fragment, useContext} from 'react';
-import ReactDOM from 'react-dom'
-import { StyleSheet, View, TextInput as TextInputWeb } from '../primitives';
+import React from 'react';
+import { Platform, View, TextInput as TextInputWeb } from '../primitives';
 import Text from './Text';
 import ThemeContext from '../ThemeContext';
-
-/**
- * Debounces function calls to prevent excessive updates during rapid user input.
- * Used for character counter updates to avoid performance issues.
- * 
- * @param {Function} callback - Function to debounce
- * @param {number} [time=60] - Delay in milliseconds
- * @returns {Function} Debounced function
- */
-function debounce(callback, time = 60) {
-	var timeout;
-	return function() {
-		var context = this;
-		var args = arguments;
-		if (timeout) {
-			clearTimeout(timeout);
-		}
-		timeout = setTimeout(function() {
-			timeout = null;
-			callback.apply(context, args);
-		}, time);
-	}
-}
 
 
 /**
@@ -43,7 +19,7 @@ function debounce(callback, time = 60) {
  * // Basic single-line input
  * <TextInput 
  *   value={name}
- *   onChange={setName}
+ *   onChange={(event) => setName(event.target.value)}
  *   placeholder="Enter your name"
  * />
  * 
@@ -52,7 +28,7 @@ function debounce(callback, time = 60) {
  * <TextInput 
  *   multiline
  *   value={message}
- *   onChange={setMessage}
+ *   onChange={(event) => setMessage(event.target.value)}
  *   placeholder="Write your message..."
  *   maxLength={500}
  *   showCounter
@@ -62,7 +38,7 @@ function debounce(callback, time = 60) {
  * // Controlled input with validation
  * <TextInput 
  *   value={email}
- *   onChange={setEmail}
+ *   onChange={(event) => setEmail(event.target.value)}
  *   onBlur={validateEmail}
  *   placeholder="your@email.com"
  *   autoCapitalize="none"
@@ -90,6 +66,8 @@ class TextInput extends React.Component{
 		this.onFocus = this.onFocus.bind(this);
 		this.onBlur = this.onBlur.bind(this);
 		this.onChange = this.onChange.bind(this);
+		this.onKeyPress = this.onKeyPress.bind(this);
+		this.onSubmitEditing = this.onSubmitEditing.bind(this);
 		this.onContentSizeChange = this.onContentSizeChange.bind(this);
 		this.updateCounter = this.updateCounter.bind(this);
 	}
@@ -98,28 +76,12 @@ class TextInput extends React.Component{
 		this.updateCounter(this.props.value);
 	}
 
-	shouldComponentUpdate(nextProps, nextState){
-		if(this.props.value != nextProps.value){
-			return true;
-		}
-		if(this.state != nextState){
-			return true;
-		}
-
-		// passing in a cursor from props to explicitly trigger an update
-		if(this.props.updateVersion != nextProps.updateVersion){
-			return true;
-		}
-
-		return false;
-	}
-
 	updateCounter(text){
 		let newState = {};
 
 		// counter
 		if(this.props.showCounter && this.props.maxLength){
-			newState.count = text.length;
+			newState.count = String(text ?? '').length;
 			newState.countColor = 'secondary';
 			const diff = this.props.maxLength - newState.count;
 			if(diff < 10){
@@ -139,9 +101,26 @@ class TextInput extends React.Component{
 	}
 
 	onChange(event){
-		const text = event.target.value;
-		debounce(this.updateCounter, 100)(text);
+		const text = event.target?.value ?? event.nativeEvent?.text ?? '';
+		this.updateCounter(text);
 		this.props.onChange(event);
+	}
+
+	onKeyPress(event){
+		this.props.onKeyPress?.(event);
+	}
+
+	onSubmitEditing(event){
+		// React Native Web stops key events at the input boundary. Restore the
+		// browser's expected implicit form submission for single-line fields.
+		const form = event.target?.form || event.target?.closest?.('form');
+		if(
+			Platform.OS === 'web' &&
+			!this.props.multiline &&
+			form
+		){
+			form.requestSubmit();
+		}
 	}
 
 	// these are just set set state to trigger a re-render on focus/blur
@@ -180,7 +159,6 @@ class TextInput extends React.Component{
 			<View style={wrapperStyle}>
 				<TextInputWeb
 					ref={ this.props.innerRef }
-					accessibilityLabel={placeholder}
 					placeholder={placeholder}
 					placeholderTextColor={SWATCHES.textHint}
 					multiline={multiline}
@@ -189,8 +167,11 @@ class TextInput extends React.Component{
 					onContentSizeChange={this.onContentSizeChange}
 					onFocus={this.onFocus}
 					onBlur={this.onBlur}
-					onKeyPress={onKeyPress}
-					onSubmitEditing={onSubmitEditing}
+					onKeyPress={this.onKeyPress}
+					onSubmitEditing={
+						onSubmitEditing ||
+						(Platform.OS === 'web' && !multiline ? this.onSubmitEditing : undefined)
+					}
 					className='input'
 					style={[
 						styles.input,
@@ -208,7 +189,6 @@ class TextInput extends React.Component{
 						color={this.state.countColor}
 						type="small"
 						style={{position: 'absolute', bottom: 8, right: 8}}
-						{...other}
 						>{this.state.count}/{this.props.maxLength}</Text>
 				}
 				{children}

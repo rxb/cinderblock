@@ -25,10 +25,12 @@ The primary action component for user interactions. Supports multiple styles, si
 | `width` | `string` | `null` | Shorthand for common responsive widths: `'snap'` (full-width on mobile, shrink on desktop), `'full'` (full-width always). Omit for shrink-to-content on all sizes |
 | `href` | `string` | `null` | Link destination — renders as a `Link` instead of a touchable |
 | `dummy` | `boolean` | `false` | Render as a plain `View` instead of a touchable, for buttons nested inside an already-clickable element |
-| `onPress` | `function` | `() => {}` | Press handler (ignored when `href` or `dummy` is set) |
+| `onPress` | `function` | `null` | Press handler (ignored when `href` or `dummy` is set); ordinary action buttons use this |
+| `type` | `string` | `null` | Use `'submit'` inside a web form to render a native submit button |
+| `disabled` | `boolean` | `false` | Disable an action or submit button |
 | `label` | `string` | `null` | Text rendered next to an optional `shape` icon (alternative to passing `children`) |
 | `shape` | `string` | `null` | Icon shape to display before the label/children |
-| `isLoading` | `boolean` | `false` | Show a centered `ActivityIndicator` and hide (not disable) the content |
+| `isLoading` | `boolean` | `false` | Show a centered `ActivityIndicator`, hide the content, and disable the action |
 | `children` | `node` | `null` | Button content |
 
 ### Usage
@@ -58,6 +60,13 @@ import { Button, Chunk, Section, Stripe } from '@cinderblock/design-system';
 <Chunk>
   <Button isLoading={true} color="primary" label="Saving..." />
 </Chunk>
+
+// Native web form submission
+<form onSubmit={handleSubmit}>
+  <Chunk>
+    <Button type="submit" isLoading={isSubmitting} label="Save" />
+  </Chunk>
+</form>
 
 // Link button
 <Chunk>
@@ -158,8 +167,9 @@ import { TextInput, Chunk, Label } from '@cinderblock/design-system';
 // Basic text input
 // Note: onChange receives the DOM event, so read event.target.value
 <Chunk>
-  <Label>Name</Label>
+  <Label htmlFor="name">Name</Label>
   <TextInput 
+    id="name"
     placeholder="Enter your name"
     value={name}
     onChange={(e) => setName(e.target.value)}
@@ -168,8 +178,9 @@ import { TextInput, Chunk, Label } from '@cinderblock/design-system';
 
 // Multiline with character counter
 <Chunk>
-  <Label>Description</Label>
+  <Label htmlFor="description">Description</Label>
   <TextInput 
+    id="description"
     multiline
     placeholder="Enter description..."
     maxLength={500}
@@ -181,8 +192,9 @@ import { TextInput, Chunk, Label } from '@cinderblock/design-system';
 
 // Email input
 <Chunk>
-  <Label>Email</Label>
+  <Label htmlFor="email">Email</Label>
   <TextInput 
+    id="email"
     placeholder="your@email.com"
     autoExpand={false}
     value={email}
@@ -208,9 +220,9 @@ Boolean input component with custom styling and label support.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `value` | `boolean` | `false` | Checkbox state |
-| `onChange` | `function` | `null` | Change handler, passed to the underlying react-native-web checkbox (receives a change event; also fired with no arguments when the label is clicked) |
+| `onChange` | `function` | `null` | Change handler; always receives the next boolean value |
 | `label` | `string` | `null` | Checkbox label (clickable) |
-| `id` | `string` | `null` | Checkbox ID for forms |
+| `id` | `string` | generated | Checkbox ID used to associate its visible label |
 
 ### Usage
 
@@ -220,8 +232,9 @@ import { CheckBox, Chunk } from '@cinderblock/design-system';
 // Basic checkbox
 <Chunk>
   <CheckBox 
+    id="terms"
     value={isChecked}
-    onChange={() => setIsChecked(!isChecked)}
+    onChange={setIsChecked}
     label="I agree to the terms"
   />
 </Chunk>
@@ -229,15 +242,17 @@ import { CheckBox, Chunk } from '@cinderblock/design-system';
 // Multiple checkboxes
 <Chunk>
   <CheckBox 
+    id="notifications"
     value={notifications}
-    onChange={() => setNotifications(!notifications)}
+    onChange={setNotifications}
     label="Email notifications"
   />
 </Chunk>
 <Chunk>
   <CheckBox 
+    id="marketing"
     value={marketing}
-    onChange={() => setMarketing(!marketing)}
+    onChange={setMarketing}
     label="Marketing emails"
   />
 </Chunk>
@@ -272,8 +287,9 @@ import { Picker, Chunk, Label } from '@cinderblock/design-system';
 
 // Basic picker
 <Chunk>
-  <Label>Country</Label>
+  <Label htmlFor="country">Country</Label>
   <Picker
+    id="country"
     selectedValue={selectedCountry}
     onValueChange={setSelectedCountry}
   >
@@ -575,7 +591,9 @@ import { FakeInput, Chunk, Label } from '@cinderblock/design-system';
 
 ## Complete Form Example
 
-Here's how UI components work together to create a complete form:
+The component composition is shown below. For validation, accessible error
+associations, API failures, editing existing records, and repeatable fields,
+use the canonical [form guide](./forms.md).
 
 ```javascript
 import { 
@@ -602,7 +620,8 @@ function ContactForm() {
     newsletter: false
   });
 
-  const handleSubmit = () => {
+  const handleSubmit = (event) => {
+    event.preventDefault();
     console.log('Form submitted:', formData);
   };
 
@@ -614,9 +633,11 @@ function ContactForm() {
             <Text type="pageHead">Contact Us</Text>
           </Chunk>
 
+          <form onSubmit={handleSubmit}>
           <Chunk>
-            <Label>Name</Label>
+            <Label htmlFor="name">Name</Label>
             <TextInput 
+              id="name"
               placeholder="Your name"
               value={formData.name}
               onChange={(e) => setFormData({...formData, name: e.target.value})}
@@ -624,8 +645,9 @@ function ContactForm() {
           </Chunk>
 
           <Chunk>
-            <Label>Email</Label>
+            <Label htmlFor="email">Email</Label>
             <TextInput 
+              id="email"
               placeholder="your@email.com"
               value={formData.email}
               onChange={(e) => setFormData({...formData, email: e.target.value})}
@@ -633,8 +655,9 @@ function ContactForm() {
           </Chunk>
 
           <Chunk>
-            <Label>Country</Label>
+            <Label htmlFor="country">Country</Label>
             <Picker
+              id="country"
               selectedValue={formData.country}
               onValueChange={(country) => setFormData({...formData, country})}
             >
@@ -645,8 +668,9 @@ function ContactForm() {
           </Chunk>
 
           <Chunk>
-            <Label>Message</Label>
+            <Label htmlFor="message">Message</Label>
             <TextInput 
+              id="message"
               multiline
               placeholder="Your message..."
               maxLength={500}
@@ -658,8 +682,9 @@ function ContactForm() {
 
           <Chunk>
             <CheckBox 
+              id="newsletter"
               value={formData.newsletter}
-              onChange={() => setFormData({...formData, newsletter: !formData.newsletter})}
+              onChange={(newsletter) => setFormData({...formData, newsletter})}
               label="Subscribe to newsletter"
             />
           </Chunk>
@@ -670,10 +695,11 @@ function ContactForm() {
                 <Button color="secondary" label="Cancel" />
               </FlexItem>
               <FlexItem>
-                <Button color="primary" onPress={handleSubmit} label="Send Message" />
+                <Button type="submit" color="primary" label="Send Message" />
               </FlexItem>
             </Flex>
           </Chunk>
+          </form>
         </Section>
       </Bounds>
     </Stripe>

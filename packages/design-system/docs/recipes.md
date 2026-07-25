@@ -72,15 +72,20 @@ The single most common pattern. Works with paginated/infinite data.
       <Chunk><Text type="pageHead">Sign in</Text></Chunk>
     </Section>
     <Section>
-      <form>
+      <form onSubmit={submitForm} noValidate>
         <Chunk>
-          <Label for="email">Email</Label>
-          <TextInput id="email" value={formState.getFieldValue('email')}
-            onChange={e => formState.setFieldValue('email', e.target.value)} />
-          <FieldError error={formState.error?.fieldErrors?.email} />
+          <Label htmlFor="email">Email</Label>
+          <TextInput
+            id="email"
+            value={formState.getFieldValue('email')}
+            onChange={event => formState.setFieldValue('email', event.target.value)}
+            aria-invalid={Boolean(emailError)}
+            aria-describedby={emailError ? 'email-error' : undefined}
+          />
+          <FieldError id="email-error" error={emailError} />
         </Chunk>
         <Chunk>
-          <Button label="Sign in" onPress={submitForm} isLoading={formState.loading} width="full" />
+          <Button type="submit" label="Sign in" isLoading={formState.loading} width="full" />
         </Chunk>
       </form>
     </Section>
@@ -97,26 +102,33 @@ const formState = useFormState({
   addToast: msg => dispatch(addToast(msg))
 });
 
-const submitForm = async () => {
+const submitForm = async (event) => {
+  event.preventDefault();
+  if (formState.loading) return;
+
   const error = Utils.runValidations(formState.fields, {
     title: { notEmpty: { msg: 'Title can\'t be blank' } }
   });
   formState.setError(error);
-  if (!error) {
-    formState.setLoading(true);
-    try {
-      await saveThing(formState.fields);
-      dispatch(addToast('Saved!'));
-    } catch (error) {
-      formState.setError(error);
-      formState.setLoading(false);
-    }
+  if (error) return;
+
+  formState.setLoading(true);
+  try {
+    await saveThing(formState.fields);
+    dispatch(addToast('Saved!'));
+  } catch (error) {
+    formState.setError(error);
+  } finally {
+    formState.setLoading(false);
   }
 };
 ```
 
 `formState.setFieldValues({a, b})` sets multiple fields atomically (e.g.
-deriving a slug from a title field).
+deriving a slug from a title field). Use `replaceFields(record)` to replace the
+complete form after loading an existing record. See [forms.md](./forms.md) for
+the full state contract, accessible errors, multi-step forms, uploads,
+repeatable rows, and optimistic updates.
 
 ## 5. Full-bleed Stripe patterns
 

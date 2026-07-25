@@ -114,8 +114,9 @@ Interaction:
 - `Button` — `label`, `onPress`, `color` ('primary' | 'secondary'), `size`,
   `width` ('full' | 'snap' — snap is full-width on mobile, shrink on desktop),
   `shape` (icon-only button, feather icon name), `isLoading` (spinner swaps in
-  for the label), `inverted`, `dummy` (visual-only, no press handling — use
-  when wrapped by another touchable like `DropdownTouch`).
+  for the label and disables submission), `type="submit"` (native web form
+  submission), `inverted`, `dummy` (visual-only, no press handling — use when
+  wrapped by another touchable like `DropdownTouch`).
 - `Touch` (bare pressable), `Link` (navigation), `Tabs`, `Menu`. When using
   `Touch` for a custom control (pill, row, icon target), pass
   `accessibilityRole="button"` so it announces and keyboard-activates like
@@ -132,8 +133,10 @@ Interaction:
 
 Forms:
 - `TextInput`, `CheckBox`, `Picker`, `FileInput`, `PhotoInput`, `FakeInput`,
-  `Label`, `FieldError`, and the `useFormState` hook (fields, setFieldValues,
-  submitting state, error handling).
+  `Label`, `FieldError`, and the `useFormState` hook (fields, safe merged or
+  replacement updates, loading state, error handling). `TextInput` passes an
+  event, `CheckBox` passes a boolean, and `Picker` passes its value. See
+  [forms.md](./forms.md) before building a production form.
 
 Utility:
 - `useMediaContext()` — returns `{ small, medium, large, xlarge }` booleans
@@ -272,12 +275,20 @@ Narrow form page:
   <Bounds small>
     <Section>
       <Chunk><Text type="pageHead">Sign in</Text></Chunk>
-      <Chunk>
-        <Label>Email</Label>
-        <TextInput value={...} onChange={...} />
-        <FieldError error={...} />
-      </Chunk>
-      <Chunk><Button label="Submit" onPress={...} /></Chunk>
+      <form onSubmit={submitForm} noValidate>
+        <Chunk>
+          <Label htmlFor="email">Email</Label>
+          <TextInput
+            id="email"
+            value={formState.getFieldValue('email')}
+            onChange={event => formState.setFieldValue('email', event.target.value)}
+            aria-invalid={Boolean(emailError)}
+            aria-describedby={emailError ? 'email-error' : undefined}
+          />
+          <FieldError id="email-error" error={emailError} />
+        </Chunk>
+        <Chunk><Button type="submit" label="Sign in" isLoading={formState.loading} /></Chunk>
+      </form>
     </Section>
   </Bounds>
 </Stripe>
@@ -340,6 +351,7 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
 - [structural-components.md](./structural-components.md) — Stripe, Bounds, Section, Chunk, Sectionless, Inline
 - [content-components.md](./content-components.md) — Text, images, avatars, icons, Card, List
 - [ui-components.md](./ui-components.md) — buttons, forms, modals, toasts, menus
+- [forms.md](./forms.md) — canonical accessible form structure, state contracts, validation, editing, and advanced patterns
 - [utility-components.md](./utility-components.md) — hooks and helpers
 - [responsive-system.md](./responsive-system.md) — breakpoints, utility classes, how the responsive system works
 - [style-generation.md](./style-generation.md) — maintainer doc: how utility styles/media queries are generated

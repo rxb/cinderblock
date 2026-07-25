@@ -1,5 +1,5 @@
-import React, {useMemo, useContext, Fragment} from 'react';
-import { ActivityIndicator, View, Text } from '../primitives';
+import React, {useContext} from 'react';
+import { ActivityIndicator, createElement, Platform, View, Text } from '../primitives';
 import ThemeContext from '../ThemeContext';
 import {getActiveStyles, getStyleKeysForMediaQueryVariants} from '../utils';
 
@@ -10,6 +10,7 @@ import Touch from './Touch';
 import Bounce from './Bounce';
 
 const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1); 
+const NativeSubmitButton = (props) => createElement('button', props);
 
 /**
  * Generates CSS class names for Button component styling.
@@ -71,7 +72,9 @@ const Button = (props) => {
 		dummy,
 		href,
 		width,
-		onPress = () => {},
+		onPress,
+		type,
+		disabled = false,
 		label,
 		shape,
 		isLoading,
@@ -106,8 +109,11 @@ const Button = (props) => {
 		variant = props.variant
 	}
 
+	const isDisabled = Boolean(disabled || isLoading);
+
 	// touchable component and semantics
 	let ActionComponent, actionComponentProps;
+	let isNativeSubmit = false;
 	if(dummy){
 		// rare situations where a button-looking element needs to be wrapped by component that is already clickable
 		ActionComponent = View;
@@ -120,12 +126,24 @@ const Button = (props) => {
 			accessibilityRole: 'link'
 		}
 	}
+	else if(type === 'submit' && Platform.OS === 'web'){
+		// A real button preserves native form submission, including the Enter key.
+		ActionComponent = NativeSubmitButton;
+		isNativeSubmit = true;
+		actionComponentProps = {
+			type: 'submit',
+			disabled: isDisabled,
+			onClick: isDisabled ? undefined : onPress
+		}
+	}
 	else{
 		// onPress action
 		ActionComponent = Touch;
 		actionComponentProps = {
-			onPress: onPress,
-			accessibilityRole: 'button'
+			onPress: isDisabled ? undefined : onPress,
+			disabled: isDisabled,
+			accessibilityRole: 'button',
+			accessibilityState: {disabled: isDisabled}
 		}
 	}
 
@@ -144,10 +162,24 @@ const Button = (props) => {
 		activeIds: textActiveIds
 	} = getActiveStyles(textStyleKeys, styles, ids);
 	const inkColor = SWATCHES[`button${capitalize(color)}${ inverted ? 'Inverted' : ''}Ink`];
+	const actionStyle = isNativeSubmit
+		? [
+			styles.touch,
+			buttonActiveStyles,
+			{
+				appearance: 'none',
+				borderWidth: 0,
+				cursor: isDisabled ? 'default' : 'pointer',
+				opacity: isDisabled ? 0.6 : 1
+			},
+			style
+		]
+		: [buttonActiveStyles, style];
 
 	return(
 		<ActionComponent
-			style={[ buttonActiveStyles, style]}
+			style={actionStyle}
+			aria-busy={isLoading || undefined}
 			dataSet={{ media: buttonActiveIds}}
 			{...actionComponentProps}
 			{...other}

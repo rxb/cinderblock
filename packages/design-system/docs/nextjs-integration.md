@@ -245,7 +245,7 @@ silently discarded when React takes over. Wait for hydration before typing.
 - `TextInput` uses web-style `onChange` (event, read `e.target.value`) — not
   React Native's `onChangeText`.
 - `Picker` (`Picker.Item` children) passes the value directly to
-  `onValueChange`; `CheckBox` passes a boolean to `onChange`.
+  `onValueChange`; `CheckBox` passes the next boolean to `onChange`.
 - `Toaster` is purely presentational — there is no toast hook/provider; the
   app owns the toasts array (`{id, message, visible, autoHide, hideDelay}`)
   and passes `hideToast`/`removeToast` callbacks.
@@ -253,5 +253,9 @@ silently discarded when React takes over. Wait for hydration before typing.
   `{ [fieldName]: message }`; `FieldError` takes the message string via its
   `error` prop and renders nothing when falsy.
 - `Button` takes `label` (or children), `onPress`, `isLoading`, `size`,
-  `color`, and `width="snap"` for mobile-full/desktop-shrink; pass `dummy` when
-  wrapping it in a `Link` to avoid nested interactive elements.
+  `color`, and `width="snap"` for mobile-full/desktop-shrink. Use
+  `type="submit"` with a form `onSubmit` handler on web; loading disables that
+  submit action. Pass `dummy` when wrapping it in a `Link` to avoid nested
+  interactive elements.
+- [forms.md](./forms.md) is the canonical guide for label/error associations,
+  field callback contracts, validation, and loading existing records.

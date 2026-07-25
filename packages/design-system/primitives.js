@@ -21,6 +21,7 @@ import {
 	Text,
 	TextInput,
 	TouchableWithoutFeedback as Touchable,
+	unstable_createElement as createElement,
 	Platform,
 	StyleSheet,
 	View
@@ -38,6 +39,7 @@ export {
 	Text,
 	TextInput,
 	Touchable,
+	createElement,
 	Platform,
 	StyleSheet,
 	View

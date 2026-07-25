@@ -1,23 +1,19 @@
-import React, { useContext } from 'react';
+import React, { useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { addToast } from '@/actions';
 
 import {
 	Bounds,
 	Button,
+	CheckBox,
 	Chunk,
 	FieldError,
-	Icon,
-	Inline,
 	Label,
-	List,
+	Picker,
 	Section,
 	Stripe,
 	Text,
 	TextInput,
-	Touch,
-	View,
-	ThemeContext,
 	useFormState,
 	Utils,
 } from '@cinderblock/design-system';
@@ -35,13 +31,15 @@ const CATEGORIES = [
 
 function FormRecipe() {
 	const dispatch = useDispatch();
-	const { SWATCHES } = useContext(ThemeContext);
+	const titleRef = useRef(null);
+	const categoryRef = useRef(null);
 
 	const formState = useFormState({
 		initialFields: {
 			title: '',
 			description: '',
-			categoryId: null,
+			categoryId: '',
+			sendReminder: false,
 		},
 		toastableErrors: {
 			BadRequest: 'Something went wrong',
@@ -49,25 +47,38 @@ function FormRecipe() {
 		addToast: msg => dispatch(addToast(msg)),
 	});
 
-	const submitForm = async () => {
+	const submitForm = async (event) => {
+		event?.preventDefault();
+		if(formState.loading){
+			return;
+		}
+
 		const error = Utils.runValidations(formState.fields, {
 			title: {
 				notEmpty: { msg: "Title can't be blank" },
 			},
 			categoryId: {
-				notNull: { msg: 'Pick a category' },
+				notEmpty: { msg: 'Pick a category' },
 			},
 		});
 		formState.setError(error);
-		if (!error) {
-			formState.setLoading(true);
-			// pretend to save
-			await new Promise(resolve => setTimeout(resolve, 800));
-			formState.setLoading(false);
-			formState.resetFields();
-			dispatch(addToast('Saved!'));
+
+		if(error){
+			const firstInvalidField = error.errors?.[0]?.path;
+			({title: titleRef, categoryId: categoryRef})[firstInvalidField]?.current?.focus();
+			return;
 		}
+
+		formState.setLoading(true);
+		// Pretend to save. A real form would catch its API error and call setError.
+		await new Promise(resolve => setTimeout(resolve, 800));
+		formState.resetFields();
+		formState.setLoading(false);
+		dispatch(addToast('Saved!'));
 	};
+
+	const titleError = formState.error?.fieldErrors?.title;
+	const categoryError = formState.error?.fieldErrors?.categoryId;
 
 	return (
 		<Page title="Form recipe — Cinderblock Kitchensink">
@@ -83,61 +94,64 @@ function FormRecipe() {
 						</Chunk>
 					</Section>
 					<Section>
-						<form>
+						<form onSubmit={submitForm} noValidate>
 							<Chunk>
-								<Label for="title">Title</Label>
+								<Label htmlFor="title">Title</Label>
 								<TextInput
+									ref={titleRef}
 									id="title"
+									name="title"
 									value={formState.getFieldValue('title')}
 									onChange={e => formState.setFieldValue('title', e.target.value)}
+									aria-invalid={Boolean(titleError)}
+									aria-describedby={titleError ? 'title-error' : undefined}
 								/>
-								<FieldError error={formState.error?.fieldErrors?.title} />
+								<FieldError id="title-error" error={titleError} />
 							</Chunk>
 							<Chunk>
-								<Label for="description">Description</Label>
+								<Label htmlFor="description">Description</Label>
 								<TextInput
 									id="description"
+									name="description"
 									multiline
 									value={formState.getFieldValue('description')}
 									onChange={e => formState.setFieldValue('description', e.target.value)}
 								/>
 							</Chunk>
 
-							{/* RECIPE: selectable pill grid — List as a form control */}
 							<Chunk>
-								<Label>Category</Label>
-								<List
-									variant={{ small: 'grid' }}
-									itemsInRow={{ small: 2, medium: 3 }}
-									items={CATEGORIES}
-									renderItem={(category, i) => {
-										const selected = category.id === formState.getFieldValue('categoryId');
-										return (
-											<Touch key={i} onPress={() => formState.setFieldValue('categoryId', category.id)}>
-												<View style={{
-													paddingVertical: 8,
-													paddingHorizontal: 12,
-													borderRadius: 32,
-													backgroundColor: selected ? SWATCHES.tint : SWATCHES.shade,
-												}}>
-													<Inline>
-														{selected && <Icon shape="Check" color="white" size="small" />}
-														<Text type="small" inverted={selected} weight={selected ? 'strong' : undefined}>
-															{category.name}
-														</Text>
-													</Inline>
-												</View>
-											</Touch>
-										);
-									}}
+								<Label htmlFor="categoryId">Category</Label>
+								<Picker
+									ref={categoryRef}
+									id="categoryId"
+									name="categoryId"
+									selectedValue={formState.getFieldValue('categoryId')}
+									onValueChange={value => formState.setFieldValue('categoryId', value)}
+									aria-invalid={Boolean(categoryError)}
+									aria-describedby={categoryError ? 'category-error' : undefined}
+								>
+									<Picker.Item label="Pick a category" value="" />
+									{CATEGORIES.map(category => (
+										<Picker.Item key={category.id} label={category.name} value={category.id} />
+									))}
+								</Picker>
+								<FieldError id="category-error" error={categoryError} />
+							</Chunk>
+
+							<Chunk>
+								<CheckBox
+									id="sendReminder"
+									name="sendReminder"
+									value={formState.getFieldValue('sendReminder')}
+									onChange={value => formState.setFieldValue('sendReminder', value)}
+									label="Send me a reminder about this post"
 								/>
-								<FieldError error={formState.error?.fieldErrors?.categoryId} />
 							</Chunk>
 
 							<Chunk>
 								<Button
+									type="submit"
 									label="Save post"
-									onPress={submitForm}
 									isLoading={formState.loading}
 									width="full"
 								/>

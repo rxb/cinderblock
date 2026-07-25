@@ -225,7 +225,8 @@ function NotificationBadge() {
 
 ## useFormState
 
-Comprehensive form state management hook with error handling and loading states.
+Small form state hook with field helpers, error storage, loading state, and an
+optional debounced change callback. Validation and submission stay in the page.
 
 ### Purpose
 - Form state management
@@ -240,9 +241,10 @@ Options object:
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `initialFields` | `object` | `{}` | Initial form field values |
-| `onChange` | `function` | `() => {}` | Called (debounced) whenever fields change; receives the fields object |
+| `onChange` | `function` | `() => {}` | Called after field changes; receives the complete fields object and does not fire on initial mount |
+| `onChangeDelay` | `number` | `100` | Delay in milliseconds before `onChange` runs |
 | `toastableErrors` | `object` | `{}` | Map of error `name` → toast message to show when that error is set |
-| `addToast` | `function` | `console.error` | Toast function used for toastable errors |
+| `addToast` | `function` | `() => {}` | Toast function used for toastable errors |
 
 ### Returns
 
@@ -250,15 +252,18 @@ Options object:
 |----------|------|-------------|
 | `fields` | `object` | Current form field values |
 | `setFieldValue` | `function` | `setFieldValue(key, value)` — set one field |
-| `getFieldValue` | `function` | `getFieldValue(key)` — get one field (returns `''` if unset) |
-| `setFieldValues` | `function` | `setFieldValues({...})` — merge multiple field values |
-| `resetFields` | `function` | Reset to `initialFields` |
+| `getFieldValue` | `function` | `getFieldValue(key)` — get one field; preserves `false` and `0`, returning `''` only for `null`/`undefined` |
+| `setFieldValues` | `function` | `setFieldValues({...})` — safely merge multiple field values |
+| `replaceFields` | `function` | `replaceFields({...})` — replace the complete fields object, usually after loading a record |
+| `resetFields` | `function` | Reset to the `initialFields` captured when the hook mounted |
 | `loading` | `boolean` | Loading state |
 | `setLoading` | `function` | Set loading state |
 | `error` | `object` | Current error; API validation errors are exposed as `error.fieldErrors[fieldName]` |
 | `setError` | `function` | Set error (Feathers.js errors are converted automatically) |
 
-Note: there is no built-in submit handler — write your own submit function using `setLoading`/`setError`.
+There is no built-in submit handler. Write a native form `onSubmit` handler
+using `setLoading` and `setError`. See [forms.md](./forms.md) for the canonical
+accessible structure and advanced patterns.
 
 ### Usage
 
@@ -278,7 +283,10 @@ function ContactForm() {
     }
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (formState.loading) return;
+
     formState.setLoading(true);
     try {
       await fetch('/api/contact', {
@@ -292,31 +300,41 @@ function ContactForm() {
     formState.setLoading(false);
   };
 
+  const nameError = formState.error.fieldErrors?.name;
+  const emailError = formState.error.fieldErrors?.email;
+
   return (
-    <>
+    <form onSubmit={handleSubmit}>
       <Chunk>
-        <Label>Name</Label>
+        <Label htmlFor="name">Name</Label>
         <TextInput 
+          id="name"
           value={formState.getFieldValue('name')}
           onChange={(e) => formState.setFieldValue('name', e.target.value)}
           placeholder="Your name"
+          aria-invalid={Boolean(nameError)}
+          aria-describedby={nameError ? 'name-error' : undefined}
         />
-        <FieldError error={formState.error.fieldErrors?.name} />
+        <FieldError id="name-error" error={nameError} />
       </Chunk>
 
       <Chunk>
-        <Label>Email</Label>
+        <Label htmlFor="email">Email</Label>
         <TextInput 
+          id="email"
           value={formState.getFieldValue('email')}
           onChange={(e) => formState.setFieldValue('email', e.target.value)}
           placeholder="your@email.com"
+          aria-invalid={Boolean(emailError)}
+          aria-describedby={emailError ? 'email-error' : undefined}
         />
-        <FieldError error={formState.error.fieldErrors?.email} />
+        <FieldError id="email-error" error={emailError} />
       </Chunk>
 
       <Chunk>
-        <Label>Message</Label>
+        <Label htmlFor="message">Message</Label>
         <TextInput 
+          id="message"
           multiline
           value={formState.getFieldValue('message')}
           onChange={(e) => formState.setFieldValue('message', e.target.value)}
@@ -326,13 +344,13 @@ function ContactForm() {
 
       <Chunk>
         <Button 
-          onPress={handleSubmit}
+          type="submit"
           isLoading={formState.loading}
           color="primary"
           label="Send Message"
         />
       </Chunk>
-    </>
+    </form>
   );
 }
 ```

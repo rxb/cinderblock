@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+
+const EMPTY_FIELDS = {};
+const EMPTY_ERRORS = {};
+const noop = () => {};
 
 /**
- * Form state management hook that provides comprehensive form handling capabilities.
- * Handles field values, validation errors, loading states, and real-time updates.
+ * Small form state hook for field values, errors, loading, and live updates.
  * 
  * This hook centralizes form state management and provides utilities for handling
  * field values, errors, loading states, and change notifications. It includes
@@ -10,7 +13,8 @@ import React, { useEffect, useState } from 'react';
  * 
  * @param {Object} opts - Configuration options
  * @param {Object} [opts.initialFields={}] - Initial field values
- * @param {Function} [opts.onChange] - Callback fired when fields change (debounced)
+ * @param {Function} [opts.onChange] - Callback fired after fields change (debounced; not on initial mount)
+ * @param {number} [opts.onChangeDelay=100] - Debounce delay in milliseconds
  * @param {Object} [opts.toastableErrors={}] - Error messages to show as toasts
  * @param {Function} [opts.addToast] - Toast notification function
  * 
@@ -19,6 +23,7 @@ import React, { useEffect, useState } from 'react';
  * @returns {Function} returns.setFieldValue - Set single field value
  * @returns {Function} returns.getFieldValue - Get single field value
  * @returns {Function} returns.setFieldValues - Set multiple field values
+ * @returns {Function} returns.replaceFields - Replace the complete field object
  * @returns {Function} returns.resetFields - Reset to initial values
  * @returns {boolean} returns.loading - Loading state
  * @returns {Function} returns.setLoading - Set loading state
@@ -58,20 +63,20 @@ import React, { useEffect, useState } from 'react';
  *     <Section>
  *       <TextInput
  *         value={getFieldValue('email')}
- *         onChange={(value) => setFieldValue('email', value)}
+ *         onChange={(event) => setFieldValue('email', event.target.value)}
  *         placeholder="Email"
  *       />
  *       <FieldError error={error.fieldErrors?.email} />
  *       
  *       <TextInput
  *         value={getFieldValue('password')}
- *         onChange={(value) => setFieldValue('password', value)}
+ *         onChange={(event) => setFieldValue('password', event.target.value)}
  *         placeholder="Password"
  *         secureTextEntry
  *       />
  *       <FieldError error={error.fieldErrors?.password} />
  *       
- *       <Button onPress={handleSubmit} loading={loading}>
+ *       <Button onPress={handleSubmit} isLoading={loading}>
  *         Sign In
  *       </Button>
  *     </Section>
@@ -100,19 +105,19 @@ import React, { useEffect, useState } from 'react';
  *     <Section>
  *       <TextInput
  *         value={formState.getFieldValue('name')}
- *         onChange={(value) => formState.setFieldValue('name', value)}
+ *         onChange={(event) => formState.setFieldValue('name', event.target.value)}
  *         placeholder="Your name"
  *       />
  *       
  *       <TextInput
  *         value={formState.getFieldValue('email')}
- *         onChange={(value) => formState.setFieldValue('email', value)}
+ *         onChange={(event) => formState.setFieldValue('email', event.target.value)}
  *         placeholder="Email address"
  *       />
  *       
  *       <TextInput
  *         value={formState.getFieldValue('message')}
- *         onChange={(value) => formState.setFieldValue('message', value)}
+ *         onChange={(event) => formState.setFieldValue('message', event.target.value)}
  *         placeholder="Your message"
  *         multiline
  *       />
@@ -165,29 +170,6 @@ import React, { useEffect, useState } from 'react';
 
 
 /**
- * Debounce utility function to limit the rate of function calls.
- * Delays execution until after a specified time has passed since the last call.
- * 
- * @param {Function} callback - Function to debounce
- * @param {number} [time=60] - Delay time in milliseconds
- * @returns {Function} Debounced function
- */
-function debounce(callback, time = 60) {
-	var timeout;
-	return function() {
-		var context = this;
-		var args = arguments;
-		if (timeout) {
-			clearTimeout(timeout);
-		}
-		timeout = setTimeout(function() {
-			timeout = null;
-			callback.apply(context, args);
-		}, time);
-	}
-}
-
-/**
  * Converts Feathers.js API errors to a more usable format for form validation.
  * Transforms validation errors into a fieldErrors object for easy field mapping.
  * 
@@ -228,52 +210,79 @@ const convertFeathersErrors = (originalError) => {
 const useFormState = ( opts = {} ) => {
 
 	const {
-		initialFields = {},
-		onChange = () => {},
-		toastableErrors = {},
-		addToast = (message) => {console.error(message) }
+		initialFields = EMPTY_FIELDS,
+		onChange = noop,
+		onChangeDelay = 100,
+		toastableErrors = EMPTY_ERRORS,
+		addToast = noop
 	} = opts;
 	
+	const initialFieldsRef = useRef(initialFields);
+	const onChangeRef = useRef(onChange);
+	const addToastRef = useRef(addToast);
+	const toastableErrorsRef = useRef(toastableErrors);
+	const didMountRef = useRef(false);
 	const [fields, setFields] = useState(initialFields);
-	useEffect( ()=>{ handleChange() }, [fields]);
+
+	useEffect(() => {
+		onChangeRef.current = onChange;
+	}, [onChange]);
+
+	useEffect(() => {
+		addToastRef.current = addToast;
+		toastableErrorsRef.current = toastableErrors;
+	}, [addToast, toastableErrors]);
+
+	useEffect(() => {
+		if(!didMountRef.current){
+			didMountRef.current = true;
+			return;
+		}
+
+		const timeout = setTimeout(() => {
+			onChangeRef.current(fields);
+		}, onChangeDelay);
+
+		return () => clearTimeout(timeout);
+	}, [fields, onChangeDelay]);
 
 	const [loading, setLoading] = useState(false);
-	const [error, setErrorDirect] = useState({timestamp: Date.now()});
-	const setError = (error = {}) => setErrorDirect(convertFeathersErrors(error));
+	const [error, setErrorDirect] = useState({});
+	const setError = useCallback((nextError = {}) => {
+		setErrorDirect(convertFeathersErrors(nextError));
+	}, []);
 
 	// watch for toastable errors 
 	useEffect(()=>{
-		const message = error?.message || toastableErrors[error?.name] || false;
+		const message = error?.message || toastableErrorsRef.current[error?.name] || false;
 		if(message){
-			addToast(message);
+			addToastRef.current(message);
 		}
 	}, [error]);
 
-	const setFieldValue = (key, value) => {
-		const newFields = {...fields, [key]: value};
-		setFields(newFields);
-	}
+	const setFieldValue = useCallback((key, value) => {
+		setFields(currentFields => ({...currentFields, [key]: value}));
+	}, []);
 
 	const getFieldValue = (key) => {
-		return fields[key] || '';
+		return fields[key] ?? '';
 	}
 
-	const setFieldValues = (updatedFields={}) => {
-		const newFields = {...fields, ...updatedFields};
-		setFields(newFields);
-	}
+	const setFieldValues = useCallback((updatedFields={}) => {
+		setFields(currentFields => ({...currentFields, ...updatedFields}));
+	}, []);
 
-	const resetFields = () => {
-		setFields(initialFields);
-	}
+	const replaceFields = useCallback((nextFields={}) => {
+		setFields(nextFields);
+	}, []);
 
-	const handleChange = debounce(() => {
-		// PURPOSE: when elements outside the form need to know what's happening in the form as fields are being edited, before submit
-		onChange(fields, this);
-	}, 100);
+	const resetFields = useCallback(() => {
+		setFields(initialFieldsRef.current);
+	}, []);
 
 	return {
 		resetFields,
+		replaceFields,
 		setFieldValue,
 		getFieldValue,
 		setFieldValues,
