@@ -93,18 +93,27 @@ const Label = (props) => {
 
 	if(Platform.OS === 'web'){
 		const colorKey = TEXT_COLORS[color] || TEXT_COLORS.secondary;
+		const labelStyle = StyleSheet.flatten([
+			styles.text,
+			styles.textBody,
+			styles[`text${colorKey}`],
+			styles.textLabel,
+			{display: 'block'},
+			style
+		]);
+
+		// React treats a numeric DOM line-height as a unitless multiplier. Theme
+		// values are React Native pixel measurements, so preserve their intended
+		// size when rendering the native web label element.
+		if(typeof labelStyle.lineHeight === 'number'){
+			labelStyle.lineHeight = `${labelStyle.lineHeight}px`;
+		}
+
 		return React.createElement(
 			'label',
 			{
 				htmlFor: htmlFor || legacyFor,
-				style: StyleSheet.flatten([
-					styles.text,
-					styles.textBody,
-					styles[`text${colorKey}`],
-					styles.textLabel,
-					{display: 'block'},
-					style
-				]),
+				style: labelStyle,
 				...other
 			},
 			children

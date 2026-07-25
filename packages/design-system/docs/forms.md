@@ -129,6 +129,8 @@ This is the default structure:
 - `Section` is the primary content group. A form does not need a `Card`.
 - Each field and its label, help, and error content share one `Chunk`.
 - The visible label's `htmlFor` matches the input's `id`.
+- Native web labels normalize the theme's numeric line height to CSS pixels;
+  consumers do not need a web-only label style.
 - An invalid input uses `aria-invalid` and references its `FieldError` through
   `aria-describedby`.
 - The form handles `onSubmit`; its `Button type="submit"` preserves Enter-key
