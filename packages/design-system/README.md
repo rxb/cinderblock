@@ -25,24 +25,24 @@ npm install @cinderblock/design-system
 ## Basic Usage
 
 ```javascript
-import { Stripe, Section, Chunk, Text, Button } from '@cinderblock/design-system';
+import { Stripe, Bounds, Section, Chunk, Text, Button } from '@cinderblock/design-system';
 
 function MyPage() {
   return (
     <Stripe>
-      <Section>
-        <Chunk>
-          <Text type="pageHead">Welcome to My App</Text>
-        </Chunk>
-        <Chunk>
-          <Text>This is a paragraph with proper spacing.</Text>
-        </Chunk>
-        <Chunk>
-          <Button onPress={() => alert('Hello!')}>
-            Click Me
-          </Button>
-        </Chunk>
-      </Section>
+      <Bounds>
+        <Section>
+          <Chunk>
+            <Text type="pageHead">Welcome to My App</Text>
+          </Chunk>
+          <Chunk>
+            <Text>This is a paragraph with proper spacing.</Text>
+          </Chunk>
+          <Chunk>
+            <Button label="Get started" onPress={() => alert('Hello!')} />
+          </Chunk>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }
@@ -55,14 +55,22 @@ The design system enforces this hierarchy:
 ```
 Page (not in design system - your app wrapper)
 ├── Stripe (full-width background sections)
-│   ├── Section (content areas within stripes)
-│   │   ├── Chunk (spacing between elements)
-│   │   │   └── [Your content components]
-│   │   └── Chunk
-│   │       └── [Your content components]
-│   └── Section
+│   └── Bounds (centered maximum width)
+│       ├── Section (page-outline content groups)
+│       │   ├── Chunk (spacing between elements)
+│       │   │   └── [Your content components]
+│       │   └── Chunk
+│       │       └── [Your content components]
+│       └── Section
 └── Stripe
 ```
+
+Think of the composition model this way:
+
+- `Section` is where ordinary page content lives.
+- `Chunk` gives that content rhythm.
+- `Flex` and `List` arrange content.
+- `Card` optionally makes a group read as a distinct object.
 
 ## Component Categories
 
@@ -92,8 +100,8 @@ Display information and content:
 - `Avatar` - Profile images
 - `Icon` - SVG icons
 - `Picture` - Responsive images
-- `Card` - Content containers
 - `List` - Flexible lists
+- `Card` - Optional object-like boundaries
 - And more...
 
 ### Utility/Behavioral Components

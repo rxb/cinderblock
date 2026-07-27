@@ -6,14 +6,12 @@ import {
 	Avatar,
 	Bounds,
 	Button,
-	Card,
 	Chunk,
 	Flex,
 	FlexItem,
 	Icon,
 	Inline,
 	Section,
-	Sectionless,
 	Stripe,
 	Text,
 	View,
@@ -51,38 +49,34 @@ function DetailRecipe() {
 			    and stack (content first) below that. */}
 			<Stripe style={{ backgroundColor: SWATCHES.notwhite }}>
 				<Bounds>
-					<Section>
-						<Flex direction="column" switchDirection="large" section>
+					<Flex direction="column" switchDirection="large">
 
-							{/* main column */}
-							<FlexItem growFactor={1} section>
+						{/* main column: ordinary content belongs in Section */}
+						<FlexItem>
+							<Section>
 								<Chunk>
-									<Card shadow>
-										<Section>
-											<Chunk>
-												<Text type="pageHeadKicker">Recipe</Text>
-												<Text type="pageHead">Chocolate babka</Text>
-											</Chunk>
-											<Chunk>
-												<Text>
-													A rich, swirled yeast bread. This card is the main
-													content column; it grows to fill available space
-													while the sidebar shrinks to fit its content.
-												</Text>
-											</Chunk>
-											<Chunk>
-												<Text>
-													Resize the window: below the &quot;large&quot; breakpoint the
-													sidebar drops beneath this card.
-												</Text>
-											</Chunk>
-										</Section>
-									</Card>
+									<Text type="pageHeadKicker">Recipe</Text>
+									<Text type="pageHead">Chocolate babka</Text>
 								</Chunk>
-							</FlexItem>
+								<Chunk>
+									<Text>
+										A rich, swirled yeast bread. This Section is the main
+										content column; it grows to fill available space while
+										the sidebar shrinks to fit its content.
+									</Text>
+								</Chunk>
+								<Chunk>
+									<Text>
+										Resize the window: below the &quot;large&quot; breakpoint the
+										sidebar drops beneath the main content.
+									</Text>
+								</Chunk>
+							</Section>
+						</FlexItem>
 
-							{/* sidebar */}
-							<FlexItem shrink section>
+						{/* sidebar: a peer responsive region with its own Section */}
+						<FlexItem shrink>
+							<Section>
 								<View style={{ minWidth: 320 }}>
 
 									{/* primary actions row */}
@@ -163,9 +157,9 @@ function DetailRecipe() {
 									</Chunk>
 
 								</View>
-							</FlexItem>
-						</Flex>
-					</Section>
+							</Section>
+						</FlexItem>
+					</Flex>
 				</Bounds>
 			</Stripe>
 		</Page>

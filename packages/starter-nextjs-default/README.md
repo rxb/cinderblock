@@ -19,7 +19,7 @@ This starter provides the essential foundation for new projects without the comp
 - Cross-platform hero Stripe with image focal positioning
 - Responsive layout patterns
 - Form component demonstration
-- Card-based content sections
+- Section-first page composition, with Cards reserved for distinct objects
 
 ### 📱 **Production Ready**
 - Optimized build configuration

@@ -15,19 +15,29 @@ import Page from '@/components/Page';
 
 const RECIPES = [
 	{
-		href: '/recipes/detail',
-		title: 'Detail page',
-		description: 'Two-column layout with a responsive action sidebar, divider rows, prompts, and dropdowns.',
+		href: '/recipes/composition',
+		title: 'Page composition',
+		description: 'The ordinary Stripe, Bounds, Section, and Chunk path with no Card required.',
 	},
 	{
-		href: '/recipes/feed',
-		title: 'Card feed',
-		description: 'List that side-scrolls on mobile and becomes a grid on desktop, plus a dark inverted section and empty state.',
+		href: '/recipes/detail',
+		title: 'Detail page',
+		description: 'Card-free detail content with a responsive action sidebar, divider rows, prompts, and dropdowns.',
+	},
+	{
+		href: '/recipes/directory',
+		title: 'Record directory',
+		description: 'Responsive page-head actions and a direct linear List whose rows do not need Cards.',
 	},
 	{
 		href: '/recipes/form',
 		title: 'Form page',
 		description: 'Narrow bounds, useFormState, validation, field errors, a selectable pill grid, and toast feedback.',
+	},
+	{
+		href: '/recipes/feed',
+		title: 'Card feed',
+		description: 'The optional object treatment: selectable previews that side-scroll on mobile and become a grid.',
 	},
 ];
 
@@ -49,11 +59,18 @@ function RecipesIndex() {
 								. Each page is a working, self-contained example.
 							</Text>
 						</Chunk>
+						<Chunk>
+							<Text color="secondary">
+								This index intentionally uses Cards because each recipe is a
+								selectable preview. The recipe pages begin with ordinary
+								Section-first composition.
+							</Text>
+						</Chunk>
 					</Section>
 					<Section>
 						<List
 							variant={{ small: 'linear', medium: 'grid' }}
-							itemsInRow={{ medium: 3 }}
+							itemsInRow={{ medium: 2, large: 3 }}
 							items={RECIPES}
 							renderItem={(recipe, i) => (
 								<Chunk key={i}>

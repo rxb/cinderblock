@@ -335,12 +335,14 @@ For full-width page heroes, prefer `Stripe` and its `imageFit` and
 
 ## Card
 
-Optional object-like content container with borders and shadows. Card adds a
-stronger visual and conceptual boundary than ordinary Section content.
+Most page content does not need Card. It is an optional object-like boundary
+with borders and shadows, used when a group needs stronger visual and
+conceptual separation than ordinary Section content.
 
 ### Purpose
-- Repeatable records such as patients, products, or articles
 - Selectable choices, previews, and summaries with their own identity
+- Repeated peer objects that need stronger separation than linear rows
+- Draggable or independently arranged objects
 - Deliberately unified object-like content
 - Optional depth with shadows
 
@@ -382,19 +384,19 @@ the card border. This is the single most common Card mistake.
 ```javascript
 import { Card, Section, Sectionless, Chunk, Text, Button } from '@cinderblock/design-system';
 
-// Object-like record inside the page's Section
+// Selectable object inside the page's Section
 <Section>
   <Chunk>
     <Card>
       <Sectionless>
         <Chunk>
-          <Text type="big" weight="strong">Patient name</Text>
+          <Text type="big" weight="strong">Standard plan</Text>
         </Chunk>
         <Chunk>
-          <Text>Record summary goes here...</Text>
+          <Text>Includes the features most teams need.</Text>
         </Chunk>
         <Chunk>
-          <Button label="Open record" />
+          <Button label="Choose plan" />
         </Chunk>
       </Sectionless>
     </Card>
@@ -425,6 +427,13 @@ edge — a full-bleed image header, a map, or an edge-to-edge divider list.
 
 Flexible list component supporting linear, grid, and scroll layouts with responsive behavior.
 
+List items do not inherently need Cards. A primary record directory may render
+linear rows directly in its page Section when the row layout and item dividers
+already provide sufficient grouping. Use Cards when each item should read as a
+separate object or selectable unit. See the
+[page-head and direct-record-list recipe](./recipes.md#3-page-head-with-actions-and-a-direct-record-list)
+for the direct-on-page pattern.
+
 ### Purpose
 - Flexible list rendering
 - Responsive layout switching
@@ -446,7 +455,16 @@ Flexible list component supporting linear, grid, and scroll layouts with respons
 ### Usage
 
 ```javascript
-import { List, Text, Card, Avatar } from '@cinderblock/design-system';
+import {
+  List,
+  Flex,
+  FlexItem,
+  Text,
+  Card,
+  Picture,
+  Sectionless,
+  Chunk
+} from '@cinderblock/design-system';
 
 // Linear list
 const users = [
@@ -459,10 +477,10 @@ const users = [
   variant="linear"
   items={users}
   renderItem={(user) => (
-    <Card key={user.id}>
-      <Text weight="strong">{user.name}</Text>
-      <Text color="secondary">{user.role}</Text>
-    </Card>
+    <Flex direction="column" switchDirection="medium">
+      <FlexItem><Text weight="strong">{user.name}</Text></FlexItem>
+      <FlexItem><Text color="secondary">{user.role}</Text></FlexItem>
+    </Flex>
   )}
 />
 

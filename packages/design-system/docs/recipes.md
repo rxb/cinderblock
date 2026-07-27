@@ -9,61 +9,137 @@ between levels when arranging peer Sections or peer Stripes.
 > Older codebases may use `variant="hscroll"` on `List`; the current API name
 > is `'scroll'`.
 
-## 1. Detail page with responsive action sidebar
+## 1. Ordinary page composition
+
+Start here. Most pages need only the structural path and no Card:
+
+```jsx
+<Stripe>
+  <Bounds>
+    <Section>
+      <Chunk>
+        <Text type="pageHead">Account</Text>
+        <Text color="secondary">Manage your profile and preferences.</Text>
+      </Chunk>
+      <Chunk><Text>Primary page content belongs directly in this Section.</Text></Chunk>
+    </Section>
+
+    <Section>
+      <Chunk><Text type="sectionHead">Notifications</Text></Chunk>
+      <Chunk><Text>Each peer H2-level group begins another Section.</Text></Chunk>
+      <Chunk><Button label="Edit notifications" /></Chunk>
+    </Section>
+  </Bounds>
+</Stripe>
+```
+
+Section provides page grouping and inset; Chunk provides content rhythm. Add
+Flex or List when content needs arrangement. Add Card only when a group needs
+to become a distinct object.
+
+## 2. Detail page with responsive action sidebar
 
 Main content and a sidebar that sit side-by-side on large screens and stack
-(content first) on small ones.
+(content first) on small ones. Each peer region keeps its own Section.
 
 ```jsx
 <Stripe style={{ backgroundColor: SWATCHES.notwhite }}>
   <Bounds>
-    <Section>
-      <Flex direction="column" switchDirection="large">
-        <FlexItem>
-          <Chunk>
-            <Card shadow><Sectionless>{/* main content */}</Sectionless></Card>
-          </Chunk>
-        </FlexItem>
-        <FlexItem shrink>
+    <Flex direction="column" switchDirection="large">
+      <FlexItem>
+        <Section>
+          <Chunk><Text type="pageHead">Chocolate babka</Text></Chunk>
+          <Chunk><Text>{/* main detail content */}</Text></Chunk>
+        </Section>
+      </FlexItem>
+      <FlexItem shrink>
+        <Section>
           <View style={{ minWidth: 320 }}>
             <Chunk>{/* primary actions */}</Chunk>
             <Chunk border>{/* linked row */}</Chunk>
             <Chunk border>{/* meta row */}</Chunk>
           </View>
-        </FlexItem>
-      </Flex>
-    </Section>
+        </Section>
+      </FlexItem>
+    </Flex>
   </Bounds>
 </Stripe>
 ```
 
 Key ideas: `direction="column" switchDirection="large"` = stacked until
 `large`; the plain main FlexItem already grows while `shrink` fits the sidebar
-to its content; `Chunk border` makes divider rows. The default Flex gutter is
-appropriate here—do not add `section` unless a specific nested-Section inset
-requires compensation.
+to its content; `Chunk border` makes divider rows. No Card or `section` gutter
+is needed for ordinary detail content.
 
-## 2. Responsive card feed (scroll on mobile, grid on desktop)
+## 3. Page head with actions and a direct record list
 
-The single most common pattern. Works with paginated/infinite data.
+Use a linear List directly in the page Section when the records are the page's
+primary content and do not need to read as separate Card objects.
 
 ```jsx
-<List
-  variant={{ small: 'scroll', medium: 'grid' }}
-  itemsInRow={{ small: 1, medium: 2, large: 4 }}
-  scrollItemWidth={300}
-  items={items}
-  renderItem={(item, i) => (
-    <Chunk key={i}>
-      <Link href={itemUrl(item)}>
-        <Card><Sectionless>{/* card content */}</Sectionless></Card>
-      </Link>
-    </Chunk>
-  )}
-/>
+<Stripe>
+  <Bounds>
+    <Section>
+      <Flex direction="column" switchDirection="medium">
+        <FlexItem>
+          <Chunk>
+            <Text type="pageHead">Patients</Text>
+            <Text color="secondary">24 active patients · 3 need review</Text>
+          </Chunk>
+        </FlexItem>
+        <FlexItem shrink justify="flex-end">
+          <Chunk>
+            <Inline nowrap>
+              <Button
+                shape="Search"
+                accessibilityLabel="Search patients"
+                onPress={openSearch}
+              />
+              <Button href="/patients/new" label="Add patient" width="snap" />
+            </Inline>
+          </Chunk>
+        </FlexItem>
+      </Flex>
+
+      <List
+        variant="linear"
+        items={patients}
+        renderItem={patient => (
+          <Flex direction="column" switchDirection="large">
+            <FlexItem>
+              <Text weight="strong">{patient.name}</Text>
+            </FlexItem>
+            <FlexItem>
+              <Text>{patient.summary}</Text>
+            </FlexItem>
+            <FlexItem>
+              <Text color="secondary">{patient.context}</Text>
+            </FlexItem>
+          </Flex>
+        )}
+      />
+    </Section>
+  </Bounds>
+</Stripe>
 ```
 
-## 3. Narrow auth/form page
+Keep the title and its short supporting summary in one Chunk so they read as
+one page-head unit. Put actions in a peer FlexItem so they stack below the
+title on narrow screens and align opposite it when space permits.
+
+A linear List may sit directly in Section when its own item dividers and row
+layout provide the necessary rhythm. Wrap the List in a Chunk when it needs
+ordinary content spacing. Build each row in the mobile reading order first;
+responsive Flex layout should rearrange that same order, not create a different
+information hierarchy. Use a Card only when each record needs a stronger
+object-like boundary.
+
+The current List implementation keys generated row wrappers by array position.
+Keep rows stateless when filtering or reordering them; add a stable
+`keyExtractor` capability before placing local state or focus ownership inside
+sortable rows.
+
+## 4. Narrow auth/form page
 
 ```jsx
 <Stripe style={{ flex: 1 }}>
@@ -93,7 +169,28 @@ The single most common pattern. Works with paginated/infinite data.
 </Stripe>
 ```
 
-## 4. Form state, validation, and toast feedback
+## 5. Optional responsive Card feed
+
+Use this when every item is genuinely a selectable preview or distinct object.
+It is not the default treatment for ordinary linear rows.
+
+```jsx
+<List
+  variant={{ small: 'scroll', medium: 'grid' }}
+  itemsInRow={{ small: 1, medium: 2, large: 4 }}
+  scrollItemWidth={300}
+  items={items}
+  renderItem={(item, i) => (
+    <Chunk key={i}>
+      <Link href={itemUrl(item)}>
+        <Card><Sectionless>{/* selectable preview */}</Sectionless></Card>
+      </Link>
+    </Chunk>
+  )}
+/>
+```
+
+## 6. Form state, validation, and toast feedback
 
 ```jsx
 const formState = useFormState({
@@ -130,7 +227,7 @@ complete form after loading an existing record. See [forms.md](./forms.md) for
 the full state contract, accessible errors, multi-step forms, uploads,
 repeatable rows, and optimistic updates.
 
-## 5. Full-bleed Stripe patterns
+## 7. Full-bleed Stripe patterns
 
 ### Hero with a background image
 
@@ -185,7 +282,7 @@ at the selected breakpoint:
 This is an intentional exception to visually stacking peer Stripes. Each
 FlexItem still owns a complete Stripe subtree.
 
-## 6. Compact header / chrome bar
+## 8. Compact header / chrome bar
 
 `Sectionless` instead of `Section` skips the vertical rhythm — right for
 toolbars and site headers. Plain FlexItems grow, so a blank one is the spacer
@@ -212,7 +309,7 @@ between two content-sized (`shrink`) items.
 </Stripe>
 ```
 
-## 7. Dark section with inverted text
+## 9. Dark section with inverted text
 
 ```jsx
 <Stripe style={{ backgroundColor: SWATCHES.backgroundDark }}>
@@ -234,7 +331,7 @@ between two content-sized (`shrink`) items.
 </Stripe>
 ```
 
-## 8. Profile / identity header
+## 10. Profile / identity header
 
 ```jsx
 <Section>
@@ -258,7 +355,7 @@ Inline icon-with-text (flows with the text baseline, no Flex needed):
 </Text>
 ```
 
-## 9. Prompt (confirm dialog) content
+## 11. Prompt (confirm dialog) content
 
 Prompts are plain components dispatched into the app-level `Prompter`;
 `onRequestClose` is injected automatically.
@@ -277,7 +374,7 @@ const DeletePrompt = ({ thing, onRequestClose }) => (
 // anywhere: dispatch(addPrompt(<DeletePrompt thing={thing} />))
 ```
 
-## 10. Dropdown menu on a button
+## 12. Dropdown menu on a button
 
 ```jsx
 <DropdownTouch dropdown={
@@ -294,7 +391,7 @@ const DeletePrompt = ({ thing, onRequestClose }) => (
 
 `dummy` keeps the Button visual-only so the wrapping touchable handles the press.
 
-## 11. Modal with animated panel swap (login ↔ register)
+## 13. Modal with animated panel swap (login ↔ register)
 
 ```jsx
 <Modal visible={visible} onRequestClose={close}>
@@ -309,7 +406,7 @@ const DeletePrompt = ({ thing, onRequestClose }) => (
 </Modal>
 ```
 
-## 12. Empty state
+## 14. Empty state
 
 ```jsx
 <View style={{ minHeight: '55vh', backgroundColor: SWATCHES.shade, borderRadius: METRICS.cardBorderRadius }}>
@@ -322,7 +419,7 @@ const DeletePrompt = ({ thing, onRequestClose }) => (
 </View>
 ```
 
-## 13. Selectable pill grid (List as a form control)
+## 15. Selectable pill grid (List as a form control)
 
 `List` isn't just for cards — use it to lay out any repeated control.
 
@@ -348,7 +445,7 @@ const DeletePrompt = ({ thing, onRequestClose }) => (
 />
 ```
 
-## 14. Animation touches (Bounce and RevealBlock)
+## 16. Animation touches (Bounce and RevealBlock)
 
 `Bounce` scales its child whenever `watchProp` changes — right for counters
 and toggle feedback:
@@ -371,9 +468,9 @@ and toggle feedback:
 ))}
 ```
 
-(See recipe 11 for the Modal + RevealBlock panel-swap pattern.)
+(See recipe 13 for the Modal + RevealBlock panel-swap pattern.)
 
-## 15. App-level wiring (Page wrapper)
+## 17. App-level wiring (Page wrapper)
 
 Every page renders inside a shared `Page` component that owns global chrome and
 mounts global singletons once. It must not own the page's Stripe, Bounds, or

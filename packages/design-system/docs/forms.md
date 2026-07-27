@@ -151,7 +151,39 @@ controls:
 Do not pass a state setter directly to `TextInput`; it would store the event
 instead of the text. Passing a boolean setter directly to `CheckBox` is valid.
 
-Placeholders are examples or hints, not replacements for visible labels.
+Placeholders are examples or hints, not replacements for labels.
+
+## Accessible names and compact controls
+
+Use a visible `Label` for ordinary form fields. It remains available while the
+person types, provides a larger visual target, and makes unfamiliar or
+consequential input requirements easier to understand.
+
+A compact standalone control such as a page search may intentionally omit a
+visible label when its purpose is already visually clear. In that case, give
+the input an explicit, persistent `accessibilityLabel`; do not rely on its
+placeholder as its accessible name:
+
+```jsx
+<View accessibilityRole="search">
+  <TextInput
+    accessibilityLabel="Search patients"
+    placeholder="Search by patient name"
+    value={query}
+    onChange={event => setQuery(event.target.value)}
+  />
+</View>
+```
+
+The accessible label names the control's durable purpose. The placeholder is a
+short visual hint and disappears when entry begins. Name any adjacent or
+in-field icon-only action separately—for example,
+`accessibilityLabel="Clear patient search"`.
+
+For a keyboard shortcut that originates inside `TextInput`, use its
+`onKeyPress` callback. React Native Web may stop an ordinary surrounding DOM
+`keydown` listener at the input boundary. Read `event.key` on web and keep
+`event.nativeEvent.key` as the cross-platform fallback.
 
 ## `useFormState`
 

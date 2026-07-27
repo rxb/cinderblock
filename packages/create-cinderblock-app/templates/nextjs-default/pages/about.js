@@ -2,12 +2,11 @@ import React from 'react';
 import {
   Bounds,
   Button,
-  Card,
   Chunk,
   Flex,
   FlexItem,
   Icon,
-  Link,
+  Label,
   Section,
   Stripe,
   Text,
@@ -15,200 +14,131 @@ import {
 } from '@cinderblock/design-system';
 import Page from '../components/Page';
 
+const INCLUDED_ITEMS = [
+  {
+    icon: 'Package',
+    title: 'Essential components',
+    description: 'Layout, forms, navigation, and content primitives are already configured.'
+  },
+  {
+    icon: 'Settings',
+    title: 'Optimized configuration',
+    description: 'Next.js and React Native Web work together through the included setup.'
+  },
+  {
+    icon: 'Zap',
+    title: 'Ready to customize',
+    description: 'The intentionally small codebase is easy to understand and extend.'
+  }
+];
+
 export default function About() {
   return (
     <Page currentPage="about">
       <Stripe>
         <Bounds>
-        <Section>
-          <Chunk>
-            <Text type="pageHead">About This Starter</Text>
-          </Chunk>
-          
-          <Chunk>
-            <Text>
-              This is a minimal Next.js starter project powered by the Cinderblock Design System. 
-              It provides a clean foundation for building modern web applications with a focus on 
-              developer experience and design consistency.
-            </Text>
-          </Chunk>
-          
-          <Chunk>
-            <Text>
-              The starter includes essential components and configuration to get you up and running 
-              quickly, without the complexity of a full-featured demo application.
-            </Text>
-          </Chunk>
-        </Section>
+          <Section>
+            <Chunk>
+              <Text type="pageHead">About this starter</Text>
+            </Chunk>
+            <Chunk>
+              <Text>
+                This minimal Next.js starter provides a clean foundation for
+                modern applications built with Cinderblock.
+              </Text>
+            </Chunk>
+            <Chunk>
+              <Text>
+                Ordinary content lives directly in Sections; no additional
+                visual container is required.
+              </Text>
+            </Chunk>
+          </Section>
 
-        <Section>
-          <Chunk>
-            <Text type="sectionHead">What's Included</Text>
-          </Chunk>
+          <Section>
+            <Chunk>
+              <Text type="sectionHead">What&apos;s included</Text>
+            </Chunk>
 
-          <Chunk>
-            <Card>
-              <Section>
-                <Chunk>
-                  <Flex direction="row" align="center">
-                    <FlexItem shrink>
-                      <Icon shape="Package" size="medium" />
-                    </FlexItem>
-                    <FlexItem grow>
-                      <Text type="sectionHead">Essential Components</Text>
-                    </FlexItem>
-                  </Flex>
-                </Chunk>
-                
-                <Chunk>
-                  <Text>
-                    Pre-configured with the Cinderblock Design System, giving you access to 
-                    layout components, forms, navigation, and more.
-                  </Text>
-                </Chunk>
-              </Section>
-            </Card>
-          </Chunk>
+            {INCLUDED_ITEMS.map(item => (
+              <Chunk border key={item.title}>
+                <Flex align="center">
+                  <FlexItem shrink>
+                    <Icon shape={item.icon} size="medium" />
+                  </FlexItem>
+                  <FlexItem>
+                    <Text type="big" weight="strong">{item.title}</Text>
+                    <Text color="secondary">{item.description}</Text>
+                  </FlexItem>
+                </Flex>
+              </Chunk>
+            ))}
+          </Section>
 
-          <Chunk>
-            <Card>
-              <Section>
-                <Chunk>
-                  <Flex direction="row" align="center">
-                    <FlexItem shrink>
-                      <Icon shape="Settings" size="medium" />
-                    </FlexItem>
-                    <FlexItem grow>
-                      <Text type="sectionHead">Optimized Configuration</Text>
-                    </FlexItem>
-                  </Flex>
-                </Chunk>
-                
-                <Chunk>
-                  <Text>
-                    Next.js configuration optimized for React Native Web integration, 
-                    with proper Babel setup and module resolution.
-                  </Text>
-                </Chunk>
-              </Section>
-            </Card>
-          </Chunk>
-
-          <Chunk>
-            <Card>
-              <Section>
-                <Chunk>
-                  <Flex direction="row" align="center">
-                    <FlexItem shrink>
-                      <Icon shape="Zap" size="medium" />
-                    </FlexItem>
-                    <FlexItem grow>
-                      <Text type="sectionHead">Ready to Customize</Text>
-                    </FlexItem>
-                  </Flex>
-                </Chunk>
-                
-                <Chunk>
-                  <Text>
-                    Clean, minimal codebase that's easy to understand and extend. 
-                    Start building your features right away.
-                  </Text>
-                </Chunk>
-              </Section>
-            </Card>
-          </Chunk>
-        </Section>
-
-        <Section>
-          <Chunk>
-            <Text type="sectionHead">Quick Example</Text>
-          </Chunk>
-          
-          <Chunk>
-            <Text>
-              Here's a simple example showing how easy it is to build with Cinderblock components:
-            </Text>
-          </Chunk>
-
-          <Chunk>
-            <Card>
-              <Section>
-                <Chunk>
-                  <Text type="title">Contact Form</Text>
-                </Chunk>
-                
-                <Chunk>
-                  <TextInput placeholder="Your name" />
-                </Chunk>
-                
-                <Chunk>
-                  <TextInput placeholder="Your email" />
-                </Chunk>
-                
-                <Chunk>
-                  <TextInput 
-                    placeholder="Your message" 
-                    multiline 
-                    style={{ minHeight: 100 }}
+          <Section>
+            <Chunk>
+              <Text type="sectionHead">Contact form example</Text>
+            </Chunk>
+            <Chunk>
+              <Label htmlFor="contact-name">Name</Label>
+              <TextInput id="contact-name" name="name" />
+            </Chunk>
+            <Chunk>
+              <Label htmlFor="contact-email">Email</Label>
+              <TextInput id="contact-email" name="email" inputMode="email" />
+            </Chunk>
+            <Chunk>
+              <Label htmlFor="contact-message">Message</Label>
+              <TextInput
+                id="contact-message"
+                name="message"
+                multiline
+                style={{ minHeight: 100 }}
+              />
+            </Chunk>
+            <Chunk>
+              <Flex direction="column" switchDirection="medium">
+                <FlexItem>
+                  <Button
+                    href="/"
+                    color="secondary"
+                    label="Cancel"
+                    width="full"
                   />
-                </Chunk>
-                
-                <Chunk>
-                  <Flex direction="row">
-                    <FlexItem grow>
-                      <Button type="secondary">Cancel</Button>
-                    </FlexItem>
-                    <FlexItem grow>
-                      <Button onPress={() => alert('Form submitted!')}>
-                        Send Message
-                      </Button>
-                    </FlexItem>
-                  </Flex>
-                </Chunk>
-              </Section>
-            </Card>
-          </Chunk>
-        </Section>
+                </FlexItem>
+                <FlexItem>
+                  <Button
+                    label="Send message"
+                    width="full"
+                    onPress={() => alert('Form submitted!')}
+                  />
+                </FlexItem>
+              </Flex>
+            </Chunk>
+          </Section>
 
-        <Section>
-          <Chunk>
-            <Text type="sectionHead">Next Steps</Text>
-          </Chunk>
-          
-          <Chunk>
-            <Text>
-              Ready to start building? Here are some suggestions:
-            </Text>
-          </Chunk>
-
-          <Chunk>
-            <Text>• Customize the homepage in <Text weight="bold">pages/index.js</Text></Text>
-          </Chunk>
-          
-          <Chunk>
-            <Text>• Add new pages in the <Text weight="bold">pages/</Text> directory</Text>
-          </Chunk>
-          
-          <Chunk>
-            <Text>• Explore more components in the design system documentation</Text>
-          </Chunk>
-          
-          <Chunk>
-            <Text>• Check out the kitchensink demo for advanced examples</Text>
-          </Chunk>
-
-          <Chunk>
-            <Flex direction="row" justify="center">
-              <FlexItem shrink>
-                <Link href="/">
-                  <Button type="secondary">
-                    Back to Home
-                  </Button>
-                </Link>
-              </FlexItem>
-            </Flex>
-          </Chunk>
-        </Section>
+          <Section>
+            <Chunk>
+              <Text type="sectionHead">Next steps</Text>
+            </Chunk>
+            <Chunk>
+              <Text>Customize the homepage in pages/index.js.</Text>
+            </Chunk>
+            <Chunk>
+              <Text>Add new routes in the pages directory.</Text>
+            </Chunk>
+            <Chunk>
+              <Text>Explore the kitchensink for advanced, conditional patterns.</Text>
+            </Chunk>
+            <Chunk>
+              <Button
+                href="/"
+                color="secondary"
+                label="Back to home"
+                width="snap"
+              />
+            </Chunk>
+          </Section>
         </Bounds>
       </Stripe>
     </Page>

@@ -104,8 +104,8 @@ Card at all.
 Card adds a stronger visual and conceptual boundary. Use it when a group should
 behave like an object:
 
-- a patient, product, article, or other repeatable record;
-- a selectable preview or option;
+- a selectable product, plan, article preview, or option;
+- a draggable or independently arranged dashboard object;
 - a summary with its own identity and actions;
 - a deliberately unified callout that should be perceived as one thing.
 
@@ -113,29 +113,25 @@ Do not add a Card merely because content needs spacing, a background, or a place
 to live. Ordinary instructions, paragraphs, forms, progress, page-level status,
 and H2-level groups belong directly in their Section.
 
-A Card does not replace Section. It appears inside the appropriate page
-structure:
+A Card does not replace Section. The ordinary form is simply:
 
 ```jsx
 <Stripe>
   <Bounds>
     <Section>
-      <Chunk><Text type="sectionHead">Patients</Text></Chunk>
-      <Chunk>
-        <Card>
-          <Sectionless>
-            <Chunk><Text type="big" weight="strong">Evelyn Brooks</Text></Chunk>
-            <Chunk><Text>3 of 3 exercises complete</Text></Chunk>
-          </Sectionless>
-        </Card>
-      </Chunk>
+      <Chunk><Text type="sectionHead">Account information</Text></Chunk>
+      <Chunk><Text>Name, contact details, and preferences.</Text></Chunk>
+      <Chunk><Button label="Edit account" /></Chunk>
     </Section>
   </Bounds>
 </Stripe>
 ```
 
-Inside a Card, use Sectionless for interior padding. A card title should use
-ordinary emphasized text unless it truly begins a new page-outline section.
+If that content later becomes a selectable preview, movable object, or
+self-contained summary with its own actions, place the Card inside the existing
+Section. Inside a Card, use Sectionless for interior padding. A card title
+should use ordinary emphasized text unless it truly begins a new page-outline
+section.
 
 ---
 

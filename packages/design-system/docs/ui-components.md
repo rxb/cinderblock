@@ -151,6 +151,7 @@ Form text input component with auto-expansion and character counting features.
 |------|------|---------|-------------|
 | `autoExpand` | `boolean` | `true` | Auto-expand height for multiline |
 | `multiline` | `boolean` | `false` | Enable multiline input |
+| `accessibilityLabel` | `string` | `null` | Persistent programmatic name when a compact standalone control intentionally has no visible `Label` |
 | `placeholder` | `string` | `null` | Placeholder text |
 | `maxLength` | `number` | `null` | Maximum character count |
 | `showCounter` | `boolean` | `false` | Show character counter (requires `maxLength`) |
@@ -158,6 +159,7 @@ Form text input component with auto-expansion and character counting features.
 | `onChange` | `function` | `() => {}` | Change handler — receives the raw DOM change event, not the value directly. Read the text with `event.target.value` |
 | `onFocus` | `function` | `() => {}` | Focus handler |
 | `onBlur` | `function` | `() => {}` | Blur handler |
+| `onKeyPress` | `function` | `undefined` | Input-level keyboard handler; use `event.nativeEvent.key` as the cross-platform fallback |
 
 ### Usage
 
@@ -201,6 +203,14 @@ import { TextInput, Chunk, Label } from '@cinderblock/design-system';
     onChange={(e) => setEmail(e.target.value)}
   />
 </Chunk>
+
+// Compact standalone search. Forms should normally keep a visible Label.
+<TextInput
+  accessibilityLabel="Search patients"
+  placeholder="Search by patient name"
+  value={query}
+  onChange={(e) => setQuery(e.target.value)}
+/>
 ```
 
 ---

@@ -65,20 +65,26 @@ Cinderblock uses a unique approach where spacing and layout come from structural
 
 \`\`\`jsx
 <Stripe>       {/* Full-width sections */}
-  <Section>    {/* Content areas */}
-    <Chunk>    {/* Element spacing */}
-      <Text type="pageHead">Your Content</Text>
-    </Chunk>
-    <Chunk>
-      <Text>More content with proper spacing</Text>
-    </Chunk>
-  </Section>
+  <Bounds>     {/* Centered maximum width */}
+    <Section>  {/* Page-outline content group */}
+      <Chunk>  {/* Element spacing */}
+        <Text type="pageHead">Your Content</Text>
+      </Chunk>
+      <Chunk>
+        <Text>More content with proper spacing</Text>
+      </Chunk>
+    </Section>
+  </Bounds>
 </Stripe>
 \`\`\`
 
+Section is the normal home for page content. Chunk gives that content rhythm;
+Flex and List arrange it. Add Card only when a group should read as a distinct
+object.
+
 ### Key Components
 
-- **Structural**: \`Stripe\`, \`Section\`, \`Chunk\`, \`Flex\`, \`FlexItem\`
+- **Structural**: \`Stripe\`, \`Bounds\`, \`Section\`, \`Chunk\`, \`Flex\`, \`FlexItem\`
 - **UI**: \`Button\`, \`TextInput\`, \`Modal\`, \`Tabs\`
 - **Content**: \`Text\`, \`Avatar\`, \`Icon\`, \`Picture\`, \`List\`
 - **Utility**: \`LoadingBlock\`, \`RevealBlock\`, \`Bounce\`
@@ -88,6 +94,7 @@ Cinderblock uses a unique approach where spacing and layout come from structural
 \`\`\`jsx
 import { 
   Stripe, 
+  Bounds,
   Section, 
   Chunk, 
   Text, 
@@ -97,17 +104,19 @@ import {
 function HomePage() {
   return (
     <Stripe>
-      <Section>
-        <Chunk>
-          <Text type="pageHead">Welcome to {{PROJECT_NAME}}</Text>
-        </Chunk>
-        <Chunk>
-          <Text>Start building your app with Cinderblock components.</Text>
-        </Chunk>
-        <Chunk>
-          <Button color="primary">Get Started</Button>
-        </Chunk>
-      </Section>
+      <Bounds>
+        <Section>
+          <Chunk>
+            <Text type="pageHead">Welcome to {{PROJECT_NAME}}</Text>
+          </Chunk>
+          <Chunk>
+            <Text>Start building your app with Cinderblock components.</Text>
+          </Chunk>
+          <Chunk>
+            <Button color="primary" label="Get started" />
+          </Chunk>
+        </Section>
+      </Bounds>
     </Stripe>
   );
 }

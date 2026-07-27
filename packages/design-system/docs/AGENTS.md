@@ -75,9 +75,9 @@ Structure:
   inset; `border`, `borderedContent`. It is still required for a page that has
   only an H1.
 - `Chunk` — paragraph-level spacing unit; `inline` for a horizontal chunk.
-- `Card` — bordered/elevated container (`shadow`); often the item inside `List`.
-  It is an optional object-like grouping inside a Section, not the default page
-  content wrapper.
+- `Card` — optional bordered/elevated object boundary (`shadow`). It is an
+  object-like grouping inside a Section, not the default page-content wrapper
+  or the automatic child of a List.
   **Card has NO built-in padding** — the interior is always
   `Card > Sectionless > Chunk`; bare `Chunk`s inside a `Card` sit flush
   against the border. Omit the `Sectionless` only for deliberate full-bleed
@@ -102,6 +102,8 @@ Layout:
   is `'linear' | 'grid' | 'scroll'` **or a responsive object** like
   `{ small: 'scroll', medium: 'grid' }`. Grid uses `itemsInRow`
   (e.g. `{ small: 1, medium: 2, large: 4 }`); scroll uses `scrollItemWidth`.
+  A primary linear directory may live directly in its page Section and its
+  rows do not need Cards when dividers and row layout provide enough grouping.
 
 Content:
 - `Text` — the only text primitive. `type`: `micro | small | body | big |
@@ -135,7 +137,9 @@ Forms:
 - `TextInput`, `CheckBox`, `Picker`, `FileInput`, `PhotoInput`, `FakeInput`,
   `Label`, `FieldError`, and the `useFormState` hook (fields, safe merged or
   replacement updates, loading state, error handling). `TextInput` passes an
-  event, `CheckBox` passes a boolean, and `Picker` passes its value. See
+  event, `CheckBox` passes a boolean, and `Picker` passes its value. Visible
+  Labels are the default; a compact standalone control such as search may use
+  an explicit `accessibilityLabel`, but never a placeholder alone. See
   [forms.md](./forms.md) before building a production form.
 
 Utility:
@@ -143,6 +147,18 @@ Utility:
   for the current viewport; `initMediaProvider` sets it up in `_app`.
 - `LoadingBlock`, `RevealBlock`, `Bounce`, `Reorderable`, `Map`,
   `ThemeContext`, `designConstants` (SWATCHES, METRICS, BREAKPOINTS).
+
+## Choosing whether to use Card
+
+Start without Card. Section, Chunk, Flex, and List already provide page
+hierarchy, spacing, arrangement, and repeated rows.
+
+Add Card only when the grouped content should remain a distinct object even if
+the surrounding page structure changes—for example, when the group is selected
+or opened as a whole, repeated peer objects need strong separation, or a
+self-contained summary owns its own actions. If the need is merely spacing, a
+background region, a form boundary, ordinary status, or an H2-level grouping,
+use the structural components instead.
 
 ## Responsive model
 
@@ -252,7 +268,7 @@ Fixed-width action sidebar:
 </Stripe>
 ```
 
-Responsive card feed:
+Optional responsive Card feed (for genuine selectable previews or objects):
 
 ```jsx
 <List
@@ -262,7 +278,7 @@ Responsive card feed:
   items={items}
   renderItem={(item) => (
     <Chunk key={item.id}>
-      <Card>...</Card>
+      <Card><Sectionless>...</Sectionless></Card>
     </Chunk>
   )}
 />
