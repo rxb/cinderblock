@@ -202,6 +202,20 @@ html {
 and give content stripes an explicit background (e.g.
 `<Stripe style={{ backgroundColor: SWATCHES.notwhite }}>`).
 
+**Compose translucent tokens once at each intended level.** Cinderblock's
+default text colors (`textPrimary`, `textSecondary`, and `textHint`) and many
+surface tokens (`notwhite`, `shade`, borders, and input backgrounds) are RGBA
+colors. They intentionally blend with the surface beneath them so the same
+hierarchy remains useful across different backgrounds. That also means
+repeating the same translucent background on nested page containers compounds
+the tint.
+
+Use an opaque app canvas such as `SWATCHES.backgroundWhite`, then apply
+`SWATCHES.notwhite` to the content `Stripe` once. Do not apply `notwhite` to
+both the app wrapper and a nested Stripe. Translucent input, border, badge, and
+text tokens inside that Stripe are a different, intentional layer: they
+distinguish a control or foreground element from its containing surface.
+
 ## 5. TypeScript consumers
 
 The library is untyped JS. Consumers need a module shim:

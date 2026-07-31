@@ -800,8 +800,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 
 		// flex--column, flex--column__small, flex--column__medium, flex--column__large, flex--column__xlarge
 		...stylesForSingleBreakpoints('flex--column', {
-			flexDirection: 'column',
-			height: '100%'
+			flexDirection: 'column'
 		}),
 
 		// FlexItem
