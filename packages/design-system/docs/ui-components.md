@@ -409,6 +409,9 @@ must run only when its explicit button is activated. Keep queued records and
 callbacks outside Cinderblock; application adapters may translate serializable
 Redux descriptors into `content` elements at the root host.
 
+For the reusable descriptor, registry, lifecycle, and conflict-policy pattern,
+see [Global layer state integration](./global-layer-state.md).
+
 ---
 
 ## Tabs

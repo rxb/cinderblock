@@ -430,17 +430,26 @@ Queue-based modal prompt system for confirmations and lightweight dialogs.
 
 ### How it works
 
-Like Toaster and Dropdowner, Prompter is state-agnostic: you own a `prompts` array (React state, Redux, or context) and pass management functions in as props. Each prompt object provides its own `content` element; the first prompt in the queue is displayed. There are no `title`/`message`/`onConfirm` props — you compose the prompt body yourself.
+Like Toaster and Dropdowner, Prompter is state-agnostic: you own a `prompts`
+array and pass management functions in as props. Prompter ultimately receives
+a `content` element and displays the first prompt in the queue. A local React
+owner may compose that element directly. Redux and other global stores should
+instead keep serializable descriptors and let a root host materialize the
+content. See [Global layer state integration](./global-layer-state.md).
 
 ### Props
 
 | Prop | Type | Description |
 |------|------|-------------|
-| `prompts` | `array` | Queue of prompt objects: `{id, content, showable, dismissable?, onPressEnter?, onRequestClose?, onCompleteClose?}` |
+| `prompts` | `array` | Queue of prompt objects: `{id, content, showable, dismissable?, onRequestClose?, onCompleteClose?}` |
 | `hidePrompt` | `function` | `hidePrompt(id)` — set that prompt's `showable` to `false` (starts the close animation) |
 | `removePrompt` | `function` | `removePrompt(id)` — remove the prompt from the array after closing |
 
-Prompt object fields: `content` (element, receives injected `onRequestClose`/`onCompleteClose` props), `showable` (boolean, controls visibility), `dismissable` (default `true`; when `false`, backdrop click and Escape are ignored), `onPressEnter` (Enter key handler).
+Prompt object fields: `content` (element, receives injected
+`onRequestClose`/`onCompleteClose` props), `showable` (boolean, controls
+visibility), and `dismissable` (default `true`; when `false`, backdrop click
+and Escape are ignored). Prompter does not turn Enter into confirmation;
+activate an explicit button or submit a focused form instead.
 
 ### Usage
 

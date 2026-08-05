@@ -357,8 +357,11 @@ Inline icon-with-text (flows with the text baseline, no Flex needed):
 
 ## 11. Prompt (confirm dialog) content
 
-Prompts are plain components dispatched into the app-level `Prompter`;
-`onRequestClose` is injected automatically.
+Prompter ultimately receives composed content and injects `onRequestClose`.
+Local state may own that element directly. For Redux or another global store,
+dispatch a serializable `{id, kind, payload, phase}` descriptor and let the
+root host materialize this component; see
+[Global layer state integration](./global-layer-state.md).
 
 ```jsx
 const DeletePrompt = ({ thing, onRequestClose }) => (
@@ -371,7 +374,17 @@ const DeletePrompt = ({ thing, onRequestClose }) => (
     </Chunk>
   </Section>
 );
-// anywhere: dispatch(addPrompt(<DeletePrompt thing={thing} />))
+
+// Local owner:
+setPromptContent(<DeletePrompt thing={thing} />);
+
+// Global owner:
+dispatch(enqueuePrompt({
+  id: `delete-thing-${thing.id}`,
+  kind: 'delete-thing',
+  phase: 'open',
+  payload: { thingId: thing.id, returnFocusId: `delete-${thing.id}` }
+}));
 ```
 
 ## 12. Dropdown menu on a button
@@ -519,20 +532,9 @@ The route component supplies its own page structure:
 This boundary is deliberate: the shell is shared, while each page controls how
 many visual regions and H2-level groups it needs.
 
-Cinderblock has no state-management dependency — the app supplies state and
-add/hide/remove actions (Redux in starterkit, but anything works). Then any
-component can `dispatch(addToast('Saved!'))` or `dispatch(addPrompt(<MyPrompt />))`.
-
-Without Redux, a ~50-line React context works fine: a provider that owns the
-`toasts`/`prompts` arrays, renders `<Toaster>`/`<Prompter>` after `children`,
-and exposes `addToast(message)` / `addPrompt(render)` through a hook. For
-prompts, have `addPrompt` take a render callback and inject the close function:
-
-```jsx
-const addPrompt = (render) => {
-  const id = nextId++;
-  const close = () => hidePrompt(id);
-  setPrompts(prev => [...prev, { id, content: render(close), showable: true }]);
-};
-// usage: addPrompt(close => <ConfirmThing onConfirm={() => { doIt(); close(); }} onCancel={close} />)
-```
+Cinderblock has no state-management dependency—the app supplies state and
+lifecycle actions. Redux, React Context, or another store can all work. For
+globally coordinated layers, keep the store serializable and let the root host
+translate descriptors into the `content` elements Cinderblock receives. The
+complete decision framework and implementation pattern live in
+[Global layer state integration](./global-layer-state.md).

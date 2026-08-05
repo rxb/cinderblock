@@ -148,7 +148,9 @@ Interaction:
   deliberately ignores the legacy `onPressEnter` shortcut: confirmations run
   only through the explicitly focused button or form control. Pair `Modal`
   with `RevealBlock visible={...}` to animate-swap panels (e.g. login ↔
-  register).
+  register). For globally coordinated layers, store serializable
+  `{id, kind, payload, phase}` descriptors and materialize React content in one
+  root host; see [global-layer-state.md](./global-layer-state.md).
 
 Forms:
 - `TextInput`, `CheckBox`, `Picker`, `FileInput`, `PhotoInput`, `FakeInput`,
@@ -390,3 +392,4 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
 - [style-generation.md](./style-generation.md) — maintainer doc: how METRICS become compositional geometry and responsive styles
 - [experimental-responsive-rhythm.md](./experimental-responsive-rhythm.md) — opt-in rhythm preset and visual test-bed findings
 - [nextjs-integration.md](./nextjs-integration.md) — **read before debugging consumer integration**
+- [global-layer-state.md](./global-layer-state.md) — reusable descriptor, registry, lifecycle, and layer-conflict strategy

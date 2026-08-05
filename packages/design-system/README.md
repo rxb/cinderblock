@@ -143,6 +143,7 @@ Detailed component documentation is available in the [docs](./docs/) folder:
 - [UI/Interactive Components](./docs/ui-components.md)
 - [Content/Display Components](./docs/content-components.md)
 - [Utility/Behavioral Components](./docs/utility-components.md)
+- [Global Layer State Integration](./docs/global-layer-state.md) — reusable serializable descriptor and root-host strategy
 - [Responsive System](./docs/responsive-system.md) — breakpoints and utility classes
 - [Next.js Integration Guide](./docs/nextjs-integration.md) — router requirement, webpack recipe, `file:` dep consumption, TypeScript shim, known landmines
 - [Style Generation](./docs/style-generation.md) — maintainer doc for the internal style pipeline
