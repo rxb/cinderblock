@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Bounds,
   Button,
@@ -7,9 +7,12 @@ import {
   Flex,
   FlexItem,
   List,
+  Modal,
+  Prompter,
   Section,
   Sectionless,
   Stripe,
+  Tabs,
   Text,
   ThemeContext,
   experimentalStyleConfig
@@ -28,8 +31,63 @@ const CARDS = [
   ['Limited hierarchy', 'The page is assembled from three structural spacing roles, including on small screens.']
 ];
 
+function ConfirmationContent({onRequestClose}) {
+  return (
+    <Section>
+      <Chunk>
+        <Text type="sectionHead">Remove sample exercise?</Text>
+      </Chunk>
+      <Chunk>
+        <Text>This verifies that confirmation requires an explicit action.</Text>
+      </Chunk>
+      <Chunk>
+        <Button
+          id="prompt-review-consequence"
+          color="secondary"
+          label="Review consequence"
+          onPress={() => {}}
+        />
+      </Chunk>
+      <Flex direction="column" switchDirection="medium">
+        <FlexItem>
+          <Chunk>
+            <Button
+              color="secondary"
+              label="Cancel"
+              onPress={onRequestClose}
+            />
+          </Chunk>
+        </FlexItem>
+        <FlexItem>
+          <Chunk>
+            <Button
+              label="Remove sample"
+              onPress={onRequestClose}
+            />
+          </Chunk>
+        </FlexItem>
+      </Flex>
+    </Section>
+  );
+}
+
 export default function RhythmLab() {
   const { SWATCHES } = experimentalStyleConfig;
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedTab, setSelectedTab] = useState('exercises');
+  const [prompts, setPrompts] = useState([]);
+
+  const openPrompt = () => {
+    setPrompts([{
+      id: 'sample-removal',
+      showable: true,
+      dismissable: true,
+      accessibilityLabel: 'Remove sample exercise',
+      initialFocusId: 'prompt-review-consequence',
+      onPressEnter: () => setPrompts([]),
+      content: <ConfirmationContent />
+    }]);
+  };
 
   return (
     <ThemeContext.Provider value={experimentalStyleConfig}>
@@ -117,8 +175,103 @@ export default function RhythmLab() {
                 </Text>
               </Chunk>
             </Section>
+
+            <Section>
+              <Chunk>
+                <Text type="sectionHead">Layer accessibility contract</Text>
+              </Chunk>
+              <Chunk>
+                <Text color="secondary">
+                  Modal focus stays contained and returns to its opener. Tabs
+                  support Arrow keys, Home, and End. Prompts require an explicit
+                  control rather than treating Enter as confirmation.
+                </Text>
+              </Chunk>
+              <Flex direction="column" switchDirection="medium">
+                <FlexItem shrink>
+                  <Chunk>
+                    <Button
+                      id="open-layer-lab-modal"
+                      label="Open layer example"
+                      onPress={() => setModalVisible(true)}
+                    />
+                  </Chunk>
+                </FlexItem>
+                <FlexItem shrink>
+                  <Chunk>
+                    <Button
+                      color="secondary"
+                      label="Open confirmation"
+                      onPress={openPrompt}
+                    />
+                  </Chunk>
+                </FlexItem>
+              </Flex>
+            </Section>
           </Bounds>
         </Stripe>
+
+        <Modal
+          visible={modalVisible}
+          accessibilityLabel="Layer accessibility example"
+          initialFocusId="layer-lab-done"
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <Section>
+            <Chunk>
+              <Text type="pageHead">Layer accessibility example</Text>
+            </Chunk>
+            <Chunk>
+              <Tabs
+                id="layer-lab-source-tabs"
+                accessibilityLabel="Example source"
+                selectedValue={selectedTab}
+                onChange={setSelectedTab}
+                fullWidth
+              >
+                <Tabs.Item value="exercises" label="Exercises" />
+                <Tabs.Item value="routines" label="Routines" />
+              </Tabs>
+            </Chunk>
+            <Tabs.Panel
+              tabsId="layer-lab-source-tabs"
+              value="exercises"
+              selectedValue={selectedTab}
+            >
+              <Chunk>
+                <Text>Exercise search and results will live in this panel.</Text>
+              </Chunk>
+            </Tabs.Panel>
+            <Tabs.Panel
+              tabsId="layer-lab-source-tabs"
+              value="routines"
+              selectedValue={selectedTab}
+            >
+              <Chunk>
+                <Text>Saved routine results will live in this panel.</Text>
+              </Chunk>
+            </Tabs.Panel>
+            <Chunk>
+              <Button
+                id="layer-lab-done"
+                label="Done"
+                onPress={() => setModalVisible(false)}
+              />
+            </Chunk>
+          </Section>
+        </Modal>
+
+        <Prompter
+          prompts={prompts}
+          hidePrompt={(id) => {
+            setPrompts((current) => current.map((prompt) => (
+              prompt.id === id ? {...prompt, showable: false} : prompt
+            )));
+          }}
+          removePrompt={(id) => {
+            setPrompts((current) => current.filter((prompt) => prompt.id !== id));
+          }}
+        />
       </Page>
     </ThemeContext.Provider>
   );

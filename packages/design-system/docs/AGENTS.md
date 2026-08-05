@@ -127,7 +127,9 @@ Interaction:
   for the label and disables submission), `type="submit"` (native web form
   submission), `inverted`, `dummy` (visual-only, no press handling — use when
   wrapped by another touchable like `DropdownTouch`).
-- `Touch` (bare pressable), `Link` (navigation), `Tabs`, `Menu`. When using
+- `Touch` (bare pressable), `Link` (navigation), `Tabs`, `Menu`. `Tabs` renders
+  a semantic tablist on web, uses roving focus with Arrow/Home/End keys, and
+  pairs each `Tabs.Item` with a `Tabs.Panel` through a stable `id`. When using
   `Touch` for a custom control (pill, row, icon target), pass
   `accessibilityRole="button"` so it announces and keyboard-activates like
   the built-in `Button`.
@@ -138,8 +140,15 @@ Interaction:
   mounted **once at the app level** (in a shared `Page` wrapper) and driven by
   app state (e.g. Redux slices with add/hide/remove actions). Prompt and
   dropdown content are plain components that receive `onRequestClose` as a
-  prop. Pair `Modal` with `RevealBlock visible={...}` to animate-swap panels
-  (e.g. login ↔ register).
+  prop. Every Modal needs `accessibilityLabel` or `aria-labelledby`; use
+  `initialFocusId`/`initialFocusRef` when the default first control is not the
+  right starting point. Modal portals to `body`, makes `#__next` inert, traps
+  focus, restores the opener, locks background scroll, and honors reduced
+  motion. `dismissable={false}` prevents Escape/backdrop dismissal. Prompter
+  deliberately ignores the legacy `onPressEnter` shortcut: confirmations run
+  only through the explicitly focused button or form control. Pair `Modal`
+  with `RevealBlock visible={...}` to animate-swap panels (e.g. login ↔
+  register).
 
 Forms:
 - `TextInput`, `CheckBox`, `Picker`, `FileInput`, `PhotoInput`, `FakeInput`,

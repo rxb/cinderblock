@@ -10,7 +10,7 @@ class MyDocument extends Document {
 		const { getStyleElement } = AppRegistry.getApplication('Main')
 		const page = await renderPage()
 		const styles = [
-		  getStyleElement(),
+		  getStyleElement({ key: 'react-native-web' }),
 		  flush()
 		]
 		return { ...page, styles: Children.toArray(styles) }
@@ -22,7 +22,9 @@ class MyDocument extends Document {
 				{ ({ styles, SWATCHES, METRICS }) => (
           <Html lang="en">
             <Head>
-							<meta name="viewport" content="width=device-width, initial-scale=1 shrink-to-fit=no" />
+							<link rel="preconnect" href="https://fonts.googleapis.com" />
+							<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+							<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet" />
 						<style
 								dangerouslySetInnerHTML={{
 									__html: `

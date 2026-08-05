@@ -327,9 +327,22 @@ Full-screen overlay component for dialogs and modal content.
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `visible` | `boolean` | `false` | Whether modal is visible |
-| `onRequestClose` | `function` | `() => console.log('onRequestClose not implemented')` | Called when the backdrop, close (X) button, or Escape key is pressed. You're responsible for setting `visible` to `false` |
+| `accessibilityLabel` | `string` | none | Accessible dialog name. Required unless `aria-labelledby` points to a visible heading |
+| `onRequestClose` | `function` | `() => {}` | Called with `escape`, `backdrop`, or `close-button`. Set `visible` to `false` in response |
 | `onCompleteClose` | `function` | `() => {}` | Called after the close animation finishes |
-| `onPressEnter` | `function` | `() => {}` | Called when Enter is pressed while the modal is visible |
+| `dismissable` | `boolean` | `true` | Whether Escape and the standard close control may dismiss the dialog |
+| `closeOnBackdropPress` | `boolean` | `true` | Whether backdrop presses request dismissal when the dialog is dismissible |
+| `closeLabel` | `string` | `Close dialog` | Accessible name for the icon-only close control |
+| `showCloseButton` | `boolean` | value of `dismissable` | Whether to render the standard close control |
+| `initialFocusId` | `string` | none | ID of the preferred initial focus target inside the dialog |
+| `initialFocusRef` | `ref` | none | Ref for the preferred initial focus target when an ID is unsuitable |
+| `variant` | `modal` \| `prompt` | `modal` | Standard responsive sheet/dialog or compact prompt presentation |
+
+Modal renders through a portal under `body`, marks `#__next` inert while it is
+open, traps Tab and Shift+Tab inside the dialog, restores focus after closing,
+and locks background scrolling. It uses a bottom sheet below the medium
+breakpoint and respects `prefers-reduced-motion`. Enter retains native button
+and form behavior; Modal does not provide a global Enter shortcut.
 
 ### Usage
 
@@ -349,6 +362,7 @@ function MyComponent() {
 
       <Modal 
         visible={modalVisible}
+        accessibilityLabel="Modal title"
         onRequestClose={() => setModalVisible(false)}
       >
         <Stripe>
@@ -374,6 +388,29 @@ function MyComponent() {
 
 ---
 
+## Prompter
+
+Queue adapter for compact confirmation dialogs. `Prompter` renders the first
+prompt descriptor, injects `onRequestClose` into its content, starts the close
+animation through `hidePrompt(id)`, and removes the record through
+`removePrompt(id)` after animation completion.
+
+Each prompt accepts Modal's naming, focus, and dismissal props plus:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `id` | `string` | Stable queue record ID |
+| `showable` | `boolean` | `true` while open, `false` while closing |
+| `content` | `element` | Prompt content; receives `onRequestClose` |
+| `dismissable` | `boolean` | Controls Escape, backdrop, and standard close behavior |
+
+Prompter deliberately does not invoke `onPressEnter`. A destructive action
+must run only when its explicit button is activated. Keep queued records and
+callbacks outside Cinderblock; application adapters may translate serializable
+Redux descriptors into `content` elements at the root host.
+
+---
+
 ## Tabs
 
 Tab navigation component for switching between content sections.
@@ -390,8 +427,15 @@ Tab navigation component for switching between content sections.
 | `selectedValue` | `string` | first tab's `value` | Currently selected tab |
 | `onChange` | `function` | `null` | Tab change handler — receives the selected tab's `value` |
 | `fullWidth` | `boolean` | `false` | Distribute tabs evenly across the full width |
+| `id` | `string` | generated | Stable base used to associate tabs and tabpanels; specify one when rendering `Tabs.Panel` |
+| `accessibilityLabel` | `string` | none | Accessible name for the tablist when context does not already provide one |
 
 Tabs are declared as `Tabs.Item` children (there is no `tabs` array prop). Each `Tabs.Item` takes a `value` (unique identifier) and a `label` (display text); selection state and the `onChange` handler are passed down automatically.
+
+On web, only the selected tab is in the Tab sequence. Arrow Right/Down selects
+the next tab, Arrow Left/Up selects the previous tab, and Home/End select the
+first/last tab. Pair the list with `Tabs.Panel`; inactive panels are not
+rendered, and the active panel is associated with its tab.
 
 ### Usage
 
@@ -405,6 +449,8 @@ function TabExample() {
     <>
       <Chunk>
         <Tabs 
+          id="account-tabs"
+          accessibilityLabel="Account sections"
           selectedValue={selectedTab}
           onChange={setSelectedTab}
         >
@@ -414,11 +460,15 @@ function TabExample() {
         </Tabs>
       </Chunk>
       
-      <Chunk>
-        {selectedTab === 'tab1' && <Text>Overview content</Text>}
-        {selectedTab === 'tab2' && <Text>Details content</Text>}
-        {selectedTab === 'tab3' && <Text>Settings content</Text>}
-      </Chunk>
+      <Tabs.Panel tabsId="account-tabs" value="tab1" selectedValue={selectedTab}>
+        <Chunk><Text>Overview content</Text></Chunk>
+      </Tabs.Panel>
+      <Tabs.Panel tabsId="account-tabs" value="tab2" selectedValue={selectedTab}>
+        <Chunk><Text>Details content</Text></Chunk>
+      </Tabs.Panel>
+      <Tabs.Panel tabsId="account-tabs" value="tab3" selectedValue={selectedTab}>
+        <Chunk><Text>Settings content</Text></Chunk>
+      </Tabs.Panel>
     </>
   );
 }

@@ -1,263 +1,330 @@
-import React, {useContext} from 'react';
-import { Animated, Easing, ScrollView, Touchable, View } from '../primitives';
+import React from 'react';
+import {createPortal} from 'react-dom';
+import {Animated, ScrollView, View} from '../primitives';
 import ThemeContext from '../ThemeContext';
 
-import Card from './Card';
-import Flex from './Flex';
-import FlexItem from './FlexItem';
-import Chunk from './Chunk';
+import Button from './Button';
 import Touch from './Touch';
-import Icon from './Icon';
-import Header from './Header';
-import Section from './Section';
-import Stripe from './Stripe';
-import { MediaContext } from './UseMediaContext';
-import { EASE } from '../styles/designConstants';
+import {MediaContext} from './UseMediaContext';
+import {EASE} from '../styles/designConstants';
 
-import { disableBodyScroll, enableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
+import {disableBodyScroll, enableBodyScroll} from 'body-scroll-lock';
+
+const FOCUSABLE_SELECTOR = [
+	'a[href]',
+	'button:not([disabled])',
+	'input:not([disabled])',
+	'select:not([disabled])',
+	'textarea:not([disabled])',
+	'[tabindex]:not([tabindex="-1"])',
+	'[contenteditable="true"]',
+].join(',');
+
+const animationDuration = () => (
+	typeof window !== 'undefined'
+	&& window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+		? 0
+		: 250
+);
+
+const schedule = (callback) => {
+	if (typeof window !== 'undefined' && window.requestAnimationFrame) {
+		window.requestAnimationFrame(callback);
+	}
+	else {
+		setTimeout(callback, 0);
+	}
+};
 
 /**
- * Advanced modal component with animations, accessibility, and responsive behavior.
- * 
- * Features:
- * - Smooth fade animations with configurable easing
- * - Body scroll locking to prevent background scrolling
- * - Responsive sizing (full-screen on mobile, centered on desktop)
- * - Keyboard support (ESC to close, Enter for actions)
- * - Overlay click-to-close functionality
- * - Proper focus management and accessibility
- * - Portal rendering for proper z-index layering
- * 
- * Note: There's a known iOS bug in versions < 11.3 where fixed positioning
- * can cause issues with input elements in modals.
- * 
- * @example
- * // Basic modal with content
- * <Modal 
- *   visible={showModal}
- *   onRequestClose={() => setShowModal(false)}
- * >
- *   <Card>
- *     <Chunk><Text type="sectionHead">Confirm Action</Text></Chunk>
- *     <Chunk><Text>Are you sure you want to proceed?</Text></Chunk>
- *     <Chunk>
- *       <Flex>
- *         <FlexItem><Button onPress={handleCancel}>Cancel</Button></FlexItem>
- *         <FlexItem><Button color="primary" onPress={handleConfirm}>Confirm</Button></FlexItem>
- *       </Flex>
- *     </Chunk>
- *   </Card>
- * </Modal>
- * 
- * @example
- * // Modal with form and enter key handling
- * <Modal 
- *   visible={showForm}
- *   onRequestClose={closeForm}
- *   onPressEnter={submitForm}
- * >
- *   <Card>
- *     <form onSubmit={submitForm}>
- *       <Chunk><TextInput label="Name" value={name} onChange={setName} /></Chunk>
- *       <Chunk><Button type="submit">Save</Button></Chunk>
- *     </form>
- *   </Card>
- * </Modal>
+ * Blocking dialog/sheet with a portal, semantic dialog contract, focus
+ * containment and restoration, background inertness, and body scroll locking.
+ *
+ * Give every Modal either `accessibilityLabel` or `aria-labelledby`. The
+ * optional `initialFocusRef` selects the first focused control; otherwise the
+ * first focusable descendant (or the dialog itself) receives focus.
  */
-class Modal extends React.Component{
-
+class Modal extends React.Component {
 	static contextType = MediaContext;
 
-	// for body locking
-	targetRef = React.createRef();
-  	targetElement = null;
-
 	static defaultProps = {
-    	onPressEnter: ()=>{},
-    	onRequestClose: ()=>{ console.log('onRequestClose not implemented') },
-    	onCompleteClose: ()=>{ },
-    	visible: false
-  	}
+		onRequestClose: () => {},
+		onCompleteClose: () => {},
+		visible: false,
+		dismissable: true,
+		closeOnBackdropPress: true,
+		closeLabel: 'Close dialog',
+		variant: 'modal',
+	};
 
 	constructor(props) {
 		super(props);
 		this.state = {
 			display: 'none',
-			visibilityValue: new Animated.Value(0)
-		}
-		this.onKeyPress = this.onKeyPress.bind(this);
-
+			portalTarget: null,
+			visibilityValue: new Animated.Value(0),
+		};
+		this.dialogRef = React.createRef();
+		this.scrollRef = React.createRef();
+		this.previouslyFocusedElement = null;
+		this.backgroundElement = null;
+		this.backgroundAriaHidden = null;
+		this.backgroundWasInert = false;
+		this.onKeyDown = this.onKeyDown.bind(this);
 	}
 
-	componentDidMount(){
-
-		// if there are problems in ios with body locking
-		// it's probably because of this https://github.com/willmcpo/body-scroll-lock/issues/102#issuecomment-482599456
-		this.targetElement = this.targetRef.current;
-
-		document.addEventListener("keydown", this.onKeyPress, false);
-		if(this.props.visible){
-			setTimeout(()=>{
-				this.open();
-			}, 1);
-		}
-	}
-	componentWillUnmount(){
-		document.removeEventListener("keydown", this.onKeyPress, false);
-		clearAllBodyScrollLocks();
+	componentDidMount() {
+		document.addEventListener('keydown', this.onKeyDown, true);
+		this.setState({portalTarget: document.body}, () => {
+			if (this.props.visible) this.open();
+		});
 	}
 
-	onKeyPress(event){
-		if(this.props.visible){
-			if(event.keyCode === 27) {
-				event.preventDefault();
-				this.props.onRequestClose();
-			}
+	componentDidUpdate(prevProps) {
+		if (this.props.visible !== prevProps.visible) {
+			if (this.props.visible) this.open();
+			else this.close();
 		}
 	}
 
-	/*
-	UNSAFE_componentWillReceiveProps(nextProps){
-		if(nextProps.visible){
-			this.open();
-		}
-		else{
-			this.close();
-		}
+	componentWillUnmount() {
+		document.removeEventListener('keydown', this.onKeyDown, true);
+		this.unlockBody();
+		this.restoreBackground();
+		this.restoreFocus();
 	}
-	*/
-	componentDidUpdate(prevProps){
-		if(this.props.visible != prevProps.visible){
-			if(this.props.visible){
-				this.open();
-			}
-			else{
-				this.close();
-			}
+
+	getFocusableElements() {
+		const dialog = this.dialogRef.current;
+		if (!dialog) return [];
+		return Array.from(dialog.querySelectorAll(FOCUSABLE_SELECTOR)).filter(
+			(element) => (
+				!element.hasAttribute('disabled')
+				&& element.tabIndex >= 0
+				&& element.getAttribute('aria-hidden') !== 'true'
+				&& element.getClientRects().length > 0
+			)
+		);
+	}
+
+	focusInitialElement() {
+		const dialog = this.dialogRef.current;
+		if (!dialog) return;
+		const requestedById = this.props.initialFocusId
+			? document.getElementById(this.props.initialFocusId)
+			: null;
+		const requested = dialog.contains(requestedById)
+			? requestedById
+			: this.props.initialFocusRef?.current;
+		const markedRoot = dialog.querySelector('[data-modal-initial-focus="true"], [autofocus]');
+		const marked = markedRoot?.matches?.(FOCUSABLE_SELECTOR)
+			&& markedRoot.tabIndex >= 0
+			? markedRoot
+			: markedRoot?.querySelector?.(FOCUSABLE_SELECTOR);
+		const target = requested || marked || this.getFocusableElements()[0] || dialog;
+		target.focus?.({preventScroll: true});
+	}
+
+	onKeyDown(event) {
+		if (!this.props.visible || this.state.display === 'none') return;
+
+		if (event.key === 'Escape' && this.props.dismissable) {
+			event.preventDefault();
+			event.stopPropagation();
+			this.props.onRequestClose('escape');
+			return;
+		}
+
+		if (event.key !== 'Tab') return;
+		const dialog = this.dialogRef.current;
+		const focusable = this.getFocusableElements();
+		if (!dialog || focusable.length === 0) {
+			event.preventDefault();
+			dialog?.focus?.({preventScroll: true});
+			return;
+		}
+
+		const first = focusable[0];
+		const last = focusable[focusable.length - 1];
+		const active = document.activeElement;
+		if (!dialog.contains(active)) {
+			event.preventDefault();
+			(event.shiftKey ? last : first).focus();
+		}
+		else if (event.shiftKey && active === first) {
+			event.preventDefault();
+			last.focus();
+		}
+		else if (!event.shiftKey && active === last) {
+			event.preventDefault();
+			first.focus();
 		}
 	}
 
-	open(){		
-		disableBodyScroll(this.targetElement);
-		const duration = 250;
-		this.setState({display: 'flex'})
-		Animated.timing(
-			this.state.visibilityValue,{
+	makeBackgroundInert() {
+		const background = document.getElementById('__next');
+		if (!background) return;
+		this.backgroundElement = background;
+		this.backgroundAriaHidden = background.getAttribute('aria-hidden');
+		this.backgroundWasInert = background.hasAttribute('inert');
+		background.setAttribute('aria-hidden', 'true');
+		background.setAttribute('inert', '');
+	}
+
+	restoreBackground() {
+		const background = this.backgroundElement;
+		if (!background) return;
+		if (this.backgroundAriaHidden === null) background.removeAttribute('aria-hidden');
+		else background.setAttribute('aria-hidden', this.backgroundAriaHidden);
+		if (!this.backgroundWasInert) background.removeAttribute('inert');
+		this.backgroundElement = null;
+	}
+
+	lockBody() {
+		const target = this.scrollRef.current || this.dialogRef.current;
+		if (target) disableBodyScroll(target);
+	}
+
+	unlockBody() {
+		const target = this.scrollRef.current || this.dialogRef.current;
+		if (target) enableBodyScroll(target);
+	}
+
+	restoreFocus() {
+		const previous = this.previouslyFocusedElement;
+		this.previouslyFocusedElement = null;
+		if (previous?.isConnected) schedule(() => previous.focus?.({preventScroll: true}));
+	}
+
+	open() {
+		if (!this.state.portalTarget) return;
+		this.previouslyFocusedElement = document.activeElement;
+		this.makeBackgroundInert();
+		this.setState({display: 'flex'}, () => {
+			this.lockBody();
+			schedule(() => this.focusInitialElement());
+			Animated.timing(this.state.visibilityValue, {
 				toValue: 1,
 				easing: EASE,
-				duration
-			}
-		).start();
+				duration: animationDuration(),
+				useNativeDriver: false,
+			}).start();
+		});
 	}
 
-	close(){
-		enableBodyScroll(this.targetElement);
-		const duration = 250;
-		Animated.timing(
-			this.state.visibilityValue,{
-				toValue: 0,
-				easing: EASE,
-				duration
-			}
-		).start(()=>{
+	close() {
+		if (this.state.display === 'none') return;
+		Animated.timing(this.state.visibilityValue, {
+			toValue: 0,
+			easing: EASE,
+			duration: animationDuration(),
+			useNativeDriver: false,
+		}).start(() => {
 			this.setState({display: 'none'});
+			this.unlockBody();
+			this.restoreBackground();
+			this.restoreFocus();
 			this.props.onCompleteClose();
 		});
 	}
 
-
 	render() {
-
 		const {
+			accessibilityLabel,
 			children,
+			closeLabel,
+			closeOnBackdropPress,
+			dismissable,
+			initialFocusId,
+			initialFocusRef,
+			onCompleteClose,
+			onPressEnter,
 			onRequestClose,
+			showCloseButton = dismissable,
+			style,
+			variant,
 			visible,
-			...other
+			...dialogProps
 		} = this.props;
-
 		const media = this.context;
+		const isFull = variant !== 'prompt' && !media.medium;
 
-		const isFull = !media['medium'];
-
-		return(
+		const modal = (
 			<ThemeContext.Consumer>
-			{ ({styles, METRICS, SWATCHES}) => (
-			<Animated.View style={[
-				styles['modal-container'],
-				{
-					display: this.state.display,
-					opacity: this.state.visibilityValue
-				}
-			]}>
-				{ (true || !isFull) &&
-					<Touch
-						onPress={onRequestClose}
-						noFeedback
-						>
-							<View style={[ styles['modal-backdrop'] ]} />
-					</Touch>
-				}
-				<Animated.View style={[
-					(isFull) ? styles['modal--full'] : styles['modal'],
-					{
-						transform: [{
-					      translateY: this.state.visibilityValue.interpolate({
-					        inputRange: [0, 1],
-					        outputRange: [180, 0]
-					      }),
-					    }]
-					}
-				]}>
-					<Stripe style={{borderBottomWidth: 1, borderBottomColor: SWATCHES.border}}>
-						<Section style={{ paddingVertical: 0}}>
-							<Flex>
-								<FlexItem shrink>
-									<Touch
-										onPress={onRequestClose}
-										style={{backgroundColor: 'lightgray', borderRadius: 32}}
-										>
-										<View>
-										<Icon
-											shape='X'
-											color="white"
-											size="medium"
-											/>
-										</View>
-									</Touch>
-								</FlexItem>
-							</Flex>
-						</Section>
-					</Stripe>
-
-					<View style={{position: 'absolute', top: 0, right: 0, padding: METRICS.base, zIndex: 5}}>
-						<Touch
-							onPress={onRequestClose}
-							style={{backgroundColor: SWATCHES.shade, borderRadius: 32, padding: 4}}
+				{({styles, METRICS}) => (
+					<Animated.View
+						style={[
+							styles['modal-container'],
+							{display: this.state.display, opacity: this.state.visibilityValue},
+						]}
+					>
+						{dismissable && closeOnBackdropPress ? (
+							<Touch
+								onPress={() => onRequestClose('backdrop')}
+								noFeedback
+								accessible={false}
+								accessibilityElementsHidden
+								importantForAccessibility="no-hide-descendants"
+								aria-hidden="true"
+								tabIndex={-1}
 							>
-							<View>
-							<Icon
-								shape='X'
-								color={SWATCHES.textHint}
-								size="medium"
-								/>
-							</View>
-						</Touch>
-					</View>
+								<View style={styles['modal-backdrop']} />
+							</Touch>
+						) : (
+							<View
+								style={styles['modal-backdrop']}
+								accessibilityElementsHidden
+								importantForAccessibility="no-hide-descendants"
+								aria-hidden="true"
+							/>
+						)}
 
-					{/* scrollview is blocking the rest */}
-
-					<ScrollView 
-						style={{/* backgroundColor: 'green' */}} 
-						ref={this.targetRef}
+						<Animated.View
+							ref={this.dialogRef}
+							accessibilityRole="dialog"
+							accessibilityLabel={accessibilityLabel}
+							accessibilityViewIsModal
+							aria-modal="true"
+							tabIndex={-1}
+							{...dialogProps}
+							style={[
+								variant === 'prompt'
+									? styles.prompt
+									: isFull ? styles['modal--full'] : styles.modal,
+								{
+									transform: [{
+										translateY: this.state.visibilityValue.interpolate({
+											inputRange: [0, 1],
+											outputRange: [variant === 'prompt' ? 150 : 180, 0],
+										}),
+									}],
+								},
+								style,
+							]}
 						>
-						{children}
-					</ScrollView>
-				</Animated.View>
-			</Animated.View>
+							{showCloseButton ? (
+								<View style={{position: 'absolute', top: METRICS.base, right: METRICS.base, zIndex: 5}}>
+									<Button
+										shape="X"
+										size="small"
+										color="secondary"
+										accessibilityLabel={closeLabel}
+										onPress={() => onRequestClose('close-button')}
+									/>
+								</View>
+							) : null}
+							<ScrollView ref={this.scrollRef}>
+								{children}
+							</ScrollView>
+						</Animated.View>
+					</Animated.View>
 				)}
-				</ThemeContext.Consumer>
+			</ThemeContext.Consumer>
 		);
 
+		return this.state.portalTarget
+			? createPortal(modal, this.state.portalTarget)
+			: null;
 	}
 }
 

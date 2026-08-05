@@ -1,147 +1,169 @@
-import React, {useContext} from 'react';
-import { Touchable, View, } from '../primitives';
-import Text  from './Text';
-import Touch  from './Touch';
+import React, {useContext, useId} from 'react';
+import {createElement, Platform, View} from '../primitives';
+import Text from './Text';
+import Touch from './Touch';
 import ThemeContext from '../ThemeContext';
 
-/**
- * Individual tab item component that handles selection state and interaction.
- * Used internally by the Tabs component but can be accessed via Tabs.Item.
- * 
- * @param {Object} props - Component props
- * @param {string} props.value - Unique identifier for this tab
- * @param {string} props.label - Display text for the tab
- * @param {boolean} [props.selected] - Whether this tab is currently selected
- * @param {boolean} [props.fullWidth] - Use full width layout instead of content-based width
- * @param {Function} [props.onChange] - Callback when tab is pressed
- */
-const TabItem = (props) => {
-	const { styles } = useContext(ThemeContext);
-  const {
-  	value,                   // Unique tab identifier
-  	label,                   // Tab display text
-  	selected,                // Selection state
-  	fullWidth,               // Width behavior
-  	onChange = () => {}      // Selection callback
-  } = props;
+const NativeTab = (props) => createElement('button', props);
+const safeIdPart = (value) => String(value).replace(/[^a-zA-Z0-9_-]/g, '-');
+const tabId = (tabsId, value) => `${tabsId}-tab-${safeIdPart(value)}`;
+const panelId = (tabsId, value) => `${tabsId}-panel-${safeIdPart(value)}`;
 
-  // Dynamic styling based on selection state
-  const selectedStyle = (selected) ? {
-    item: styles['tabItem--selected'],     // Selected tab background/border
-    text: styles['tabText--selected']      // Selected tab text color
-  } : {};
-  
-  // Width behavior based on fullWidth prop
-  const widthStyle = (fullWidth) ? 
-    styles['tabItem--fullWidth'] :         // Equal width distribution
-    styles['tabItem--variableWidth'];      // Content-based width
-    
-  // Text weight for selected state
-  const weightStyle = (selected) ? styles['textStrong'] : '';
+const TabItem = ({
+	allValues,
+	fullWidth,
+	index,
+	label,
+	onChange = () => {},
+	selected,
+	tabsId,
+	value,
+}) => {
+	const {styles} = useContext(ThemeContext);
+	const selectedStyle = selected ? {
+		item: styles['tabItem--selected'],
+		text: styles['tabText--selected'],
+	} : {};
+	const widthStyle = fullWidth
+		? styles['tabItem--fullWidth']
+		: styles['tabItem--variableWidth'];
+	const weightStyle = selected ? styles.textStrong : '';
 
-  return (
-  	<View style={[widthStyle, styles.tabItem, selectedStyle.item]}>
-		<Touch
-			onPress={() => onChange(value) }
+	const selectAndFocus = (nextIndex) => {
+		const nextValue = allValues[nextIndex];
+		onChange(nextValue);
+		if (typeof document !== 'undefined') {
+			window.requestAnimationFrame(() => {
+				document.getElementById(tabId(tabsId, nextValue))?.focus();
+			});
+		}
+	};
+
+	const onKeyDown = (event) => {
+		let nextIndex = null;
+		switch (event.key) {
+			case 'ArrowRight':
+			case 'ArrowDown':
+				nextIndex = (index + 1) % allValues.length;
+				break;
+			case 'ArrowLeft':
+			case 'ArrowUp':
+				nextIndex = (index - 1 + allValues.length) % allValues.length;
+				break;
+			case 'Home':
+				nextIndex = 0;
+				break;
+			case 'End':
+				nextIndex = allValues.length - 1;
+				break;
+			default:
+				return;
+		}
+		event.preventDefault();
+		selectAndFocus(nextIndex);
+	};
+
+	const content = (
+		<Text color="secondary" type="small" style={[selectedStyle.text, weightStyle]}>
+			{label}
+		</Text>
+	);
+	const webProps = {
+		id: tabId(tabsId, value),
+		role: 'tab',
+		'aria-controls': panelId(tabsId, value),
+		'aria-selected': selected,
+		tabIndex: selected ? 0 : -1,
+	};
+
+	if (Platform.OS === 'web') {
+		return (
+			<NativeTab
+				{...webProps}
+				type="button"
+				onClick={() => onChange(value)}
+				onKeyDown={onKeyDown}
+				style={[
+					styles.touch,
+					{appearance: 'none', backgroundColor: 'transparent', borderWidth: 0, cursor: 'pointer'},
+					widthStyle,
+					styles.tabItem,
+					selectedStyle.item,
+				]}
 			>
-			<Text color="secondary" type="small" style={[selectedStyle.text, weightStyle]}>
-        {label}
-      </Text>
-		</Touch>
-	</View>
-  )
-}
-
-
-
-/**
- * Tab navigation component that provides horizontal navigation between content sections.
- * Manages selection state and provides consistent styling for tab interfaces.
- * 
- * Tabs automatically manages the selected state and passes it down to child TabItem components.
- * It provides options for full-width layouts or content-based sizing.
- * 
- * @example
- * // Basic tabs with controlled selection
- * const [activeTab, setActiveTab] = useState('profile');
- * 
- * <Tabs selectedValue={activeTab} onChange={setActiveTab}>
- *   <Tabs.Item value="profile" label="Profile" />
- *   <Tabs.Item value="settings" label="Settings" />
- *   <Tabs.Item value="billing" label="Billing" />
- * </Tabs>
- * 
- * @example
- * // Full-width tabs that distribute evenly
- * <Tabs selectedValue={activeTab} onChange={setActiveTab} fullWidth>
- *   <Tabs.Item value="overview" label="Overview" />
- *   <Tabs.Item value="details" label="Details" />
- *   <Tabs.Item value="reviews" label="Reviews" />
- * </Tabs>
- * 
- * @example
- * // Complete tab interface with content switching
- * function TabInterface() {
- *   const [activeTab, setActiveTab] = useState('home');
- *   
- *   return (
- *     <>
- *       <Tabs selectedValue={activeTab} onChange={setActiveTab}>
- *         <Tabs.Item value="home" label="Home" />
- *         <Tabs.Item value="products" label="Products" />
- *         <Tabs.Item value="contact" label="Contact" />
- *       </Tabs>
- *       
- *       <Section>
- *         {activeTab === 'home' && <HomeContent />}
- *         {activeTab === 'products' && <ProductsContent />}
- *         {activeTab === 'contact' && <ContactContent />}
- *       </Section>
- *     </>
- *   );
- * }
- */
-class Tabs extends React.Component {
-	constructor(props) {
-		super(props);
-	}
-
-	render() {
-		const {
-			children,            // Tabs.Item components
-			onChange,            // Selection change callback
-			fullWidth,           // Full width layout option
-			...other
-		} = this.props;
-
-		// Default to first tab if no selection provided
-		const selectedValue = this.props.selectedValue || (children[0] && children[0].props.value);
-
-		// Clone children and pass down selection state and handlers
-		const childrenWithProps = React.Children.map(children, function (child) {
-	        return React.cloneElement(child, {
-	            selected: (selectedValue == child.props.value),  // Pass selection state
-	            onChange,                                        // Pass change handler
-	            fullWidth,                                       // Pass width behavior
-	        });
-	    });
-
-		return(
-			<ThemeContext.Consumer>
-				{ ({styles}) => (
-					<View
-						style={[styles.tabs]}
-						{...other}
-						>
-						{childrenWithProps}
-					</View>
-				)}
-			</ThemeContext.Consumer>
+				{content}
+			</NativeTab>
 		);
 	}
-}
 
-// Expose TabItem as Tabs.Item for component composition
-Tabs.Item = TabItem
+	return (
+		<View style={[widthStyle, styles.tabItem, selectedStyle.item]}>
+			<Touch
+				id={tabId(tabsId, value)}
+				accessibilityRole="tab"
+				accessibilityState={{selected}}
+				aria-controls={panelId(tabsId, value)}
+				tabIndex={selected ? 0 : -1}
+				onPress={() => onChange(value)}
+			>
+				{content}
+			</Touch>
+		</View>
+	);
+};
+
+const Tabs = ({
+	accessibilityLabel,
+	children,
+	fullWidth,
+	id,
+	onChange,
+	selectedValue,
+	...other
+}) => {
+	const {styles} = useContext(ThemeContext);
+	const generatedId = useId().replace(/:/g, '');
+	const tabsId = id || `tabs-${generatedId}`;
+	const items = React.Children.toArray(children).filter(React.isValidElement);
+	const values = items.map((child) => child.props.value);
+	const activeValue = selectedValue ?? values[0];
+
+	return (
+		<View
+			id={tabsId}
+			accessibilityRole="tablist"
+			accessibilityLabel={accessibilityLabel}
+			style={styles.tabs}
+			{...other}
+		>
+			{items.map((child, index) => React.cloneElement(child, {
+				allValues: values,
+				fullWidth,
+				index,
+				onChange,
+				selected: activeValue === child.props.value,
+				tabsId,
+			}))}
+		</View>
+	);
+};
+
+const TabPanel = ({children, selectedValue, tabsId, value, ...other}) => {
+	if (selectedValue !== value) return null;
+	return (
+		<View
+			id={panelId(tabsId, value)}
+			accessibilityRole="tabpanel"
+			aria-labelledby={tabId(tabsId, value)}
+			tabIndex={0}
+			{...other}
+		>
+			{children}
+		</View>
+	);
+};
+
+Tabs.Item = TabItem;
+Tabs.Panel = TabPanel;
 
 export default Tabs;
