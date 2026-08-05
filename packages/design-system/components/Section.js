@@ -68,21 +68,37 @@ const getCombinedStyles = (props) => {
  * </Section>
  */
 const Section = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 
 	const {
 		children,
 		type,        // Reserved for future section variants
 		style,
+		styleIds = "",
+		dataSet,
 		border,      // Add full border around section
+		borderedContent,
 		...other
 	} = props
 
-	const combinedStyles = useMemo( ()=>getCombinedStyles({...props, styles}), [border]);
+	const combinedStyles = useMemo(
+		()=>getCombinedStyles({border, borderedContent, styles}),
+		[border, borderedContent, styles]
+	);
 	const finalStyles = [ combinedStyles, style ];
+	const mediaIds = [
+		ids.section,
+		border ? ids['section--border'] : undefined,
+		borderedContent ? ids['section--borderedContent'] : undefined,
+		styleIds
+	].filter(Boolean).join(' ');
 
 	return(
-		<View style={finalStyles} {...other}>
+		<View
+			style={finalStyles}
+			dataSet={{...dataSet, media: mediaIds}}
+			{...other}
+			>
 			{children}
 		</View>
 	);

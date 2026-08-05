@@ -120,7 +120,7 @@ const getItemStyles = (styleKeys, styles) => {
  * </Flex>
  */
 const FlexItem = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 		const {
 			children,
 			shrink,         // Boolean - allow shrinking
@@ -139,11 +139,22 @@ const FlexItem = (props) => {
 
 		// Memoized style calculation for performance
 		const styleKeys = useMemo(() => getStyleKeys(props), [shrink, growFactor, isFirstChild, justify, align, flush, nbsp, section]);
-		const itemStyles = useMemo(()=> getItemStyles(styleKeys, styles), [styleKeys])
+		const itemStyles = useMemo(()=> getItemStyles(styleKeys, styles), [styleKeys, styles])
+		const mediaIds = useMemo(
+			()=>styleKeys.map((key)=>ids[key]).filter(Boolean).join(' '),
+			[styleKeys, ids]
+		);
 		const finalStyles = [styles[FLEX_ITEM_CLASS], itemStyles, style];
 
 		return (
-			<View style={finalStyles} dataSet={dataSet} {...other}>
+			<View
+				style={finalStyles}
+				dataSet={{
+					...dataSet,
+					media: [dataSet?.media, mediaIds].filter(Boolean).join(' ')
+				}}
+				{...other}
+				>
 				{children}
 			</View>
 		);

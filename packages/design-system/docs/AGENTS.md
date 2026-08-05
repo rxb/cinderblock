@@ -48,6 +48,11 @@ Rules:
   or an app-like screen whose entire layout is a `Flex`/`FlexItem` shell.
 - Every leaf piece of content lives in a `Chunk`. Don't put two paragraphs in
   one `Chunk`; the `Chunk` *is* the spacing unit.
+- Maintainers: spacing values in `buildStyles` are often equations rather than
+  isolated measurements. When changing METRICS, preserve paired positive and
+  negative gutters and relationships such as `Section paddingBottom + final
+  Chunk paddingBottom = Section paddingTop`. See
+  [style-generation.md](./style-generation.md#metrics-are-a-system-of-relationships).
 - **Section is the normal page-content container; Card is optional.** Use a
   Card only when content should read as a distinct object, record, selectable
   choice, or visually unified unit. A Card lives inside the appropriate
@@ -93,9 +98,12 @@ Layout:
   ratios such as `1:2`. `Flex` props: `direction` ('row' default | 'column'),
   `switchDirection="<breakpoint>"` (flips direction at that breakpoint),
   `reverseDirection`, `reverseSwitchDirection`, `wrap`, `justify`, `align`,
-  `flush` (no gutter), `nbsp` (text-space-sized gutter), and the advanced
-  `section` gutter. `FlexItem` props: `shrink` (fit content), `growFactor`
+  `flush` (no horizontal gutter), `nbsp` (text-space-sized horizontal gutter),
+  and the advanced `section` gutter. `FlexItem` props: `shrink` (fit content), `growFactor`
   (relative weight `1`–`7`), `justify`, `align`, `flush`, `nbsp`, `section`.
+  A Flex that stacks does not invent vertical spacing: put its leaf content in
+  `Chunk`s or `Section`s and their structural rhythm continues through the
+  direction change.
   Avoid `section` by default; it exists for rare layouts that must compensate
   for Section-scale horizontal insets.
 - `List` — data-driven list that renders `items` via `renderItem`. `variant`
@@ -370,5 +378,6 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
 - [forms.md](./forms.md) — canonical accessible form structure, state contracts, validation, editing, and advanced patterns
 - [utility-components.md](./utility-components.md) — hooks and helpers
 - [responsive-system.md](./responsive-system.md) — breakpoints, utility classes, how the responsive system works
-- [style-generation.md](./style-generation.md) — maintainer doc: how utility styles/media queries are generated
+- [style-generation.md](./style-generation.md) — maintainer doc: how METRICS become compositional geometry and responsive styles
+- [experimental-responsive-rhythm.md](./experimental-responsive-rhythm.md) — opt-in rhythm preset and visual test-bed findings
 - [nextjs-integration.md](./nextjs-integration.md) — **read before debugging consumer integration**

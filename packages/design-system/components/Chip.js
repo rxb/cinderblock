@@ -71,11 +71,14 @@ import ThemeContext from '../ThemeContext';
 const Chip = (props) => {
 	const { styles } = useContext(ThemeContext);
 
-	const { label, ...other } = props;
+	const { label, style, ...other } = props;
 
 	return(
-		<View style={styles.chip} {...other}>
-			<Text style={[styles.text, styles.textSmall, styles.chipText]}>
+		<View style={[styles.chip, style]} {...other}>
+			<Text
+				numberOfLines={1}
+				style={[styles.text, styles.textSmall, styles.chipText]}
+				>
 				{label}
 			</Text>
 		</View>

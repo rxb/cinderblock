@@ -2,6 +2,7 @@ import {StyleSheet} from '../primitives';
 import MediaQueryStyleSheet from 'react-native-media-query';
 
 import {FLEX_GROW_FACTORS, MEDIA_SIZES, MEDIA_QUERIES, MEDIA_QUERIES_SINGLE} from './designConstants';
+import {buildStructuralSpacingStyles} from './structuralSpacing';
 
 // generate styles using "breakpoint to breakpoint" queries
 // for components that specify a variant for each breakpoint
@@ -28,17 +29,15 @@ const buildStyles = (METRICS, SWATCHES) => {
 		borderRadius,
 		cardBorderRadius
 	} = METRICS;
+	const structuralSpacing = buildStructuralSpacingStyles(METRICS, {
+		medium: MEDIA_QUERIES_SINGLE.medium,
+		large: MEDIA_QUERIES_SINGLE.large,
+	});
 
 	const {styles: cleanStyles, ids} = MediaQueryStyleSheet.create({
 
 		// LAYOUT
-		stripe: {
-			paddingVertical: METRICS.spaceSection,
-			[MEDIA_QUERIES_SINGLE.medium]: {
-				paddingVertical: METRICS.spaceSection,
-				paddingHorizontal: space,
-			}
-		},
+		stripe: structuralSpacing.stripe,
 		"stripe--border": {
 			borderTopWidth: 1,
 			borderTopColor: SWATCHES.border,
@@ -75,39 +74,31 @@ const buildStyles = (METRICS, SWATCHES) => {
 		},
 		"bounds-content--sparse": {
 			[MEDIA_QUERIES_SINGLE.large]: {
-				paddingVertical: METRICS.spaceSection,
-				paddingHorizontal: space,
+				...structuralSpacing.boundsContentSparse[MEDIA_QUERIES_SINGLE.large],
 				backgroundColor: SWATCHES.backgroundWhite,
-				borderRadius: METRICS.borderRadius
-			}
+				borderRadius: METRICS.borderRadius,
+			},
 		},
-		section: {
-			paddingTop: METRICS.spaceSection,
-			marginHorizontal: space,
-			paddingBottom: METRICS.spaceSection - space,
-		},
+		section: structuralSpacing.section,
 
 		'section--border': {
 			borderTopWidth: 1,
 			borderTopColor: SWATCHES.border,
-			paddingTop: METRICS.spaceSection  * 1.25,
-			marginTop: METRICS.spaceSection * .25
+			...structuralSpacing.sectionBorder,
 		},
-		'section--borderedContent': {
-			paddingTop: 0,
-			marginTop: METRICS.spaceSection * .25
-		},
+		'section--borderedContent': structuralSpacing.sectionBorderedContent,
 
 		imageSnap: {
-			marginHorizontal: 0,
-			marginTop: -1 * space,
+			...structuralSpacing.imageSnap,
 			resizeMode: 'cover',
 			borderRadius: 0,
 			[MEDIA_QUERIES_SINGLE.medium]: {
-				marginTop: space / 2,
-				marginHorizontal: space,
-				borderRadius: 6
-			}
+				...structuralSpacing.imageSnap[MEDIA_QUERIES_SINGLE.medium],
+				borderRadius: 6,
+			},
+			[MEDIA_QUERIES_SINGLE.large]: {
+				...structuralSpacing.imageSnap[MEDIA_QUERIES_SINGLE.large],
+			},
 		},
 
 
@@ -118,18 +109,13 @@ const buildStyles = (METRICS, SWATCHES) => {
 		
 		// for sets of chunks with no possibility of sections
 		// basically, inside simple, small cards
-		sectionless: {
-			paddingTop: space,
-			paddingHorizontal: space,
-		},
+		sectionless: structuralSpacing.sectionless,
 
-		chunk: {
-			paddingBottom: space
-		},
+		chunk: structuralSpacing.chunk,
 		'chunk--border': {
 			borderTopWidth: 1,
 			borderTopColor: SWATCHES.borderSecondary,
-			paddingTop: space
+			...structuralSpacing.chunkBorder,
 		},
 
 
@@ -330,7 +316,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 
 		// CHIP
 		chip: {
-			backgroundColor: '#eee',
+			backgroundColor: SWATCHES.shade,
 			textTransform: 'capitalize',
 			paddingVertical: 4,
 			paddingHorizontal: 8,
@@ -340,7 +326,8 @@ const buildStyles = (METRICS, SWATCHES) => {
 			flexBasis: 0,
 			minHeight: '-webkit-min-content',
 			width: 'auto',
-			minWidth: '-webkit-min-content'
+			minWidth: '-webkit-min-content',
+			alignSelf: 'flex-start',
 		},
 		chipText: {
 			textAlign: 'center',
@@ -351,7 +338,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 		// CARD
 		card: {
 			borderRadius: cardBorderRadius,
-			backgroundColor: 'white',
+			backgroundColor: SWATCHES.backgroundWhite,
 			borderWidth: 1,
 			borderColor: SWATCHES.border,
 			overflow: 'hidden',
@@ -632,39 +619,49 @@ const buildStyles = (METRICS, SWATCHES) => {
 			fontSize: METRICS.sectionHeadSize,
 			lineHeight: METRICS.sectionHeadLineHeight,
 			fontWeight: METRICS.textSectionHeadWeight,
-			letterSpacing: '-.001em',
+			letterSpacing: METRICS.sectionHeadLetterSpacing ?? '-.001em',
 			[MEDIA_QUERIES_SINGLE.large]: {
-            fontSize: METRICS.sectionHeadAtLargeSize,
+				fontSize: METRICS.sectionHeadAtLargeSize,
 				lineHeight: METRICS.sectionHeadAtLargeLineHeight,
-        },
+				letterSpacing: METRICS.sectionHeadAtLargeLetterSpacing
+					?? METRICS.sectionHeadLetterSpacing
+					?? '-.001em',
+			},
 		},
 		textPageHead: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.pageHeadSize,
 			lineHeight: METRICS.pageHeadLineHeight,
 			fontWeight: METRICS.textPageHeadWeight,
-			letterSpacing: '-.001em',
+			letterSpacing: METRICS.pageHeadLetterSpacing ?? '-.001em',
 			[MEDIA_QUERIES_SINGLE.large]: {
-            fontSize: METRICS.pageHeadAtLargeSize,
+				fontSize: METRICS.pageHeadAtLargeSize,
 				lineHeight: METRICS.pageHeadAtLargeLineHeight,
-        },
+				letterSpacing: METRICS.pageHeadAtLargeLetterSpacing
+					?? METRICS.pageHeadLetterSpacing
+					?? '-.001em',
+			},
 		},
 		textPageHeadKicker: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.smallSize,
 			lineHeight: METRICS.smallLineHeight,
-			fontWeight: METRICS.textBodyWeight,
+			fontWeight: METRICS.textPageHeadKickerWeight ?? METRICS.textBodyWeight,
 			textTransform: 'uppercase',
+			letterSpacing: METRICS.pageHeadKickerLetterSpacing ?? 0,
 		},
 		textHero: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.heroSize,
 			lineHeight: METRICS.heroLineHeight,
 			fontWeight: METRICS.textHeroWeight,
-			letterSpacing: '-.001em',
+			letterSpacing: METRICS.heroLetterSpacing ?? '-.001em',
 			[MEDIA_QUERIES_SINGLE.large]: {
 				fontSize: METRICS.heroAtLargeSize,
 				lineHeight: METRICS.heroAtLargeLineHeight,
+				letterSpacing: METRICS.heroAtLargeLetterSpacing
+					?? METRICS.heroLetterSpacing
+					?? '-.001em',
         	},
 		},
 		textLabel: {
@@ -809,7 +806,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			flex: 1,
 			flexBasis: 0,
 			minHeight: '-webkit-min-content',
-			minWidth: '-webkit-min-content',
+			minWidth: 0,
 			paddingLeft: base,
 		},
 
@@ -843,12 +840,8 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'flex-item--nbsp': {
 			paddingLeft: METRICS.pseudoLineHeight * 2,
 		},
-		'flex--section': {
-			marginLeft: -1 * METRICS.space * 2, // 2 sections side by side each bring 1 METRICS.space
-		},
-		'flex-item--section': {
-			paddingLeft: METRICS.space * 2,
-		},
+		'flex--section': structuralSpacing.flexSection,
+		'flex-item--section': structuralSpacing.flexItemSection,
 
 		'flex--wrap': {
 			flexWrap: 'wrap'
@@ -905,4 +898,3 @@ const buildStyles = (METRICS, SWATCHES) => {
 }
 
 export default buildStyles;
-

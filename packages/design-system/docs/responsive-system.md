@@ -101,9 +101,15 @@ Many components have built-in responsive behavior:
 // Flex switches direction at a given breakpoint (switchDirection takes a breakpoint name, not a boolean)
 // direction="column" starts stacked; at "large" it switches to row
 <Flex direction="column" switchDirection="large">
-  <FlexItem>Mobile: stacked / Desktop: side by side</FlexItem>
-  <FlexItem>Second item</FlexItem>
+  <FlexItem>
+    <Chunk>Mobile: stacked / Desktop: side by side</Chunk>
+  </FlexItem>
+  <FlexItem>
+    <Chunk>Second item</Chunk>
+  </FlexItem>
 </Flex>
+
+// Flex changes arrangement. Chunk continues to provide the vertical rhythm.
 
 // List shows different items per row at different breakpoints
 // (itemsInRow keys are breakpoint names: small, medium, large, xlarge)

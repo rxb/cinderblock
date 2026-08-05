@@ -2,9 +2,13 @@
 
 > **Audience: library maintainers.** If you're *using* Cinderblock, you want
 > [responsive-system.md](./responsive-system.md) — this file documents the
-> internal pipeline that generates the utility styles.
+> internal pipeline that turns METRICS, SWATCHES, component relationships, and
+> breakpoint definitions into generated styles.
 
-Cinderblock's responsive utilities are automatically generated through a sophisticated style generation system. This system takes breakpoint definitions and creates comprehensive sets of responsive utilities, ensuring consistency and eliminating manual work.
+Cinderblock generates its component styles and responsive utilities from a
+shared style configuration. This keeps component geometry, themes, and
+breakpoint behavior consistent without requiring callers to reproduce the
+system's layout logic.
 
 ## Overview
 
@@ -25,6 +29,180 @@ stylesForSingleBreakpoints('showAt', {
   'showAt__xlarge': { '@media screen and (min-width: 1024px)': { display: 'unset' } }
 }
 ```
+
+## METRICS are a system of relationships
+
+`METRICS` are inputs to `buildStyles`; they are not a list of unrelated CSS
+values. `buildStyles` combines them into component geometry, including
+equations that let Cinderblock components stack without callers having to
+identify first children, last children, or currently visible children.
+
+The central example is the relationship between `Section` and `Chunk`:
+
+```javascript
+section: {
+  paddingTop: sectionSpace,
+  paddingBottom: sectionSpace - chunkSpace,
+},
+
+chunk: {
+  paddingBottom: chunkSpace,
+},
+```
+
+A correctly structured Section ends in a Chunk, so its visible bottom space is:
+
+```text
+Section paddingBottom + final Chunk paddingBottom
+= (sectionSpace - chunkSpace) + chunkSpace
+= sectionSpace
+```
+
+The Section therefore has equal visible space above and below its content
+without a `firstChild` or `lastChild` prop. Conditional rendering can remove
+one Chunk or replace it with another without changing the spacing logic.
+
+This is the Cinderblock construction model: components bring predictable
+geometry and fit together by composition. A metric change is correct only when
+the resulting equations still balance.
+
+### Token values are not always visible distances
+
+A token may represent one term in a larger equation. For example:
+
+```text
+visible Section edge = Section-owned space
+visible peer-Section gap = previous Section edge + next Section edge
+visible Stripe edge = Stripe padding + enclosed Section edge
+```
+
+This means `sectionSpace: 24` does not necessarily produce a single visible
+24px gap everywhere. Read the surrounding component equation before changing
+or documenting a metric.
+
+### Compensating values must move together
+
+Negative values, subtraction, addition, and fractional multipliers in
+`buildStyles` often encode a compensation rather than an isolated visual
+choice. Common patterns include:
+
+```javascript
+// The child gutter cancels the parent's negative outer offset.
+list:     { marginLeft: -1 * gutter },
+listItem: { paddingLeft: gutter },
+
+// A one-pixel overlap prevents adjacent borders from doubling.
+item: {
+  marginTop: -1,
+  borderTopWidth: 1,
+},
+
+// Extra overflow space is removed from document flow.
+scroller: {
+  paddingBottom: overflowAllowance,
+  marginBottom: -1 * overflowAllowance,
+},
+```
+
+Never change only one side of a compensating pair. If a new responsive value
+is introduced, every term in the relationship must use the value for the same
+breakpoint.
+
+### Structural tokens and local component measurements
+
+Historically, `space` serves several roles because the default rhythm uses one
+shared value. It appears in structural spacing as well as List gutters, tabs,
+headers, dropdowns, and toasts. Those uses should not automatically become one
+public spacing scale.
+
+When structural roles diverge, prefer explicit semantic local variables inside
+`buildStyles`. If dedicated metrics are needed, add them with fallbacks so
+existing themes continue to work:
+
+```javascript
+const chunkSpace = METRICS.spaceChunk ?? METRICS.space;
+const sectionSpace = METRICS.spaceSection;
+const stripeSpace = METRICS.spaceStripe ?? sectionSpace;
+const pageGutter = METRICS.pageGutter ?? METRICS.space;
+```
+
+This lets Chunk, Section, Stripe, and the page gutter evolve deliberately while
+private component measurements can continue using the stable base `space`.
+Avoid giving a token a broad name such as `spaceAtLarge` if it is intended to
+change only one structural role.
+
+### Responsive equations
+
+Responsive structural metrics require the complete equation at each
+breakpoint:
+
+```javascript
+section: {
+  paddingTop: sectionSpace,
+  paddingBottom: sectionSpace - chunkSpace,
+
+  [MEDIA_QUERIES_SINGLE.large]: {
+    paddingTop: sectionSpaceAtLarge,
+    paddingBottom: sectionSpaceAtLarge - chunkSpaceAtLarge,
+  },
+},
+
+chunk: {
+  paddingBottom: chunkSpace,
+
+  [MEDIA_QUERIES_SINGLE.large]: {
+    paddingBottom: chunkSpaceAtLarge,
+  },
+},
+```
+
+Do not update only the most visible component. Search for every reference to
+the original metric and determine whether it is:
+
+1. another term in the same structural equation;
+2. a paired negative/positive compensation;
+3. a local component measurement that should remain stable; or
+4. an accidental coupling that now deserves its own semantic variable.
+
+Media-query styles also require the component to forward the generated
+`ids[styleKey]` through its `dataSet.media` value. A responsive definition in
+`buildStyles` will not affect React Native Web if its generated media ID never
+reaches the rendered primitive.
+
+### Spacing-change audit
+
+Before changing `space`, `spaceSection`, or introducing responsive structural
+metrics:
+
+1. Search the original `buildStyles` for every reference to the affected
+   metric.
+2. Search for arithmetic expressions and negative values, especially `-1 *
+   value`, `A - B`, `A + B`, and matching parent/child padding and margin.
+3. Write down the visible equation before changing its terms.
+4. Update all terms at every affected breakpoint.
+5. Confirm that structural components forward their generated media IDs.
+6. Verify at least these compositions:
+   - one Section containing one Chunk;
+   - one Section containing several Chunks;
+   - consecutive peer Sections;
+   - Sectionless containing one and several Chunks;
+   - a Stripe containing Bounds and Section;
+   - responsive Flex arrangements containing structurally wrapped content;
+   - Lists or scrollers that use negative gutter compensation.
+7. Test conditional content by removing the first, middle, and final logical
+   item. The caller should not need positional spacing props to repair the
+   result.
+
+Useful invariants include:
+
+```text
+Section bottom padding + final Chunk padding = Section top padding
+parent negative gutter + child positive gutter = zero outer offset
+Stripe padding + Section edge = intended region edge
+```
+
+If one of these cannot be stated clearly, the spacing behavior probably needs
+to be understood before its metrics are changed.
 
 ## Core Functions
 

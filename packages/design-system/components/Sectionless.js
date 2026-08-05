@@ -150,13 +150,15 @@ import ThemeContext from '../ThemeContext';
 
 
 const Sectionless = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 
 	const {
 		children,
 		isFirstChild,
 		noBorder,
 		style,
+		styleIds = "",
+		dataSet,
 		...other
 	} = props
 
@@ -165,7 +167,11 @@ const Sectionless = (props) => {
 			style={[
 				styles.sectionless,
 				style
-			]} 
+			]}
+			dataSet={{
+				...dataSet,
+				media: [ids.sectionless, styleIds].filter(Boolean).join(' ')
+			}}
 			{...other}
 			>
 			{children}

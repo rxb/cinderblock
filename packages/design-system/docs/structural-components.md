@@ -386,20 +386,22 @@ Flexible layout components for creating responsive row/column layouts.
   </Chunk>
 </Section>
 
-// Responsive flex that switches direction at the medium breakpoint
+// Responsive Flex; its children carry their own structural rhythm
 <Section>
-  <Chunk>
-    <Flex switchDirection="medium">
-      <FlexItem>
+  <Flex direction="column" switchDirection="medium">
+    <FlexItem>
+      <Chunk>
         <Text type="sectionHead">Main Content</Text>
         <Text>Primary content area</Text>
-      </FlexItem>
-      <FlexItem>
+      </Chunk>
+    </FlexItem>
+    <FlexItem>
+      <Chunk>
         <Text type="sectionHead">Sidebar</Text>
         <Text>Secondary content</Text>
-      </FlexItem>
-    </Flex>
-  </Chunk>
+      </Chunk>
+    </FlexItem>
+  </Flex>
 </Section>
 
 // Opposite-edge header content: shrink + flexible spacer + shrink
@@ -430,6 +432,10 @@ Flexible layout components for creating responsive row/column layouts.
 - Use `shrink` rather than `growFactor={0}` for a non-growing item.
 - `align="stretch"` is the effective default and normally does not need to be
   written.
+- Flex controls arrangement and horizontal gutters. When it stacks, vertical
+  rhythm comes from the `Chunk`, `Section`, or other structural components
+  inside its FlexItems. This preserves the same composition when items are
+  conditionally hidden or the direction changes.
 
 ### The advanced `section` gutter
 

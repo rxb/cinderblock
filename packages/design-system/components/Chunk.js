@@ -38,11 +38,13 @@ import ThemeContext from '../ThemeContext';
  * </Chunk>
  */
 const Chunk = (props) => {
-	const { styles } = useContext(ThemeContext);
+	const { styles, ids } = useContext(ThemeContext);
 	const {
 		children,
 		inline,      // Boolean - use inline layout (horizontal spacing)
 		style,
+		styleIds = "",
+		dataSet,
 		border,      // Boolean - add border styling
 		...other
 	} = props;
@@ -51,9 +53,18 @@ const Chunk = (props) => {
 	const inlineStyle = (inline) ? styles.inline : {};
 	const borderStyle = (border) ? styles["chunk--border"] : {};
 	const finalStyles = [styles.chunk, inlineStyle, borderStyle, style];
+	const mediaIds = [
+		ids.chunk,
+		border ? ids['chunk--border'] : undefined,
+		styleIds
+	].filter(Boolean).join(' ');
 	
 	return(
-		<View style={finalStyles} {...other}>
+		<View
+			style={finalStyles}
+			dataSet={{...dataSet, media: mediaIds}}
+			{...other}
+			>
 			{children}
 		</View>
 	);
