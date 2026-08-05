@@ -416,7 +416,14 @@ Its ordinary content structure is **`Prompter > Section > Chunk > content`**.
 Do not add Stripe or Bounds, and do not wrap the whole prompt in Card: the
 prompt presentation already supplies that visual boundary.
 
-Each prompt accepts Modal's naming, focus, and dismissal props plus:
+Prompter never renders Modal's corner close control. Prompt content must
+provide an explicit cancel-like, acknowledgement, or alternative-choice
+action. When `dismissable` is true, Escape and backdrop presses may still
+request cancellation; `showCloseButton` cannot opt a Prompt back into the
+corner control.
+
+Each prompt accepts Modal's naming, focus, and dismissal props other than
+`showCloseButton`, plus:
 
 | Prop | Type | Description |
 |------|------|-------------|

@@ -240,7 +240,7 @@ class Modal extends React.Component {
 			onCompleteClose,
 			onPressEnter,
 			onRequestClose,
-			showCloseButton = dismissable,
+			showCloseButton,
 			style,
 			variant,
 			visible,
@@ -248,6 +248,8 @@ class Modal extends React.Component {
 		} = this.props;
 		const media = this.context;
 		const isFull = variant !== 'prompt' && !media.medium;
+		const shouldShowCloseButton = variant !== 'prompt'
+			&& (showCloseButton ?? dismissable);
 
 		const modal = (
 			<ThemeContext.Consumer>
@@ -302,7 +304,7 @@ class Modal extends React.Component {
 								style,
 							]}
 						>
-							{showCloseButton ? (
+							{shouldShowCloseButton ? (
 								<View style={{position: 'absolute', top: METRICS.base, right: METRICS.base, zIndex: 5}}>
 									<Button
 										shape="X"

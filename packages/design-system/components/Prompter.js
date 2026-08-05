@@ -8,7 +8,9 @@ import Modal from './Modal';
  *
  * Prompter deliberately does not turn Enter into confirmation. Native buttons
  * and forms retain their ordinary keyboard behavior, and destructive actions
- * only run when their explicit control is activated.
+ * only run when their explicit control is activated. Prompts do not render a
+ * corner close control; their content must provide an explicit cancel-like or
+ * acknowledgement action.
  */
 class Prompt extends React.Component {
 	static defaultProps = {
@@ -66,6 +68,7 @@ class Prompt extends React.Component {
 				visible={showable}
 				variant="prompt"
 				dismissable={dismissable}
+				showCloseButton={false}
 				accessibilityLabel={resolvedAccessibilityLabel}
 				onRequestClose={this.onRequestClose}
 				onCompleteClose={this.onCompleteClose}

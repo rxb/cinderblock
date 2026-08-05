@@ -157,7 +157,10 @@ Interaction:
   `pageHead`, and each peer H2-level group begins another Section, just as on a
   regular page. A Prompt is a compact, card-like decision surface instead:
   ordinarily **`Prompter > Section > Chunk > content`**, without Stripe,
-  Bounds, or an extra Card wrapper.
+  Bounds, or an extra Card wrapper. Prompter never renders a corner close
+  control; include an explicit cancel-like or acknowledgement action in the
+  prompt content. A dismissible prompt may still treat Escape or a backdrop
+  press as cancellation.
 
 Forms:
 - `TextInput`, `CheckBox`, `Picker`, `FileInput`, `PhotoInput`, `FakeInput`,
