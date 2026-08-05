@@ -151,6 +151,13 @@ Interaction:
   register). For globally coordinated layers, store serializable
   `{id, kind, payload, phase}` descriptors and materialize React content in one
   root host; see [global-layer-state.md](./global-layer-state.md).
+  Compose a standard Modal as a temporary page:
+  **`Modal > Stripe > Section(s) > Chunk > content`**. Do not add `Bounds`;
+  Modal already constrains its width. The first Section commonly owns the
+  `pageHead`, and each peer H2-level group begins another Section, just as on a
+  regular page. A Prompt is a compact, card-like decision surface instead:
+  ordinarily **`Prompter > Section > Chunk > content`**, without Stripe,
+  Bounds, or an extra Card wrapper.
 
 Forms:
 - `TextInput`, `CheckBox`, `Picker`, `FileInput`, `PhotoInput`, `FakeInput`,
@@ -380,6 +387,10 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
 12. **Wrapping ordinary page content in Cards.** Section already provides the
     normal page grouping and spacing. Reserve Card for content with a real
     object-like boundary; never use it merely to create a white content box.
+13. **Composing every blocking layer like the same container.** A standard
+    Modal is a temporary page and needs `Stripe > Section(s)` without Bounds.
+    A compact Prompt uses Section directly and does not need Stripe, Bounds, or
+    a redundant Card.
 
 ## Doc index
 

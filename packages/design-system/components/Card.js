@@ -29,11 +29,14 @@ const getCombinedStyles = (props, styles) => {
  * Provides a visual boundary for content sections and supports drop shadows for layered interfaces.
  * 
  * Cards are commonly used for:
- * - Product listings and previews
- * - Content summaries and excerpts  
- * - Form sections and input groups
+ * - Selectable records and product previews
+ * - Self-contained summaries and excerpts
+ * - Distinct objects with their own actions
  * - Sidebar widgets and info panels
- * - Modal and dialog content areas
+ *
+ * Card does not provide content padding. The normal interior structure is
+ * Card > Sectionless > Chunk. Do not use Card as the default page, form,
+ * Modal, or Prompt content wrapper.
  * 
  * @param {Object} props - Component props
  * @param {boolean} [props.shadow] - Add drop shadow for elevated appearance
@@ -43,17 +46,21 @@ const getCombinedStyles = (props, styles) => {
  * @example
  * // Basic card for grouping content
  * <Card>
- *   <Chunk><Text type="sectionHead">Product Name</Text></Chunk>
- *   <Chunk><Text>Product description...</Text></Chunk>
- *   <Chunk><Button>Add to Cart</Button></Chunk>
+ *   <Sectionless>
+ *     <Chunk><Text type="sectionHead">Product Name</Text></Chunk>
+ *     <Chunk><Text>Product description...</Text></Chunk>
+ *     <Chunk><Button>Add to Cart</Button></Chunk>
+ *   </Sectionless>
  * </Card>
  * 
  * @example
- * // Elevated card with shadow for modals or overlays
+ * // Elevated card for a distinct selectable record
  * <Card shadow>
- *   <Chunk><Text type="sectionHead">Settings</Text></Chunk>
- *   <Chunk><TextInput label="Username" /></Chunk>
- *   <Chunk><Button>Save Changes</Button></Chunk>
+ *   <Sectionless>
+ *     <Chunk><Text type="sectionHead">Saved routine</Text></Chunk>
+ *     <Chunk><Text>Three lower-body exercises</Text></Chunk>
+ *     <Chunk><Button>Use routine</Button></Chunk>
+ *   </Sectionless>
  * </Card>
  */
 const Card = (props) => {

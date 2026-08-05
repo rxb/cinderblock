@@ -314,12 +314,14 @@ import { Picker, Chunk, Label } from '@cinderblock/design-system';
 
 ## Modal
 
-Full-screen overlay component for dialogs and modal content.
+Responsive overlay for a temporary page-like task. Treat the inside of a
+standard Modal as a mini regular screen: it owns one or more visual regions and
+H2-level content groups, using the same structural rhythm as a page.
 
 ### Purpose
 - Dialog overlays
 - Form modals
-- Confirmation dialogs
+- Search, selection, and multi-step tasks
 - Full-screen content overlays
 
 ### Props
@@ -343,6 +345,20 @@ open, traps Tab and Shift+Tab inside the dialog, restores focus after closing,
 and locks background scrolling. It uses a bottom sheet below the medium
 breakpoint and respects `prefers-reduced-motion`. Enter retains native button
 and form behavior; Modal does not provide a global Enter shortcut.
+
+### Content composition
+
+Use **`Modal > Stripe > Section(s) > Chunk > content`**.
+
+- Include Stripe because the Modal is a temporary page surface and may contain
+  one or more full-width visual regions.
+- Do not include Bounds. Modal already limits its own width; adding Bounds
+  double-constrains the content.
+- The first Section commonly contains the `pageHead`. A peer H2-level group
+  starts another Section.
+- Do not add a Card merely to make the modal look contained. Modal already
+  supplies the outer surface; use Card only when the content inside it contains
+  a genuinely distinct object.
 
 ### Usage
 
@@ -395,6 +411,11 @@ prompt descriptor, injects `onRequestClose` into its content, starts the close
 animation through `hidePrompt(id)`, and removes the record through
 `removePrompt(id)` after animation completion.
 
+Unlike a standard Modal, a Prompt is a compact, card-like decision surface.
+Its ordinary content structure is **`Prompter > Section > Chunk > content`**.
+Do not add Stripe or Bounds, and do not wrap the whole prompt in Card: the
+prompt presentation already supplies that visual boundary.
+
 Each prompt accepts Modal's naming, focus, and dismissal props plus:
 
 | Prop | Type | Description |
@@ -408,6 +429,25 @@ Prompter deliberately does not invoke `onPressEnter`. A destructive action
 must run only when its explicit button is activated. Keep queued records and
 callbacks outside Cinderblock; application adapters may translate serializable
 Redux descriptors into `content` elements at the root host.
+
+```javascript
+function RemovePrompt({ onRequestClose }) {
+  return (
+    <Section>
+      <Chunk>
+        <Text type="sectionHead">Remove exercise?</Text>
+      </Chunk>
+      <Chunk>
+        <Text>This changes the current program without rewriting history.</Text>
+      </Chunk>
+      <Chunk>
+        <Button label="Cancel" color="secondary" onPress={onRequestClose} />
+        <Button label="Remove exercise" onPress={removeExercise} />
+      </Chunk>
+    </Section>
+  );
+}
+```
 
 For the reusable descriptor, registry, lifecycle, and conflict-policy pattern,
 see [Global layer state integration](./global-layer-state.md).
