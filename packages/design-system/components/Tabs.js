@@ -1,5 +1,5 @@
 import React, {useContext, useId} from 'react';
-import {createElement, Platform, View} from '../primitives';
+import {createElement, Platform, StyleSheet, View} from '../primitives';
 import Text from './Text';
 import Touch from './Touch';
 import ThemeContext from '../ThemeContext';
@@ -43,11 +43,9 @@ const TabItem = ({
 		let nextIndex = null;
 		switch (event.key) {
 			case 'ArrowRight':
-			case 'ArrowDown':
 				nextIndex = (index + 1) % allValues.length;
 				break;
 			case 'ArrowLeft':
-			case 'ArrowUp':
 				nextIndex = (index - 1 + allValues.length) % allValues.length;
 				break;
 			case 'Home':
@@ -83,13 +81,22 @@ const TabItem = ({
 				type="button"
 				onClick={() => onChange(value)}
 				onKeyDown={onKeyDown}
-				style={[
+				style={StyleSheet.flatten([
 					styles.touch,
-					{appearance: 'none', backgroundColor: 'transparent', borderWidth: 0, cursor: 'pointer'},
+					{
+						appearance: 'none',
+						backgroundColor: 'transparent',
+						borderStyle: 'solid',
+						borderTopWidth: 0,
+						borderRightWidth: 0,
+						borderBottomWidth: 0,
+						borderLeftWidth: 0,
+						cursor: 'pointer',
+					},
 					widthStyle,
 					styles.tabItem,
 					selectedStyle.item,
-				]}
+				])}
 			>
 				{content}
 			</NativeTab>

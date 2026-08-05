@@ -128,8 +128,10 @@ Interaction:
   submission), `inverted`, `dummy` (visual-only, no press handling — use when
   wrapped by another touchable like `DropdownTouch`).
 - `Touch` (bare pressable), `Link` (navigation), `Tabs`, `Menu`. `Tabs` renders
-  a semantic tablist on web, uses roving focus with Arrow/Home/End keys, and
-  pairs each `Tabs.Item` with a `Tabs.Panel` through a stable `id`. When using
+  native `button` items with `role="tab"` on web, uses roving focus with
+  Left/Right Arrow and Home/End keys for its horizontal list, and pairs each
+  `Tabs.Item` with a `Tabs.Panel` through a stable `id`. Up/Down retain normal
+  page scrolling. When using
   `Touch` for a custom control (pill, row, icon target), pass
   `accessibilityRole="button"` so it announces and keyboard-activates like
   the built-in `Button`.

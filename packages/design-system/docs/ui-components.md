@@ -482,10 +482,13 @@ Tab navigation component for switching between content sections.
 
 Tabs are declared as `Tabs.Item` children (there is no `tabs` array prop). Each `Tabs.Item` takes a `value` (unique identifier) and a `label` (display text); selection state and the `onChange` handler are passed down automatically.
 
-On web, only the selected tab is in the Tab sequence. Arrow Right/Down selects
-the next tab, Arrow Left/Up selects the previous tab, and Home/End select the
-first/last tab. Pair the list with `Tabs.Panel`; inactive panels are not
-rendered, and the active panel is associated with its tab.
+On web, each item is a native `button` with `role="tab"`; `type="button"`
+prevents accidental submission when Tabs appears inside a form. Only the
+selected tab is in the Tab sequence. In a horizontal tab list, Arrow Right
+selects the next tab, Arrow Left selects the previous tab, and Home/End select
+the first/last tab. Up/Down retain their normal page-scrolling behavior. Pair
+the list with `Tabs.Panel`; inactive panels are not rendered, and the active
+panel is associated with its tab.
 
 ### Usage
 
