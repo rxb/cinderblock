@@ -1,13 +1,12 @@
-import React, {useContext} from 'react';
-import { Animated, Touchable, View } from '../primitives';
+import React from 'react';
+import {Animated, View} from '../primitives';
 import Text from './Text';
-import Touch from './Touch';
-import Icon from './Icon';
+import Button from './Button';
 import Flex from './Flex';
 import FlexItem from './FlexItem';
 import ThemeContext from '../ThemeContext';
 
-import {EASE } from '../styles/designConstants';
+import {EASE} from '../styles/designConstants';
 
 /**
  * Toast notification system with automatic dismissal and animations.
@@ -154,7 +153,12 @@ import {EASE } from '../styles/designConstants';
  */
 
 
-const duration = 200;
+const animationDuration = () => (
+	typeof window !== 'undefined'
+	&& window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+		? 0
+		: 200
+);
 
 class Toast extends React.Component {
 
@@ -167,13 +171,22 @@ class Toast extends React.Component {
 		this.state = {
 			visibility: new Animated.Value(0),
 		}
+		this.hideTimeout = null;
+		this.showTimeout = null;
+		this.hideStartedAt = null;
+		this.remainingHideDelay = null;
+		this.pauseCount = 0;
+		this.clearHideTimeout = this.clearHideTimeout.bind(this);
+		this.pauseAutoHide = this.pauseAutoHide.bind(this);
+		this.resumeAutoHide = this.resumeAutoHide.bind(this);
+		this.scheduleHideTimeout = this.scheduleHideTimeout.bind(this);
 		this.startHideTimeout = this.startHideTimeout.bind(this);
 		this.remove = this.remove.bind(this);
 	}
 
 	componentDidMount(){
 		if(this.props.visible){
-			setTimeout(()=>{
+			this.showTimeout = setTimeout(()=>{
 				this.show();
 			}, 1);
 		}
@@ -190,22 +203,28 @@ class Toast extends React.Component {
 		}
 	}
 
+	componentWillUnmount(){
+		if(this.showTimeout) clearTimeout(this.showTimeout);
+		this.clearHideTimeout();
+	}
+
 	show(){
 		Animated.timing(
 			this.state.visibility,{
 				toValue: 1,
 				easing: EASE,
-				duration
+				duration: animationDuration()
 			}
 		).start(this.startHideTimeout);
 	}
 
 	hide(){
+		this.clearHideTimeout();
 		Animated.timing(
 			this.state.visibility, {
 				toValue: 0,
 				easing: EASE,
-				duration
+				duration: animationDuration()
 			})
 			.start(this.remove);
 	}
@@ -222,54 +241,109 @@ class Toast extends React.Component {
 		}
 	}
 
-	startHideTimeout(){
-		const hideDelay = (this.props.toast.hideDelay !== undefined) ? this.props.toast.hideDelay : 2500;
-		const autoHide = (this.props.toast.autoHide !== undefined) ? this.props.toast.autoHide : true;
-		if(autoHide){
-			const hideToast = this.props.hideToast;
-			const id = this.props.toast.id;
-			setTimeout(()=>{
-				try{
-					hideToast(id);
-				}
-				catch(error){
-					console.log('do you have multiple toasters mounted?');
-					// toast is gone already
-					// there are probably multiple toasters mounted
-					// not the worst thing ever, but maybe look into that
-				}
-			}, hideDelay);
+	clearHideTimeout(){
+		if(this.hideTimeout){
+			clearTimeout(this.hideTimeout);
+			this.hideTimeout = null;
 		}
+	}
+
+	scheduleHideTimeout(){
+		const autoHide = (this.props.toast.autoHide !== undefined)
+			? this.props.toast.autoHide
+			: true;
+		if(!autoHide || !this.props.visible || this.pauseCount > 0) return;
+		const delay = this.remainingHideDelay ?? (
+			this.props.toast.hideDelay !== undefined
+				? this.props.toast.hideDelay
+				: 2500
+		);
+		this.clearHideTimeout();
+		this.hideStartedAt = Date.now();
+		this.hideTimeout = setTimeout(()=>{
+			this.hideTimeout = null;
+			this.remainingHideDelay = null;
+			try{
+				this.props.hideToast(this.props.toast.id);
+			}
+			catch(error){
+				console.log('do you have multiple toasters mounted?');
+			}
+		}, delay);
+	}
+
+	startHideTimeout(){
+		this.remainingHideDelay = (
+			this.props.toast.hideDelay !== undefined
+				? this.props.toast.hideDelay
+				: 2500
+		);
+		this.scheduleHideTimeout();
+	}
+
+	pauseAutoHide(){
+		this.pauseCount += 1;
+		if(this.pauseCount > 1 || !this.hideTimeout) return;
+		const elapsed = Date.now() - this.hideStartedAt;
+		this.remainingHideDelay = Math.max(
+			0,
+			(this.remainingHideDelay ?? 0) - elapsed
+		);
+		this.clearHideTimeout();
+	}
+
+	resumeAutoHide(){
+		this.pauseCount = Math.max(0, this.pauseCount - 1);
+		if(this.pauseCount === 0) this.scheduleHideTimeout();
 	}
 
 	render(){
 		return(
 			<ThemeContext.Consumer>
-			{ ({styles, SWATCHES}) => (
+			{ ({styles}) => (
 			<Animated.View
 				style={{
 					marginBottom: this.state.visibility.interpolate({
 				    	inputRange: [0, 1],
 				        outputRange: [-60, 0]
-				    }),
+					}),
 					opacity: this.state.visibility
 				}}
+				onMouseEnter={this.pauseAutoHide}
+				onMouseLeave={this.resumeAutoHide}
+				onFocus={this.pauseAutoHide}
+				onBlur={this.resumeAutoHide}
 				>
-				<View style={styles.toast}>
+				<View
+					style={styles.toast}
+					accessibilityRole="status"
+					accessibilityLiveRegion="polite"
+					aria-atomic="true"
+				>
 					<Flex direction="row">
 						<FlexItem>
 							<Text color="primary" inverted>{this.props.toast.message}</Text>
 						</FlexItem>
 						<FlexItem shrink justify="center">
-							<Touch onPress={()=>{
-								this.hide();
-							}}>
-								<Icon
-									shape='X'
-									color={SWATCHES.textHintInverted}
-									size="small"
-									/>
-							</Touch>
+							<Button
+								shape="X"
+								size="small"
+								color="secondary"
+								inverted
+								accessibilityLabel={
+									this.props.toast.dismissLabel
+									?? 'Dismiss notification'
+								}
+								style={{
+									minWidth: 44,
+									minHeight: 44,
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+								onPress={()=>{
+									this.hide();
+								}}
+							/>
 						</FlexItem>
 					</Flex>
 				</View>

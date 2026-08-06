@@ -461,6 +461,30 @@ see [Global layer state integration](./global-layer-state.md).
 
 ---
 
+## Toaster
+
+Non-blocking notification stack. Mount one `Toaster` at the application root
+and pass it serializable toast records plus lifecycle callbacks:
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `toasts` | `array` | Records with `id`, `message`, and `visible`; optional `autoHide`, `hideDelay`, and `dismissLabel` |
+| `hideToast` | `function` | Marks a toast hidden so its exit animation can run |
+| `removeToast` | `function` | Removes a toast after its exit animation |
+
+Each toast is a polite `status` live region. Its dismiss control has the
+accessible name `Dismiss notification` unless the record supplies
+`dismissLabel`. Auto-dismiss pauses while the toast is hovered or contains
+focus, timers are cleared on unmount, and animations honor reduced-motion
+preferences.
+
+`Toaster` does not own application state or impose a stack limit. The
+application should add, hide, remove, deduplicate, and—when needed—cap its
+serializable toast records. Toasts are transient feedback: do not use them as
+the only place for field errors or information the user must retain.
+
+---
+
 ## Tabs
 
 Tab navigation component for switching between content sections.

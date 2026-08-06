@@ -162,7 +162,9 @@ Interaction:
   Bounds, or an extra Card wrapper. Prompter never renders a corner close
   control; include an explicit cancel-like or acknowledgement action in the
   prompt content. A dismissible prompt may still treat Escape or a backdrop
-  press as cancellation.
+  press as cancellation. Toaster renders a non-blocking stack of polite status
+  announcements; its auto-dismiss pauses on hover/focus and its application
+  adapter owns serializable add/hide/remove lifecycle records.
 
 Forms:
 - `TextInput`, `CheckBox`, `Picker`, `FileInput`, `PhotoInput`, `FakeInput`,

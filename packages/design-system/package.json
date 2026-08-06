@@ -5,8 +5,9 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "npm run test:spacing && npm run test:tabs",
+    "test": "npm run test:spacing && npm run test:tabs && npm run test:toaster",
     "test:tabs": "node scripts/test-tabs-invariants.mjs",
+    "test:toaster": "node scripts/test-toaster-invariants.mjs",
     "test:spacing": "node scripts/test-spacing-invariants.mjs",
     "lint-docs": "node scripts/lint-docs.mjs"
   },
