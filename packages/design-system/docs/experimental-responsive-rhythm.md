@@ -1,7 +1,13 @@
 # Experimental Responsive Rhythm
 
-This branch contains an opt-in visual direction for testing a more expressive
-Cinderblock default without introducing arbitrary spacing utilities.
+Archived on 2026-09-07 for a future Cinderblock v2 project. The runnable preset
+and test beds are preserved on `codex/cinderblock-v2-experiment` in Cinderblock
+and pghcalendar; they are removed from the active main branches. See
+[the v2 decision record](./cinderblock-v2-responsive-presentation.md) for the
+final tuning, alternatives considered, and recovery instructions.
+
+The remainder of this document describes the saved experiment. It tested a
+more expressive Cinderblock default without arbitrary spacing utilities.
 
 ## Test beds
 
@@ -12,8 +18,8 @@ Cinderblock default without introducing arbitrary spacing utilities.
   against a dense, real-world source dashboard. The original `/admin-status`
   route remains the control.
 
-Both routes use `experimentalStyleConfig`. The preset is intentionally
-route-scoped during evaluation and is not yet the package default.
+On the archive branches, both routes use `experimentalStyleConfig`. The
+preset was route-scoped during evaluation and never became the package default.
 
 ## Structural rhythm
 
@@ -97,7 +103,7 @@ The visual test beds justified a small set of internal changes:
 
 ## Verification
 
-Run the production builds in both test beds:
+In the paired archive checkouts, run the production builds in both test beds:
 
 ```sh
 cd packages/starter-nextjs-default

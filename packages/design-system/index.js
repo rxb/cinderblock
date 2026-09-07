@@ -48,7 +48,6 @@ import { AppRegistry } from 'react-native-web';
 import * as Utils from './utils';
 
 import styleConfig from './styles';
-import experimentalStyleConfig from './styles/experimental';
 import ThemeContext from './ThemeContext';
 import * as designConstants from './styles/designConstants';
 
@@ -110,7 +109,6 @@ export {
 
 	ThemeContext,
 	styleConfig,
-	experimentalStyleConfig,
 
 	designConstants
 };

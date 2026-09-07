@@ -2,7 +2,6 @@ import {StyleSheet} from '../primitives';
 import MediaQueryStyleSheet from 'react-native-media-query';
 
 import {FLEX_GROW_FACTORS, MEDIA_SIZES, MEDIA_QUERIES, MEDIA_QUERIES_SINGLE} from './designConstants';
-import {buildStructuralSpacingStyles} from './structuralSpacing';
 
 // generate styles using "breakpoint to breakpoint" queries
 // for components that specify a variant for each breakpoint
@@ -29,15 +28,17 @@ const buildStyles = (METRICS, SWATCHES) => {
 		borderRadius,
 		cardBorderRadius
 	} = METRICS;
-	const structuralSpacing = buildStructuralSpacingStyles(METRICS, {
-		medium: MEDIA_QUERIES_SINGLE.medium,
-		large: MEDIA_QUERIES_SINGLE.large,
-	});
 
 	const {styles: cleanStyles, ids} = MediaQueryStyleSheet.create({
 
 		// LAYOUT
-		stripe: structuralSpacing.stripe,
+		stripe: {
+			paddingVertical: METRICS.spaceSection,
+			[MEDIA_QUERIES_SINGLE.medium]: {
+				paddingVertical: METRICS.spaceSection,
+				paddingHorizontal: space,
+			}
+		},
 		"stripe--border": {
 			borderTopWidth: 1,
 			borderTopColor: SWATCHES.border,
@@ -74,31 +75,39 @@ const buildStyles = (METRICS, SWATCHES) => {
 		},
 		"bounds-content--sparse": {
 			[MEDIA_QUERIES_SINGLE.large]: {
-				...structuralSpacing.boundsContentSparse[MEDIA_QUERIES_SINGLE.large],
+				paddingVertical: METRICS.spaceSection,
+				paddingHorizontal: space,
 				backgroundColor: SWATCHES.backgroundWhite,
-				borderRadius: METRICS.borderRadius,
-			},
+				borderRadius: METRICS.borderRadius
+			}
 		},
-		section: structuralSpacing.section,
+		section: {
+			paddingTop: METRICS.spaceSection,
+			marginHorizontal: space,
+			paddingBottom: METRICS.spaceSection - space,
+		},
 
 		'section--border': {
 			borderTopWidth: 1,
 			borderTopColor: SWATCHES.border,
-			...structuralSpacing.sectionBorder,
+			paddingTop: METRICS.spaceSection  * 1.25,
+			marginTop: METRICS.spaceSection * .25
 		},
-		'section--borderedContent': structuralSpacing.sectionBorderedContent,
+		'section--borderedContent': {
+			paddingTop: 0,
+			marginTop: METRICS.spaceSection * .25
+		},
 
 		imageSnap: {
-			...structuralSpacing.imageSnap,
+			marginHorizontal: 0,
+			marginTop: -1 * space,
 			resizeMode: 'cover',
 			borderRadius: 0,
 			[MEDIA_QUERIES_SINGLE.medium]: {
-				...structuralSpacing.imageSnap[MEDIA_QUERIES_SINGLE.medium],
-				borderRadius: 6,
-			},
-			[MEDIA_QUERIES_SINGLE.large]: {
-				...structuralSpacing.imageSnap[MEDIA_QUERIES_SINGLE.large],
-			},
+				marginTop: space / 2,
+				marginHorizontal: space,
+				borderRadius: 6
+			}
 		},
 
 
@@ -109,13 +118,18 @@ const buildStyles = (METRICS, SWATCHES) => {
 		
 		// for sets of chunks with no possibility of sections
 		// basically, inside simple, small cards
-		sectionless: structuralSpacing.sectionless,
+		sectionless: {
+			paddingTop: space,
+			paddingHorizontal: space,
+		},
 
-		chunk: structuralSpacing.chunk,
+		chunk: {
+			paddingBottom: space
+		},
 		'chunk--border': {
 			borderTopWidth: 1,
 			borderTopColor: SWATCHES.borderSecondary,
-			...structuralSpacing.chunkBorder,
+			paddingTop: space
 		},
 
 
@@ -619,49 +633,39 @@ const buildStyles = (METRICS, SWATCHES) => {
 			fontSize: METRICS.sectionHeadSize,
 			lineHeight: METRICS.sectionHeadLineHeight,
 			fontWeight: METRICS.textSectionHeadWeight,
-			letterSpacing: METRICS.sectionHeadLetterSpacing ?? '-.001em',
+			letterSpacing: '-.001em',
 			[MEDIA_QUERIES_SINGLE.large]: {
-				fontSize: METRICS.sectionHeadAtLargeSize,
+            fontSize: METRICS.sectionHeadAtLargeSize,
 				lineHeight: METRICS.sectionHeadAtLargeLineHeight,
-				letterSpacing: METRICS.sectionHeadAtLargeLetterSpacing
-					?? METRICS.sectionHeadLetterSpacing
-					?? '-.001em',
-			},
+        },
 		},
 		textPageHead: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.pageHeadSize,
 			lineHeight: METRICS.pageHeadLineHeight,
 			fontWeight: METRICS.textPageHeadWeight,
-			letterSpacing: METRICS.pageHeadLetterSpacing ?? '-.001em',
+			letterSpacing: '-.001em',
 			[MEDIA_QUERIES_SINGLE.large]: {
-				fontSize: METRICS.pageHeadAtLargeSize,
+            fontSize: METRICS.pageHeadAtLargeSize,
 				lineHeight: METRICS.pageHeadAtLargeLineHeight,
-				letterSpacing: METRICS.pageHeadAtLargeLetterSpacing
-					?? METRICS.pageHeadLetterSpacing
-					?? '-.001em',
-			},
+        },
 		},
 		textPageHeadKicker: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.smallSize,
 			lineHeight: METRICS.smallLineHeight,
-			fontWeight: METRICS.textPageHeadKickerWeight ?? METRICS.textBodyWeight,
+			fontWeight: METRICS.textBodyWeight,
 			textTransform: 'uppercase',
-			letterSpacing: METRICS.pageHeadKickerLetterSpacing ?? 0,
 		},
 		textHero: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.heroSize,
 			lineHeight: METRICS.heroLineHeight,
 			fontWeight: METRICS.textHeroWeight,
-			letterSpacing: METRICS.heroLetterSpacing ?? '-.001em',
+			letterSpacing: '-.001em',
 			[MEDIA_QUERIES_SINGLE.large]: {
 				fontSize: METRICS.heroAtLargeSize,
 				lineHeight: METRICS.heroAtLargeLineHeight,
-				letterSpacing: METRICS.heroAtLargeLetterSpacing
-					?? METRICS.heroLetterSpacing
-					?? '-.001em',
         	},
 		},
 		textLabel: {
@@ -840,8 +844,12 @@ const buildStyles = (METRICS, SWATCHES) => {
 		'flex-item--nbsp': {
 			paddingLeft: METRICS.pseudoLineHeight * 2,
 		},
-		'flex--section': structuralSpacing.flexSection,
-		'flex-item--section': structuralSpacing.flexItemSection,
+		'flex--section': {
+			marginLeft: -1 * METRICS.space * 2, // 2 sections side by side each bring 1 METRICS.space
+		},
+		'flex-item--section': {
+			paddingLeft: METRICS.space * 2,
+		},
 
 		'flex--wrap': {
 			flexWrap: 'wrap'

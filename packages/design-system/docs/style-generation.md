@@ -110,6 +110,11 @@ breakpoint.
 
 ### Structural tokens and local component measurements
 
+The active implementation uses `METRICS.space` and `METRICS.spaceSection`.
+The additional semantic metrics discussed below belong to the archived v2
+experiment; they are design examples, not supported options on main. See
+[cinderblock-v2-responsive-presentation.md](./cinderblock-v2-responsive-presentation.md).
+
 Historically, `space` serves several roles because the default rhythm uses one
 shared value. It appears in structural spacing as well as List gutters, tabs,
 headers, dropdowns, and toasts. Those uses should not automatically become one
@@ -132,6 +137,9 @@ Avoid giving a token a broad name such as `spaceAtLarge` if it is intended to
 change only one structural role.
 
 ### Responsive equations
+
+The following is guidance for a future extension. Main retains the original
+structural spacing; it does not expose responsive Chunk/Section/Stripe metrics.
 
 Responsive structural metrics require the complete equation at each
 breakpoint:

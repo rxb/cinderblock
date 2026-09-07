@@ -408,6 +408,7 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
 - [utility-components.md](./utility-components.md) — hooks and helpers
 - [responsive-system.md](./responsive-system.md) — breakpoints, utility classes, how the responsive system works
 - [style-generation.md](./style-generation.md) — maintainer doc: how METRICS become compositional geometry and responsive styles
-- [experimental-responsive-rhythm.md](./experimental-responsive-rhythm.md) — opt-in rhythm preset and visual test-bed findings
+- [experimental-responsive-rhythm.md](./experimental-responsive-rhythm.md) — archived rhythm preset and visual test-bed findings
+- [cinderblock-v2-responsive-presentation.md](./cinderblock-v2-responsive-presentation.md) — deferred v2 options, archive recovery, and complexity limits for current work
 - [nextjs-integration.md](./nextjs-integration.md) — **read before debugging consumer integration**
 - [global-layer-state.md](./global-layer-state.md) — reusable descriptor, registry, lifecycle, and layer-conflict strategy
