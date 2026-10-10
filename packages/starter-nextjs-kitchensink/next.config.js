@@ -41,7 +41,7 @@ module.exports = {
     };
 
     // (e) Force single copies of packages with SHARED STATE only.
-    // ⚠️ Do NOT add stateless deps (uuid, dayjs, react-feather, validator...)
+    // ⚠️ Do NOT add stateless deps (uuid, dayjs, lucide-react, validator...)
     // to this list: webpack path aliases bypass the package `exports` field,
     // which hard-breaks exports-only packages (uuid >= 11 has "main": null).
     // Stateless deps resolve fine via normal walk-up resolution.

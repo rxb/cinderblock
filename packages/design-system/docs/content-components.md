@@ -175,11 +175,11 @@ import { Avatar, Chunk, Flex, FlexItem, Text } from '@cinderblock/design-system'
 
 ## Icon
 
-SVG icon component using the Feather icon library.
+SVG icon component using the [Lucide](https://lucide.dev/icons) icon library.
 
 ### Purpose
 - Consistent icon rendering
-- Feather icon library integration
+- Lucide icon library integration
 - Scalable vector icons
 - Color and size variations
 
@@ -187,14 +187,19 @@ SVG icon component using the Feather icon library.
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `shape` | `string` | `null` | Icon name from Feather icons |
+| `shape` | `string` | `null` | PascalCase Lucide icon name |
 | `color` | `string` | theme `textSecondary` | Icon color |
 | `size` | `string` | `'medium'` | Icon size (`'xsmall'`, `'small'`, `'medium'`, `'large'`, `'xlarge'`) |
 | `style` | `object` | `{}` | Additional styles |
 
 ### Common Icon Shapes
 
-Shape names are the PascalCase component names exported by [react-feather](https://github.com/feathericons/react-feather):
+Shape names are the PascalCase component names exported by
+[lucide-react](https://lucide.dev/guide/packages/lucide-react). Lucide grew
+out of Feather, and Feather-era names such as `Edit` and `AlertCircle` still
+work as aliases of their current names (`SquarePen`, `CircleAlert`). Prefer the
+current names in new code. An unknown name renders nothing and logs a warning
+in development. Lucide does not include brand logos.
 
 - `User`, `Users` - User/people icons
 - `Home`, `Settings`, `Search` - Navigation icons

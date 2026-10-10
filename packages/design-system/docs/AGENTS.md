@@ -124,7 +124,7 @@ Content:
 Interaction:
 - `Button` — `label`, `onPress`, `color` ('primary' | 'secondary'), `size`,
   `width` ('full' | 'snap' — snap is full-width on mobile, shrink on desktop),
-  `shape` (icon-only button, feather icon name), `isLoading` (spinner swaps in
+  `shape` (icon-only button, Lucide icon name), `isLoading` (spinner swaps in
   for the label and disables submission), `type="submit"` (native web form
   submission), `inverted`, `dummy` (visual-only, no press handling — use when
   wrapped by another touchable like `DropdownTouch`).

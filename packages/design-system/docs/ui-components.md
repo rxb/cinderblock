@@ -73,7 +73,7 @@ import { Button, Chunk, Section, Stripe } from '@cinderblock/design-system';
   <Button href="/about" label="About Us" />
 </Chunk>
 
-// Button with icon (shape names come from Feather icons, capitalized)
+// Button with icon (shape names are PascalCase Lucide icon names)
 <Chunk>
   <Button onPress={handleSave} shape="Save" label="Save Changes" />
 </Chunk>

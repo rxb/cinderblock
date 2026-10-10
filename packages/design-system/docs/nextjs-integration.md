@@ -80,7 +80,7 @@ module.exports = {
     };
 
     // (e) Force single copies of packages with SHARED STATE only.
-    // ⚠️ Do NOT add stateless deps (uuid, dayjs, react-feather, validator...)
+    // ⚠️ Do NOT add stateless deps (uuid, dayjs, lucide-react, validator...)
     // to this list: webpack path aliases bypass the package `exports` field,
     // which hard-breaks exports-only packages (uuid >= 11 has "main": null).
     // Stateless deps resolve fine via normal walk-up resolution.
@@ -152,7 +152,7 @@ Gives live-editing of the library from the consumer app. Two consequences:
    tree provides them — but with `resolve.symlinks = false`, resolution happens
    in the consumer's tree). Copy the `dependencies` of this package:
    `@react-native/assets-registry`, `body-scroll-lock`, `dayjs`, `expo`,
-   `expo-image`, `prop-types`, `react-feather`,
+   `expo-image`, `lucide-react`, `prop-types`,
    `react-native-media-query`, `react-native-web`, `uuid`, `validator`, and the
    optional `react-dnd` + `react-dnd-html5-backend` (required — `index.js`
    imports `Reorderable` unconditionally).
