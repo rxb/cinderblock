@@ -52,7 +52,8 @@ Rules:
   isolated measurements. When changing METRICS, preserve paired positive and
   negative gutters and relationships such as `Section paddingBottom + final
   Chunk paddingBottom = Section paddingTop`. See
-  [style-generation.md](./style-generation.md#metrics-are-a-system-of-relationships).
+  [composition-and-spacing.md](./composition-and-spacing.md) for space ownership,
+  the composition contracts, and proposals expressed as metric dependencies.
 - **Section is the normal page-content container; Card is optional.** Use a
   Card only when content should read as a distinct object, record, selectable
   choice, or visually unified unit. A Card lives inside the appropriate
@@ -401,6 +402,7 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
 
 ## Doc index
 
+- [composition-and-spacing.md](./composition-and-spacing.md) — which component owns each space, how equations balance, and how to propose metric changes
 - [structural-components.md](./structural-components.md) — Stripe, Bounds, Section, Chunk, Sectionless, Inline
 - [content-components.md](./content-components.md) — Text, images, avatars, icons, Card, List
 - [ui-components.md](./ui-components.md) — buttons, forms, modals, toasts, menus

@@ -76,7 +76,7 @@ export const METRICS = {
 		return this.base * 1.25
 	},
 	get bigLineHeight() {
-		return this.bigSize * 1.4
+		return this.bigSize * 1.5
 	},
 	get sectionHeadSize() {
 		return this.base * 1.35

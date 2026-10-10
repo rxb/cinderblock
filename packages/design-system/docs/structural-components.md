@@ -6,6 +6,10 @@ Structural components are the foundation of the Cinderblock Design System. They 
 
 **Space and positioning comes from structure, not from individual components.** Structural components create the hierarchy that governs how your content flows and appears on the page.
 
+For the responsibility of each component and the equations that complete its
+spacing, start with [How Cinderblock's spaces fit together](./composition-and-spacing.md).
+That guide also distinguishes current metrics from possible future extensions.
+
 ## The Structural Hierarchy
 
 ```

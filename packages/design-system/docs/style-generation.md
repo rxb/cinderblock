@@ -32,6 +32,11 @@ stylesForSingleBreakpoints('showAt', {
 
 ## METRICS are a system of relationships
 
+Start with [How Cinderblock's spaces fit together](./composition-and-spacing.md)
+for the component responsibility map, horizontal versus vertical ownership,
+and composition contracts. This section explains how to preserve those
+relationships while generating styles.
+
 `METRICS` are inputs to `buildStyles`; they are not a list of unrelated CSS
 values. `buildStyles` combines them into component geometry, including
 equations that let Cinderblock components stack without callers having to
@@ -110,59 +115,55 @@ breakpoint.
 
 ### Structural tokens and local component measurements
 
-The active implementation uses `METRICS.space` and `METRICS.spaceSection`.
-The additional semantic metrics discussed below belong to the archived v2
-experiment; they are design examples, not supported options on main. See
-[cinderblock-v2-responsive-presentation.md](./cinderblock-v2-responsive-presentation.md).
+The active structural inputs are `METRICS.space` and `METRICS.spaceSection`.
+Ordinary Flex gutters use `base`, while the `nbsp` gutter uses
+`pseudoLineHeight`. `space` also appears in List gutters and local tabs,
+header, menu, and toast measurements. `spaceSection` supplies both Section and
+Stripe vertical space. Similar names do not guarantee the same dependencies:
+the advanced `Flex section` gutter uses `space`, not `spaceSection`.
 
-Historically, `space` serves several roles because the default rhythm uses one
-shared value. It appears in structural spacing as well as List gutters, tabs,
-headers, dropdowns, and toasts. Those uses should not automatically become one
-public spacing scale.
-
-When structural roles diverge, prefer explicit semantic local variables inside
-`buildStyles`. If dedicated metrics are needed, add them with fallbacks so
-existing themes continue to work:
-
-```javascript
-const chunkSpace = METRICS.spaceChunk ?? METRICS.space;
-const sectionSpace = METRICS.spaceSection;
-const stripeSpace = METRICS.spaceStripe ?? sectionSpace;
-const pageGutter = METRICS.pageGutter ?? METRICS.space;
-```
-
-This lets Chunk, Section, Stripe, and the page gutter evolve deliberately while
-private component measurements can continue using the stable base `space`.
-Avoid giving a token a broad name such as `spaceAtLarge` if it is intended to
-change only one structural role.
+Propose a metric and its scope before assigning separate values to components.
+Trace all its consumers and preserve existing responsibilities. A change that
+splits a shared responsibility into independent metrics needs an explicit
+reason; it is not merely a numeric adjustment. The extra Chunk/Stripe/gutter
+metrics from the v2 experiment are archived and are not supported on main.
 
 ### Responsive equations
 
-The following is guidance for a future extension. Main retains the original
-structural spacing; it does not expose responsive Chunk/Section/Stripe metrics.
-
-Responsive structural metrics require the complete equation at each
-breakpoint:
+Main retains the original structural spacing. A possible extension,
+`spaceSectionAtLarge`, is documented as a proposal in
+[the composition guide](./composition-and-spacing.md#propose-inputs-then-derive-the-result).
+It would retain the same equations at the large breakpoint, with `space`
+remaining stable. For example, this partial illustration shows the Section
+terms; a complete implementation must also handle Stripe, border variants,
+and sparse Bounds:
 
 ```javascript
+// Proposed example, not a currently implemented metric.
+const space = METRICS.space;
+const sectionSpace = METRICS.spaceSection;
+const sectionSpaceAtLarge = METRICS.spaceSectionAtLarge ?? sectionSpace;
+
 section: {
   paddingTop: sectionSpace,
-  paddingBottom: sectionSpace - chunkSpace,
+  paddingBottom: sectionSpace - space,
 
   [MEDIA_QUERIES_SINGLE.large]: {
     paddingTop: sectionSpaceAtLarge,
-    paddingBottom: sectionSpaceAtLarge - chunkSpaceAtLarge,
+    paddingBottom: sectionSpaceAtLarge - space,
   },
 },
 
 chunk: {
-  paddingBottom: chunkSpace,
-
-  [MEDIA_QUERIES_SINGLE.large]: {
-    paddingBottom: chunkSpaceAtLarge,
-  },
+  paddingBottom: space,
 },
 ```
+
+Use an absent-value fallback so existing themes preserve their behavior, and
+keep `sectionSpace >= space` wherever their difference becomes padding.
+Generate the stylesheet again after changing metrics. Object spread evaluates
+getters; rebind derived getters in theme overrides where their dependencies
+change, as described in the composition guide.
 
 Do not update only the most visible component. Search for every reference to
 the original metric and determine whether it is:
