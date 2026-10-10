@@ -633,7 +633,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			fontSize: METRICS.sectionHeadSize,
 			lineHeight: METRICS.sectionHeadLineHeight,
 			fontWeight: METRICS.textSectionHeadWeight,
-			letterSpacing: '-.001em',
+			letterSpacing: METRICS.sectionHeadLetterSpacing,
 			[MEDIA_QUERIES_SINGLE.large]: {
             fontSize: METRICS.sectionHeadAtLargeSize,
 				lineHeight: METRICS.sectionHeadAtLargeLineHeight,
@@ -644,7 +644,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			fontSize: METRICS.pageHeadSize,
 			lineHeight: METRICS.pageHeadLineHeight,
 			fontWeight: METRICS.textPageHeadWeight,
-			letterSpacing: '-.001em',
+			letterSpacing: METRICS.pageHeadLetterSpacing,
 			[MEDIA_QUERIES_SINGLE.large]: {
             fontSize: METRICS.pageHeadAtLargeSize,
 				lineHeight: METRICS.pageHeadAtLargeLineHeight,
@@ -657,14 +657,14 @@ const buildStyles = (METRICS, SWATCHES) => {
 			fontSize: METRICS.sectionHeadSize,
 			lineHeight: METRICS.sectionHeadLineHeight,
 			fontWeight: METRICS.textSectionHeadWeight,
-			letterSpacing: '-.001em',
+			letterSpacing: METRICS.sectionHeadLetterSpacing,
 		},
 		textPageHeadCompact: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.pageHeadSize,
 			lineHeight: METRICS.pageHeadLineHeight,
 			fontWeight: METRICS.textPageHeadWeight,
-			letterSpacing: '-.001em',
+			letterSpacing: METRICS.pageHeadLetterSpacing,
 		},
 		textPageHeadKicker: {
 			fontFamily: METRICS.fontFamily,
@@ -678,7 +678,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			fontSize: METRICS.heroSize,
 			lineHeight: METRICS.heroLineHeight,
 			fontWeight: METRICS.textHeroWeight,
-			letterSpacing: '-.001em',
+			letterSpacing: METRICS.heroLetterSpacing,
 			[MEDIA_QUERIES_SINGLE.large]: {
 				fontSize: METRICS.heroAtLargeSize,
 				lineHeight: METRICS.heroAtLargeLineHeight,
@@ -689,7 +689,7 @@ const buildStyles = (METRICS, SWATCHES) => {
 			fontSize: METRICS.heroSize,
 			lineHeight: METRICS.heroLineHeight,
 			fontWeight: METRICS.textHeroWeight,
-			letterSpacing: '-.001em',
+			letterSpacing: METRICS.heroLetterSpacing,
 		},
 		textLabel: {
 			marginTop: 4,

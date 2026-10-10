@@ -114,6 +114,10 @@ export const METRICS = {
 	get heroAtLargeLineHeight() {
 		return this.heroAtLargeSize * 1.05
 	},
+	// Heading tracking. Display sizes usually read best slightly tightened.
+	sectionHeadLetterSpacing: '-.001em',
+	pageHeadLetterSpacing: '-.001em',
+	heroLetterSpacing: '-.001em',
 	get pseudoLineHeight(){
 		return 6
 	},
