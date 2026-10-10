@@ -22,6 +22,7 @@ The core typography component that handles all text rendering with semantic type
 | `color` | `string` | `'primary'` | Text color variant (`'primary'`, `'secondary'`, `'hint'`, `'tint'`) |
 | `weight` | `string` | `null` | Font weight (`'strong'`) |
 | `inverted` | `boolean` | `false` | Use inverted color scheme |
+| `compact` | `boolean` | `false` | Keep `pageHead`, `sectionHead`, and `hero` at their base size on wide viewports |
 | `nowrap` | `boolean` | `false` | Prevent text wrapping |
 | `chunk` | `boolean` | `false` | Add chunk-like spacing |
 | `children` | `node` | `null` | Text content |
@@ -36,6 +37,21 @@ The core typography component that handles all text rendering with semantic type
 - **`small`** - Smaller text for secondary content
 - **`micro`** - Smallest text for fine print
 - **`big`** - Larger text for emphasis
+
+### Compact headings
+
+Heading types grow at the `large` viewport breakpoint. That breakpoint follows
+the window, not the surface a heading sits in, so a page head inside a narrow
+dialog or side column on a wide screen would otherwise get the full desktop
+size. Like `inverted`, `compact` lets the author acknowledge that context:
+
+```javascript
+<Text type="pageHead" compact>Edit exercise</Text>
+```
+
+On narrow viewports the base size already applies, so `compact` changes
+nothing there. It has no effect on non-heading types. Compact is an explicit
+per-element choice; it is not inherited from parent components.
 
 ### Usage
 

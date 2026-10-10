@@ -45,14 +45,23 @@ const getActiveStyles = (props, styles, ids) => {
 		nowrap = false,     // Boolean - prevent text wrapping (white-space: nowrap)
 		chunk = false,      // Boolean - add chunk spacing (when used outside Chunk component)
 		weight,             // Font weight: 'light', 'normal', 'strong', 'heavy'
+		compact = false,    // Boolean - keep the base heading size at wide viewports
 	} = props;
 
 	const invertedModifier = (inverted) ? '--inverted' : '';
+
+	// Compact types omit the wide-viewport step-up entirely. Using a separate
+	// key (rather than an override) means no wide media ID is emitted, so web
+	// CSS cannot reapply the larger size.
+	const typeKey = type ? `text${TEXT_TYPES[type]}` : undefined;
+	const resolvedTypeKey = compact && typeKey && styles[`${typeKey}Compact`]
+		? `${typeKey}Compact`
+		: typeKey;
 	
 	// Build CSS class array based on props
 	const styleKeys = [
 		'text',                    // Base text styles
-		...[type ? `text${TEXT_TYPES[type]}` : undefined ],        // Typography scale (fontSize, lineHeight)
+		...[resolvedTypeKey],      // Typography scale (fontSize, lineHeight)
 		...[color ? `text${TEXT_COLORS[color]}${invertedModifier}` : undefined ], // Color theming
 		...[weight ? `text${TEXT_WEIGHTS[weight]}` : undefined ],  // Font weight
 		...[nowrap ? `textNowrap` : undefined],                    // Layout modifier
@@ -78,6 +87,8 @@ const getActiveStyles = (props, styles, ids) => {
  * @param {('primary'|'secondary'|'error'|'success'|'warning')} [props.color='primary'] - Color theme
  * @param {('light'|'normal'|'strong'|'heavy')} [props.weight] - Font weight
  * @param {boolean} [props.inverted] - Use inverted color scheme for dark backgrounds
+ * @param {boolean} [props.compact] - Keep heading types at their base size on wide
+ *   viewports, for headings in narrow surfaces such as dialogs or side columns
  * @param {boolean} [props.nowrap] - Prevent text wrapping (white-space: nowrap)
  * @param {boolean} [props.chunk] - Add chunk spacing when used outside Chunk component
  * @param {Object} [props.style] - Additional styles to apply
@@ -97,6 +108,10 @@ const getActiveStyles = (props, styles, ids) => {
  * <Text weight="strong" color="error">Invalid input</Text>
  * 
  * @example
+ * // Dialog title: full page-head size on phones, no step-up in a desktop dialog
+ * <Text type="pageHead" compact>Edit exercise</Text>
+ *
+ * @example
  * // Nowrap text for labels
  * <Text nowrap>Price: $99.99</Text>
  */
@@ -105,6 +120,7 @@ const Text = (props) => {
 		children, 
 		style,
 		styleIds="", 
+		compact,
 		...other 
 	} = props;
 

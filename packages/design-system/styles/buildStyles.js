@@ -650,6 +650,22 @@ const buildStyles = (METRICS, SWATCHES) => {
 				lineHeight: METRICS.pageHeadAtLargeLineHeight,
         },
 		},
+		// Compact headings keep their base size at every viewport width, for
+		// headings inside narrow surfaces such as dialogs on wide screens.
+		textSectionHeadCompact: {
+			fontFamily: METRICS.fontFamily,
+			fontSize: METRICS.sectionHeadSize,
+			lineHeight: METRICS.sectionHeadLineHeight,
+			fontWeight: METRICS.textSectionHeadWeight,
+			letterSpacing: '-.001em',
+		},
+		textPageHeadCompact: {
+			fontFamily: METRICS.fontFamily,
+			fontSize: METRICS.pageHeadSize,
+			lineHeight: METRICS.pageHeadLineHeight,
+			fontWeight: METRICS.textPageHeadWeight,
+			letterSpacing: '-.001em',
+		},
 		textPageHeadKicker: {
 			fontFamily: METRICS.fontFamily,
 			fontSize: METRICS.smallSize,
@@ -667,6 +683,13 @@ const buildStyles = (METRICS, SWATCHES) => {
 				fontSize: METRICS.heroAtLargeSize,
 				lineHeight: METRICS.heroAtLargeLineHeight,
         	},
+		},
+		textHeroCompact: {
+			fontFamily: METRICS.fontFamily,
+			fontSize: METRICS.heroSize,
+			lineHeight: METRICS.heroLineHeight,
+			fontWeight: METRICS.textHeroWeight,
+			letterSpacing: '-.001em',
 		},
 		textLabel: {
 			marginTop: 4,

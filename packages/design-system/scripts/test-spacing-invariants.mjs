@@ -60,6 +60,11 @@ for (const overrides of [{}, {space: 16, spaceSection: 32}, {space: 24, spaceSec
 		assert.equal(resolved('textSectionHead').fontSize,
 			width < 840 ? metrics.sectionHeadSize : metrics.sectionHeadAtLargeSize);
 		assert.equal(resolved('flex--row__large').flexDirection, width < 840 ? undefined : 'row');
+		// Compact headings stay at their base size at every width.
+		assert.equal(resolved('textPageHeadCompact').fontSize, metrics.pageHeadSize);
+		assert.equal(resolved('textSectionHeadCompact').fontSize, metrics.sectionHeadSize);
+		assert.equal(resolved('textHeroCompact').fontSize, metrics.heroSize);
+		assert.equal(resolved('textPageHeadCompact').lineHeight, metrics.pageHeadLineHeight);
 	}
 }
 
