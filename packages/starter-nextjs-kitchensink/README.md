@@ -19,7 +19,7 @@ This project showcases **all** features, components, and patterns available in t
 - Typography and text styling
 - Interactive elements (Button, Touch, Link, etc.)
 - Form components (TextInput, CheckBox, Picker, etc.)
-- Navigation (Header, Tabs, Dropdowner, etc.)
+- Navigation (NavBar, Tabs, Popover, etc.)
 - Media components (Image, Avatar, Icon, etc.)
 - Cross-platform image-backed Stripe with explicit fit and focal positioning
 - Feedback components (Modal, Toast, Prompter, etc.)
@@ -62,20 +62,39 @@ npm run dev
 
 ```
 ├── components/           # Cinderblock component integrations
-│   ├── rgb/             # Blog-specific components  
-│   ├── ConnectedToaster.js    # Toast system integration
-│   ├── ConnectedPrompter.js   # Modal system integration
-│   └── ...              # Other connected components
+│   ├── rgb/             # Blog-specific components (Layout uses NavBar)
+│   ├── Page.js          # Page shell: head tags, route and resize cleanup
+│   └── LayerHost.js     # Renders prompts and toasts from layer state
 ├── pages/               # Next.js pages and routing
 │   ├── index.js         # Homepage with blog posts
 │   ├── about.js         # About page example
 │   ├── articles/        # Dynamic blog post routing
 │   └── categories/      # Category filtering
 ├── posts/               # MDX blog content
-├── reducers/            # Redux state management
+├── reducers/            # Redux state (layers come from Cinderblock's layersReducer)
 ├── store/               # Redux store configuration
 └── styles/              # Global styles and CSS modules
 ```
+
+## Global layers
+
+Modals, prompts, toasts, and popovers follow Cinderblock's layer policy
+(`@cinderblock/design-system/layers`): one popover open at a time, opening a
+prompt closes it, and route changes clear transient layers. This starter is
+the reference wiring:
+
+- `reducers/index.js` mounts `layersReducer` at `state.layers`.
+- `actions/index.js` wraps `layerActions` with id-generating helpers
+  (`addToast`, `openPrompt`, `openPopover`, `closePopover`).
+- `components/LayerHost.js` maps each prompt `kind` to its content, so the
+  store holds only serializable records.
+- `components/Page.js` dispatches `closeTransientLayers` on route changes and
+  `closePositionedLayers` on resize.
+- `components/rgb/Layout.js` (NavBar menus) and `pages/recipes/detail.js`
+  (a Popover action menu that opens a prompt) read the open popover from the
+  store.
+
+See the design system's `docs/global-layer-state.md` for the full policy.
 
 ## Comparison with nextjs-starter
 

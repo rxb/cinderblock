@@ -4,7 +4,6 @@ import Head from 'next/head';
 // REDUX
 import { Provider } from 'react-redux';
 import { useStore } from '../store';
-import { logOut, logInSuccess, updateUi } from '../actions';
 
 // STYLE
 import { ThemeContext, styleConfig, designConstants, initMediaProvider } from '@cinderblock/design-system';

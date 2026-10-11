@@ -1,108 +1,80 @@
-import React, { Fragment, useState, useEffect, useRef, useContext } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-	addToast,
-	showToast,
-	clearDropdowns,
-	showDelayedToasts,
-	updateUi
-} from '@/actions';
+import React, { createContext, useContext, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { layerActions } from '@/actions';
 
 import NextTopLoader from 'nextjs-toploader';
 import Router from 'next/router'
 import Head from 'next/head'
 
-import {
-	Avatar,
-	Bounds,
-	Button,
-	Card,
-	CheckBox,
-	Chunk,
-	Flex,
-	FlexItem,
-	Header,
-	Icon,
-	Inline,
-	Image,
-	LoadingBlock,
-	Link,
-	List,
-	Tabs,
-	Touch,
-	Menu,
-	Modal,
-	Picker,
-	RevealBlock,
-	Section,
-	Sectionless,
-	Stripe,
-	Text,
-	TextInput,
-	View,
-	ThemeContext
-} from '@cinderblock/design-system';
-import {Layout, SiteMenu} from './rgb/Layout';
+import { View } from '@cinderblock/design-system';
+import { Layout } from './rgb/Layout';
+import LayerHost from './LayerHost';
 
-import ConnectedToaster from './ConnectedToaster';
-import ConnectedPrompter from './ConnectedPrompter';
-import ConnectedDropdowner from './ConnectedDropdowner';
-import { addToastableErrors } from '@/components/utils';
+// _app wraps every page in Page; a page may also render <Page title=...> to
+// set its own title. The nested one only contributes head tags.
+const InsidePage = createContext(false);
 
-function Page({ 
-	title = "Cinderblock Kitchensink", 
+function PageHead({ title, description }) {
+	return (
+		<Head>
+			<title>{title}</title>
+			<meta name="description" content={description} />
+		</Head>
+	);
+}
+
+function Page({
+	title = "Cinderblock Kitchensink",
 	description = "Comprehensive showcase of Cinderblock Design System components",
-	children,
-	...props 
+	children
 }) {
-	const { styles, SWATCHES, METRICS } = useContext(ThemeContext);
+	const nested = useContext(InsidePage);
+	if (nested) {
+		return (
+			<>
+				<PageHead title={title} description={description} />
+				{children}
+			</>
+		);
+	}
+	return <PageShell title={title} description={description}>{children}</PageShell>;
+}
 
-	// data from redux
+function PageShell({ title, description, children }) {
 	const dispatch = useDispatch();
-	const ui = useSelector(state => state.ui);
 
-	// router-related UI config	
+	// Framework events are the app's job: tell the layer policy when the
+	// route changes (close the modal, prompts, and popover) and when the
+	// window resizes (close positioned popovers only).
 	useEffect(() => {
-		Router.onRouteChangeStart = (url) => {
-			dispatch(updateUi({siteMenuOverlayActive: false}));
-		}
-		Router.onRouteChangeComplete = () => {
-			dispatch(clearDropdowns());
-			setTimeout(() => dispatch(showDelayedToasts()), 500);
-		}
-	}, []);
-
-	// dismiss dropdowns on window resize
-	useEffect(() => {
-		function handleResize() {
-			dispatch(clearDropdowns());
-			dispatch(updateUi({siteMenuOverlayActive: false}));
-		}
-		window.addEventListener("resize", handleResize);
-		return () => window.removeEventListener("resize", handleResize);
-	}, []);
+		const closeTransient = () => dispatch(layerActions.closeTransientLayers());
+		const closePositioned = () => dispatch(layerActions.closePositionedLayers());
+		Router.events.on('routeChangeStart', closeTransient);
+		window.addEventListener('resize', closePositioned);
+		return () => {
+			Router.events.off('routeChangeStart', closeTransient);
+			window.removeEventListener('resize', closePositioned);
+		};
+	}, [dispatch]);
 
 	return (
-		<View style={{ minHeight: '100vh', flex: 1 }}>
-			<NextTopLoader showSpinner={false} />
-			<Head>
-				<title>{title}</title>
-				<meta name="description" content={description} />
-				<meta name="viewport" content="width=device-width, initial-scale=1" />
-				<link rel="icon" href="/favicon.ico" />
-			</Head>
+		<InsidePage.Provider value={true}>
+			<View style={{ minHeight: '100vh', flex: 1 }}>
+				<NextTopLoader showSpinner={false} />
+				<PageHead title={title} description={description} />
+				<Head>
+					<meta name="viewport" content="width=device-width, initial-scale=1" />
+					<link rel="icon" href="/favicon.ico" />
+				</Head>
 
-			<Layout>
-				{children}
-			</Layout>
+				<Layout>
+					{children}
+				</Layout>
 
-			{/* global ui */}
-			<ConnectedToaster />
-			<ConnectedPrompter />
-			<ConnectedDropdowner />
-
-			
-		</View>
+				{/* global ui: prompts and toasts, rendered from layer state */}
+				<LayerHost />
+			</View>
+		</InsidePage.Provider>
 	);
 }
 
