@@ -1,9 +1,12 @@
-// Plain action creators for the app-level UI state
-// (toasts, prompts, dropdowns, misc ui) consumed by the
-// Connected* wrappers around Cinderblock's Toaster/Prompter/Dropdowner.
+// Plain action creators for app-level UI state.
+// Layer actions (modals, prompts, toasts, popovers) come from Cinderblock's
+// layer policy; see @cinderblock/design-system docs/global-layer-state.md.
+import { layerActions } from '@cinderblock/design-system/layers';
+
+export { layerActions };
 
 let idCounter = 0;
-const nextId = () => `ui-${Date.now().toString(36)}-${++idCounter}`;
+const nextId = (prefix = 'ui') => `${prefix}-${Date.now().toString(36)}-${++idCounter}`;
 
 // UI -- assorted global UI state
 export const updateUi = (diff) => ({
@@ -15,104 +18,24 @@ export const resetUi = () => ({
 	type: 'RESET_UI',
 });
 
-// TOASTS
-export const addToast = (message, options = {}) => ({
-	type: 'ADD_TOAST',
-	payload: {
-		message: message,
-		id: nextId(),
-		visible: true,
-		...options
-	}
+// TOASTS -- a convenience wrapper that gives each toast a unique id.
+export const addToast = (message, options = {}) => layerActions.enqueueToast({
+	id: nextId('toast'),
+	message,
+	...options
 });
 
-export const showToast = (id) => ({
-	type: 'SHOW_TOAST',
-	payload: {
-		id: id,
-	}
+// PROMPTS -- store a serializable description, not React content.
+// `kind` picks the renderer in components/LayerHost.js; `payload` carries ids.
+export const openPrompt = (kind, payload = {}, options = {}) => layerActions.enqueuePrompt({
+	id: nextId('prompt'),
+	kind,
+	payload,
+	dismissable: true,
+	...options
 });
 
-export const hideToast = (id) => ({
-	type: 'HIDE_TOAST',
-	payload: {
-		id: id,
-	}
-});
-
-export const removeToast = (id) => ({
-	type: 'REMOVE_TOAST',
-	payload: {
-		id: id,
-	}
-});
-
-export const addDelayedToast = (message, options = {}) => ({
-	type: 'ADD_DELAYED_TOAST',
-	payload: {
-		message: message,
-		id: nextId(),
-		visible: false,
-		delayed: true,
-		...options
-	}
-});
-
-export const showDelayedToasts = () => ({
-	type: 'SHOW_DELAYED_TOASTS',
-	payload: {}
-});
-
-// PROMPTS
-export const addPrompt = (content, options = {}) => ({
-	type: 'ADD_PROMPT',
-	payload: {
-		content: content,
-		id: nextId(),
-		showable: true,
-		...options
-	}
-});
-
-export const hidePrompt = (id) => ({
-	type: 'HIDE_PROMPT',
-	payload: {
-		id: id,
-	}
-});
-
-export const removePrompt = (id) => ({
-	type: 'REMOVE_PROMPT',
-	payload: {
-		id: id,
-	}
-});
-
-// DROPDOWNS
-export const addDropdown = (content, options = {}) => ({
-	type: 'ADD_DROPDOWN',
-	payload: {
-		content: content,
-		id: nextId(),
-		visible: true,
-		...options
-	}
-});
-
-export const hideDropdown = (id) => ({
-	type: 'HIDE_DROPDOWN',
-	payload: {
-		id: id,
-	}
-});
-
-export const removeDropdown = (id) => ({
-	type: 'REMOVE_DROPDOWN',
-	payload: {
-		id: id,
-	}
-});
-
-export const clearDropdowns = () => ({
-	type: 'CLEAR_DROPDOWNS',
-});
+// POPOVERS -- only the open popover's id is stored; its content stays with
+// its trigger.
+export const openPopover = (id) => layerActions.openPopover({ id });
+export const closePopover = (id) => layerActions.closePopover(id ? { id } : undefined);

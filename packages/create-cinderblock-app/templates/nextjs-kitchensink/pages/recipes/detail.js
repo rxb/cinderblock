@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { useDispatch } from 'react-redux';
-import { addToast, addPrompt } from '@/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { addToast, closePopover, openPopover, openPrompt } from '@/actions';
 
 import {
 	Avatar,
@@ -16,31 +16,19 @@ import {
 	Text,
 	View,
 	ThemeContext,
-	DropdownItem,
+	Popover,
+	PopoverItem,
 } from '@cinderblock/design-system';
 
 import Page from '@/components/Page';
-import ConnectedDropdownTouch from '@/components/ConnectedDropdownTouch';
 
-// Prompt content is a plain component; Prompter injects onRequestClose
-const DeletePrompt = ({ onRequestClose, onConfirm }) => (
-	<Section>
-		<Chunk>
-			<Text type="sectionHead">Really delete?</Text>
-		</Chunk>
-		<Chunk>
-			<Text>This can&apos;t be undone.</Text>
-		</Chunk>
-		<Chunk>
-			<Button onPress={() => { onConfirm(); onRequestClose(); }} label="Delete" width="full" />
-			<Button onPress={onRequestClose} color="secondary" label="Cancel" width="full" />
-		</Chunk>
-	</Section>
-);
+const ACTIONS_MENU_ID = 'recipe-actions';
 
 function DetailRecipe() {
 	const dispatch = useDispatch();
 	const { SWATCHES } = useContext(ThemeContext);
+	// Only the open popover's id is stored; opening a prompt closes it.
+	const actionsOpen = useSelector((state) => state.layers.popover?.id === ACTIONS_MENU_ID);
 
 	return (
 		<Page title="Detail page recipe — Cinderblock Kitchensink">
@@ -99,23 +87,30 @@ function DetailRecipe() {
 												/>
 											</FlexItem>
 											<FlexItem nbsp>
-												{/* dummy keeps the Button visual-only; DropdownTouch handles the press */}
-												<ConnectedDropdownTouch dropdown={
-													<>
-														<DropdownItem onPress={() => dispatch(addToast('Reported. Thanks!'))}>
-															<Text color="tint">Report</Text>
-														</DropdownItem>
-														<DropdownItem onPress={() =>
-															dispatch(addPrompt(
-																<DeletePrompt onConfirm={() => dispatch(addToast('Deleted'))} />
-															))
-														}>
-															<Text color="tint">Delete</Text>
-														</DropdownItem>
-													</>
-												}>
-													<Button dummy shape="MoreVertical" color="secondary" width="full" />
-												</ConnectedDropdownTouch>
+												<Popover
+													open={actionsOpen}
+													onRequestOpen={() => dispatch(openPopover(ACTIONS_MENU_ID))}
+													onRequestClose={() => dispatch(closePopover(ACTIONS_MENU_ID))}
+													accessibilityLabel="More actions"
+													width={200}
+													renderTrigger={(triggerProps) => (
+														<Button
+															{...triggerProps}
+															shape="MoreVertical"
+															color="secondary"
+															width="full"
+															accessibilityLabel="More actions"
+														/>
+													)}
+												>
+													<PopoverItem onPress={() => dispatch(addToast('Reported. Thanks!'))}>
+														Report
+													</PopoverItem>
+													{/* The prompt is registered by kind in components/LayerHost.js */}
+													<PopoverItem onPress={() => dispatch(openPrompt('delete-recipe'))}>
+														Delete
+													</PopoverItem>
+												</Popover>
 											</FlexItem>
 										</Flex>
 									</Chunk>

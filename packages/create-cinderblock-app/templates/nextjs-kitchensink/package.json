@@ -9,9 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cinderblock/design-system": "*",
     "babel-plugin-module-resolver": "^5.0.0",
     "babel-plugin-react-native-web": "^0.19.0",
-    "@cinderblock/design-system": "*",
     "dayjs": "^1.11.7",
     "glob": "^10.2.3",
     "gray-matter": "^4.0.3",
@@ -21,9 +21,10 @@
     "nextjs-toploader": "^1.6.12",
     "react": "19.0.0",
     "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "19.0.0",
     "react-lite-youtube-embed": "^2.3.52",
-    "react-dnd-html5-backend": "^16.0.1",
+    "react-native-web": "^0.21.2",
     "react-redux": "^9.1.2",
     "redux": "^5.0.1",
     "validator": "^13.9.0"

@@ -29,10 +29,10 @@ module.exports = {
     // (b) no fs on client and that's ok
     config.resolve.fallback = { fs: false };
 
-    // (c) Only needed when consuming the design system via a file:/link dep:
-    // keeps module paths inside node_modules so transpilePackages matches and
-    // walk-up resolution uses the consumer's node_modules.
-    config.resolve.symlinks = false;
+    // (c) Follow the workspace link back to Cinderblock source. This keeps the
+    // starter's visual test beds in sync with branch edits instead of serving
+    // a stale cached copy from the node_modules path.
+    config.resolve.symlinks = true;
 
     // (d) RNW convention
     config.resolve.alias = {
