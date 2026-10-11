@@ -641,3 +641,24 @@ For more complex responsive behavior:
 ```
 
 The style generation system provides a powerful, maintainable way to create comprehensive responsive utilities while ensuring consistency and performance across your application.
+
+## Heading typography metrics
+
+Themes tune headings through METRICS rather than style overrides, because the
+large-breakpoint rule repeats these values and would override a layered
+style:
+
+| Metric | Default | Used by |
+|---|---|---|
+| `pageHeadSize` / `pageHeadAtLargeSize` | `base × 2.25` / `base × 3` | `pageHead` below / at `large` |
+| `sectionHeadSize` / `sectionHeadAtLargeSize` | `base × 1.35` / `base × 1.5` | `sectionHead` below / at `large` |
+| `heroSize` / `heroAtLargeSize` | `base × 3.25` / `base × 3.85` | `hero` below / at `large` |
+| `pageHeadLetterSpacing` | `'-.001em'` | `pageHead` at every width |
+| `sectionHeadLetterSpacing` | `'-.001em'` | `sectionHead` at every width |
+| `heroLetterSpacing` | `'-.001em'` | `hero` at every width |
+| `textPageHeadWeight`, `textSectionHeadWeight`, `textHeroWeight`, `textBigWeight` | `700`, `600`, `700`, `600` | Heading and big text weights |
+
+Display sizes usually read best slightly tightened, e.g.
+`pageHeadLetterSpacing: '-0.022em'`. Text's `compact` prop uses the base sizes
+at every width (`textPageHeadCompact` and friends) for headings in narrow
+surfaces such as dialogs on wide screens.

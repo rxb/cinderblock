@@ -303,3 +303,55 @@ when existing layer state becomes difficult to inspect or coordinate.
 Shapeup's `src/store/uiLayers.ts` and
 `src/components/ui/UiLayerHost.tsx` are the first application reference for
 this strategy.
+
+## `layerActions` reference
+
+Every action is a plain `{type, payload}` object. Records gain `phase: 'open'`
+when added.
+
+| Action | Payload | Effect |
+|---|---|---|
+| `openModal` | descriptor `{id, ...}` | Opens it unless a modal is open or prompts are waiting; closes the popover |
+| `requestModalClose` | `{id}` | Sets the matching modal to `phase: 'closing'` |
+| `completeModalClose` | `{id}` | Removes the matching modal |
+| `enqueuePrompt` | descriptor `{id, ...}` | Queues it (deduplicated by id), starts closing an open modal, closes the popover |
+| `requestPromptClose` | `{id}` | Sets the matching prompt to `'closing'` |
+| `completePromptClose` | `{id}` | Removes the matching prompt |
+| `enqueueToast` | `{id, message, ...}` | Adds a visible toast (deduplicated by id) |
+| `requestToastClose` | `{id}` | Hides the matching toast |
+| `completeToastClose` | `{id}` | Removes the matching toast |
+| `openPopover` | `{id}` | Opens it, replacing any open popover |
+| `closePopover` | `{id}` or nothing | Closes the popover; with an id, only if that one is open |
+| `closeTransientLayers` | — | Route changes: modal to `'closing'`, prompts cleared, popover closed; toasts stay |
+| `closePositionedLayers` | — | Resize or rotation: closes the popover only; modals stay |
+
+State shape: `{modal, prompts, toasts, popover}`, all serializable. The
+action type strings are exported as `LAYER_ACTION_TYPES`.
+
+Typical wiring in a Next.js project:
+
+```js
+Router.events.on('routeChangeStart', () => dispatch(layerActions.closeTransientLayers()));
+window.addEventListener('resize', () => dispatch(layerActions.closePositionedLayers()));
+```
+
+## Escape for custom overlays
+
+Modal and Popover register with `escapeStack` while open, so Escape reaches
+only the most recently opened layer. A project overlay that is neither (a
+full-screen search, a custom sheet) should register too rather than adding
+its own document listener:
+
+```js
+import { escapeStack } from '@cinderblock/design-system';
+
+useEffect(() => {
+  if (!open) return undefined;
+  // Returns the unregister function, which is also the effect cleanup.
+  return escapeStack.register({ onEscape: () => setOpen(false) });
+}, [open]);
+```
+
+Register with `dismissible: false` when the overlay must stay open; it still
+consumes Escape so nothing beneath it closes. `createEscapeStack()` returns an
+independent stack for tests.

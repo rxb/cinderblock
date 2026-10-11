@@ -136,7 +136,17 @@ Interaction:
   `Touch` for a custom control (pill, row, icon target), pass
   `accessibilityRole="button"` so it announces and keyboard-activates like
   the built-in `Button`.
-- `Dropdowner` / `DropdownTouch` / `DropdownItem` — dropdown menus.
+- `NavBar` — adaptive site header built on `Header` + `Popover`: inline
+  items (and an optional account button) at and above `collapseBelow`
+  (default `medium`), one menu button below it. Use it instead of hand-built
+  header navigation. Only one of its menus is ever open.
+- `Popover` / `PopoverItem` — **use for new menus and dropdowns.** A
+  controlled panel anchored to its trigger: the project owns `open`, Popover
+  reports `onRequestClose(reason)`. It moves focus in on open, returns it on
+  Escape, closes on outside press/focus leaving/item choice, and sets
+  `aria-expanded`/`aria-controls` on the trigger via `renderTrigger`.
+- `Dropdowner` / `DropdownTouch` / `DropdownItem` — legacy dropdown menus
+  (no Escape or focus handling); kept for existing starters. Prefer `Popover`.
   `DropdownItem` takes `href` or `onPress`; onPress handlers should call the
   injected `onRequestClose()` after their side effect.
 - `Modal`, `Prompter` (stacked confirm/dialog prompts), `Toaster` (toasts) —
@@ -153,7 +163,12 @@ Interaction:
   with `RevealBlock visible={...}` to animate-swap panels (e.g. login ↔
   register). For globally coordinated layers, store serializable
   `{id, kind, payload, phase}` descriptors and materialize React content in one
-  root host; see [global-layer-state.md](./global-layer-state.md).
+  root host, and plug Cinderblock's `layersReducer` (from
+  `@cinderblock/design-system/layers`) into the project's store for the
+  default rules: one modal, FIFO prompts, one popover, route/resize cleanup.
+  Escape reaches only the topmost open Modal or Popover automatically. See
+  [global-layer-state.md](./global-layer-state.md) for what lives in
+  Cinderblock versus the project.
   Compose a standard Modal as a temporary page:
   **`Modal > Stripe > Section(s) > Chunk > content`**. Do not add `Bounds`;
   Modal already constrains its width. The first Section commonly owns the
@@ -399,13 +414,24 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
     Modal is a temporary page and needs `Stripe > Section(s)` without Bounds.
     A compact Prompt uses Section directly and does not need Stripe, Bounds, or
     a redundant Card.
+14. **Raising `zIndex` on an inner View and expecting it to win.** React
+    Native Web gives every View `position: relative; z-index: 0`, so each View
+    is its own stacking context. A child's `zIndex` only orders it within its
+    parent. To put a header's menus above later page content, raise the
+    outermost wrapper (NavBar does this). Similarly, `position: sticky` only
+    sticks within its parent, so make the outermost wrapper sticky, not a
+    child of a header-height View.
+15. **Writing a document-level Escape listener for an overlay.** Register
+    with `escapeStack` instead (or use Modal/Popover, which already do), so
+    Escape closes only the topmost layer.
 
 ## Doc index
 
 - [composition-and-spacing.md](./composition-and-spacing.md) — which component owns each space, how equations balance, and how to propose metric changes
 - [structural-components.md](./structural-components.md) — Stripe, Bounds, Section, Chunk, Sectionless, Inline
 - [content-components.md](./content-components.md) — Text, images, avatars, icons, Card, List
-- [ui-components.md](./ui-components.md) — buttons, forms, modals, toasts, menus
+- [ui-components.md](./ui-components.md) — buttons, forms, modals, toasts, menus, Popover, NavBar
+- [global-layer-state.md](./global-layer-state.md) — what lives in Cinderblock versus a project for modals, prompts, toasts, and popovers; `layersReducer`, `layerActions`, `escapeStack`
 - [forms.md](./forms.md) — canonical accessible form structure, state contracts, validation, editing, and advanced patterns
 - [utility-components.md](./utility-components.md) — hooks and helpers
 - [responsive-system.md](./responsive-system.md) — breakpoints, utility classes, how the responsive system works

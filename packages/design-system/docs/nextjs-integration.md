@@ -158,6 +158,12 @@ Gives live-editing of the library from the consumer app. Two consequences:
    imports `Reorderable` unconditionally).
 2. **`file:` deps don't deploy.** Vercel/CI can't reach outside the repo.
    Before deploying, switch to a published version or vendor the package.
+3. **Edits to the linked library are not hot-reloaded.** Next's dev server
+   does not watch `node_modules`, and the link lives there. After changing
+   Cinderblock, stop the consumer's dev server, delete its `.next` folder, and
+   start it again; otherwise the browser keeps running the old library code.
+   A new dependency added to Cinderblock (as `lucide-react` was) must also be
+   installed in the consumer (point 1).
 
 Either way, add this override (react-native-media-query pins an old RNW peer):
 
