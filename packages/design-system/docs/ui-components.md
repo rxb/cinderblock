@@ -868,8 +868,11 @@ it should close.
 
 Behavior: focus moves to the first item when the panel opens; Escape closes
 it only when it is the topmost layer and returns focus to the trigger; an
-outside press or focus leaving closes it. `PopoverItem` renders a row with
-`href`, `onPress`, `current`, and `disabled`.
+outside press or focus leaving closes it. The open panel is shown in the
+browser's top layer (the `popover` attribute), so it sits above every
+stacking context wherever the trigger is nested, and it follows the trigger
+on scroll. `PopoverItem` renders a row with `href`, `onPress`, `current`, and
+`disabled`; choosing one runs its handler, then closes the panel.
 
 ```javascript
 <Popover

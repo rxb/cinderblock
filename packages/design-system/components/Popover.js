@@ -1,9 +1,14 @@
-import React, {useCallback, useContext, useEffect, useId, useRef} from 'react';
+import React, {useCallback, useContext, useEffect, useId, useLayoutEffect, useRef} from 'react';
 import ThemeContext from '../ThemeContext';
 import Link from './Link';
 import Text from './Text';
 import Touch from './Touch';
 import {escapeStack} from '../layers';
+
+// Server rendering has no layout to measure; useEffect avoids the warning.
+const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
+const PANEL_GAP = 8;
+const VIEWPORT_GUTTER = 16;
 
 const FOCUSABLE_SELECTOR = [
 	'a[href]',
@@ -31,6 +36,12 @@ const FOCUSABLE_SELECTOR = [
  *   (`closeOnSelect`, on by default). Submit buttons are left alone so their
  *   form can submit.
  * - `'toggle'` — the trigger was pressed while open.
+ *
+ * The open panel is shown in the browser's top layer (the `popover`
+ * attribute), so it sits above every stacking context, including the
+ * `z-index: 0` React Native Web gives each View, without a portal. It is
+ * positioned against the trigger and follows it on scroll. Browsers without
+ * the Popover API fall back to absolute positioning.
  *
  * The trigger is rendered by `renderTrigger(triggerProps)`; spread the props
  * onto a Button or other pressable so it carries `id`, `aria-expanded`,
@@ -70,10 +81,46 @@ const Popover = (props) => {
 	const panelRef = useRef(null);
 	const requestCloseRef = useRef(onRequestClose);
 	requestCloseRef.current = onRequestClose;
+	const openRef = useRef(open);
+	openRef.current = open;
 
 	const focusTrigger = useCallback(() => {
 		document.getElementById(triggerId)?.focus?.({preventScroll: true});
 	}, [triggerId]);
+
+	useIsomorphicLayoutEffect(() => {
+		const panel = panelRef.current;
+		const wrapper = wrapperRef.current;
+		if (!panel || !wrapper || typeof panel.showPopover !== 'function') return undefined;
+		if (!open) {
+			if (panel.matches(':popover-open')) panel.hidePopover();
+			return undefined;
+		}
+		if (!panel.matches(':popover-open')) panel.showPopover();
+
+		const place = () => {
+			const anchor = wrapper.getBoundingClientRect();
+			const viewportWidth = document.documentElement.clientWidth;
+			const panelWidth = panel.offsetWidth;
+			const preferred = align === 'start' ? anchor.left : anchor.right - panelWidth;
+			const left = Math.max(
+				VIEWPORT_GUTTER,
+				Math.min(preferred, viewportWidth - VIEWPORT_GUTTER - panelWidth)
+			);
+			panel.style.position = 'fixed';
+			panel.style.top = `${anchor.bottom + PANEL_GAP}px`;
+			panel.style.left = `${left}px`;
+			panel.style.right = 'auto';
+		};
+		place();
+		window.addEventListener('scroll', place, true);
+		window.addEventListener('resize', place);
+		return () => {
+			window.removeEventListener('scroll', place, true);
+			window.removeEventListener('resize', place);
+			if (panel.matches(':popover-open')) panel.hidePopover();
+		};
+	}, [open, align]);
 
 	useEffect(() => {
 		if (!open) return undefined;
@@ -121,7 +168,12 @@ const Popover = (props) => {
 		const target = event.target.closest?.('a[href], button');
 		if (!target || target.disabled) return;
 		if (target.matches('button[type="submit"]')) return;
-		requestCloseRef.current('select');
+		// Close after the click has reached the item. Closing now would
+		// re-render between the capture and bubble phases and unmount the
+		// item before its own handler runs.
+		setTimeout(() => {
+			if (openRef.current) requestCloseRef.current('select');
+		}, 0);
 	};
 
 	const triggerProps = {
@@ -139,20 +191,29 @@ const Popover = (props) => {
 				id={panelId}
 				role="region"
 				aria-label={accessibilityLabel}
+				popover="manual"
 				hidden={!open}
-				onClick={onPanelClick}
+				// Capture phase: React Native Web pressables stop the click
+				// from bubbling once they handle it.
+				onClickCapture={onPanelClick}
 				style={{
+					// Fallback placement. With the Popover API the layout
+					// effect switches to fixed coordinates in the top layer.
 					position: 'absolute',
-					top: 'calc(100% + 8px)',
+					top: `calc(100% + ${PANEL_GAP}px)`,
 					[align === 'start' ? 'left' : 'right']: 0,
+					bottom: 'auto',
+					margin: 0,
 					zIndex: 50,
-					width: `min(${width}px, calc(100vw - 32px))`,
+					width: `min(${width}px, calc(100vw - ${VIEWPORT_GUTTER * 2}px))`,
 					boxSizing: 'border-box',
 					padding: 6,
 					backgroundColor: SWATCHES.backgroundWhite,
 					border: `1px solid ${SWATCHES.borderSecondary}`,
 					borderRadius: METRICS.cardBorderRadius ?? METRICS.borderRadius,
 					boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08), 0 16px 40px rgba(0, 0, 0, 0.10)',
+					color: 'inherit',
+					overflow: 'visible',
 				}}
 			>
 				{open ? children : null}

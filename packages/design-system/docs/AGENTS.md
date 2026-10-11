@@ -420,7 +420,8 @@ Fused segmented control (`flush` removes gutters so buttons visually join):
     parent. To put a header's menus above later page content, raise the
     outermost wrapper (NavBar does this). Similarly, `position: sticky` only
     sticks within its parent, so make the outermost wrapper sticky, not a
-    child of a header-height View.
+    child of a header-height View Popover avoids the problem
+    altogether by showing its panel in the browser's top layer.
 15. **Writing a document-level Escape listener for an overlay.** Register
     with `escapeStack` instead (or use Modal/Popover, which already do), so
     Escape closes only the topmost layer.
