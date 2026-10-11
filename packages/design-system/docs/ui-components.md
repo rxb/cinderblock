@@ -346,6 +346,10 @@ and locks background scrolling. It uses a bottom sheet below the medium
 breakpoint and respects `prefers-reduced-motion`. Enter retains native button
 and form behavior; Modal does not provide a global Enter shortcut.
 
+The page becomes interactive again as soon as closing starts, and the fading
+dialog lets presses through, so a press during the exit animation (often
+opening the next dialog) is not lost.
+
 ### Content composition
 
 Use **`Modal > Stripe > Section(s) > Chunk > content`**.
@@ -356,6 +360,8 @@ Use **`Modal > Stripe > Section(s) > Chunk > content`**.
   double-constrains the content.
 - The first Section commonly contains the `pageHead`. A peer H2-level group
   starts another Section.
+- The close button sits in the top-right corner over the content. Give the
+  heading `style={{paddingRight: 44}}` so a long title wraps before reaching it.
 - Do not add a Card merely to make the modal look contained. Modal already
   supplies the outer surface; use Card only when the content inside it contains
   a genuinely distinct object.

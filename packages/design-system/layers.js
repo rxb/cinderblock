@@ -23,7 +23,9 @@
 /**
  * Default layer policy:
  * - Only one modal task at a time; a second request while one is open or
- *   while prompts are waiting is ignored.
+ *   while prompts are waiting is ignored. A request while a modal is closing
+ *   replaces it (render Modal with `key={modal.id}` so the new one mounts
+ *   fresh).
  * - Prompts form a FIFO queue, deduplicated by id. Queuing a prompt starts
  *   closing an open modal.
  * - At most one popover (dropdown, menu) is open. Opening one replaces any
@@ -87,7 +89,9 @@ export function layersReducer(state = initialLayersState, incoming = {}) {
 	const {type, payload} = incoming;
 	switch (type) {
 		case LAYER_ACTION_TYPES.openModal: {
-			if (state.modal || state.prompts.length > 0) return state;
+			// A modal still animating closed is replaced, so a request made
+			// right after closing one is not lost.
+			if (state.modal?.phase === 'open' || state.prompts.length > 0) return state;
 			return {...state, modal: withPhase(payload, 'open'), popover: null};
 		}
 		case LAYER_ACTION_TYPES.requestModalClose: {

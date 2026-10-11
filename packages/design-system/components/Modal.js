@@ -62,6 +62,7 @@ class Modal extends React.Component {
 		super(props);
 		this.state = {
 			display: 'none',
+			closing: false,
 			portalTarget: null,
 			visibilityValue: new Animated.Value(0),
 		};
@@ -159,6 +160,9 @@ class Modal extends React.Component {
 	}
 
 	makeBackgroundInert() {
+		// Idempotent: a second call (React Strict Mode runs effects twice)
+		// would otherwise record the page as already inert and never restore it.
+		if (this.backgroundElement) return;
 		const background = document.getElementById('__next');
 		if (!background) return;
 		this.backgroundElement = background;
@@ -203,9 +207,12 @@ class Modal extends React.Component {
 				if (this.props.dismissable) this.props.onRequestClose('escape');
 			}
 		});
-		this.previouslyFocusedElement = document.activeElement;
+		// Reopening during the exit animation keeps the focus saved when it
+		// first opened; the background was already restored by close().
+		const reopening = this.state.display !== 'none';
+		if (!reopening) this.previouslyFocusedElement = document.activeElement;
 		this.makeBackgroundInert();
-		this.setState({display: 'flex'}, () => {
+		this.setState({display: 'flex', closing: false}, () => {
 			this.lockBody();
 			schedule(() => this.focusInitialElement());
 			Animated.timing(this.state.visibilityValue, {
@@ -221,12 +228,19 @@ class Modal extends React.Component {
 		if (this.state.display === 'none') return;
 		this.unregisterEscape?.();
 		this.unregisterEscape = null;
+		// The page is interactive again as soon as closing starts, and the
+		// fading layer lets presses through, so a press during the exit
+		// animation (often opening the next dialog) lands.
+		this.restoreBackground();
+		this.setState({closing: true});
 		Animated.timing(this.state.visibilityValue, {
 			toValue: 0,
 			easing: EASE,
 			duration: animationDuration(),
 			useNativeDriver: false,
-		}).start(() => {
+		}).start(({finished}) => {
+			// An interrupted exit (the modal reopened) is not a close.
+			if (!finished) return;
 			this.setState({display: 'none'});
 			this.unlockBody();
 			this.restoreBackground();
@@ -264,7 +278,11 @@ class Modal extends React.Component {
 					<Animated.View
 						style={[
 							styles['modal-container'],
-							{display: this.state.display, opacity: this.state.visibilityValue},
+							{
+								display: this.state.display,
+								opacity: this.state.visibilityValue,
+								pointerEvents: this.state.closing ? 'none' : 'auto',
+							},
 						]}
 					>
 						{dismissable && closeOnBackdropPress ? (

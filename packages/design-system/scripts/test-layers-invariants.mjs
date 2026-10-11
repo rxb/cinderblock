@@ -26,6 +26,12 @@ const prompt = {id: 'prompt-a', kind: 'confirm', payload: {recordId: '1'}};
 	assert.equal(reduce(opened, act.openModal({...modal, id: 'modal-b'})), opened);
 	const prompted = run(act.enqueuePrompt(prompt));
 	assert.equal(reduce(prompted, act.openModal(modal)), prompted);
+	// A modal that is closing is replaced rather than blocking the request.
+	const closing = reduce(opened, act.requestModalClose({id: modal.id}));
+	const replaced = reduce(closing, act.openModal({...modal, id: 'modal-b'}));
+	assert.equal(replaced.modal.id, 'modal-b');
+	assert.equal(replaced.modal.phase, 'open');
+	assert.equal(reduce(replaced, act.completeModalClose({id: modal.id})), replaced);
 }
 
 // Prompts are FIFO, deduplicated, and close an open modal first.

@@ -210,6 +210,10 @@ open → closing → removed
 Match completion actions by stable ID. A stale animation callback must not
 remove a newer layer that happens to use the same host.
 
+Render the modal with `key={modal.id}`. A modal requested while the previous
+one is still closing replaces it in state, and the key makes the new one mount
+fresh instead of reusing the closing instance.
+
 ## Define conflict rules explicitly
 
 Applications should document a layer policy rather than relying on render
@@ -311,7 +315,7 @@ when added.
 
 | Action | Payload | Effect |
 |---|---|---|
-| `openModal` | descriptor `{id, ...}` | Opens it unless a modal is open or prompts are waiting; closes the popover |
+| `openModal` | descriptor `{id, ...}` | Opens it unless a modal is open or prompts are waiting; replaces a modal that is still closing; closes the popover |
 | `requestModalClose` | `{id}` | Sets the matching modal to `phase: 'closing'` |
 | `completeModalClose` | `{id}` | Removes the matching modal |
 | `enqueuePrompt` | descriptor `{id, ...}` | Queues it (deduplicated by id), starts closing an open modal, closes the popover |
