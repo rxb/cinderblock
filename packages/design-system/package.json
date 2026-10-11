@@ -5,11 +5,12 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "npm run test:spacing && npm run test:tabs && npm run test:toaster",
+    "test": "npm run test:spacing && npm run test:tabs && npm run test:toaster && npm run test:layers",
     "test:tabs": "node scripts/test-tabs-invariants.mjs",
     "test:toaster": "node scripts/test-toaster-invariants.mjs",
     "test:spacing": "node scripts/test-spacing-invariants.mjs",
-    "lint-docs": "node scripts/lint-docs.mjs"
+    "lint-docs": "node scripts/lint-docs.mjs",
+    "test:layers": "node scripts/test-layers-invariants.mjs"
   },
   "dependencies": {
     "@react-native/assets-registry": "^0.79.6",

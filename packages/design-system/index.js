@@ -27,9 +27,11 @@ import LoadingBlock from './components/LoadingBlock';
 import Map from './components/Map';
 import Menu from './components/Menu';
 import Modal from './components/Modal';
+import NavBar from './components/NavBar';
 import PhotoInput from './components/PhotoInput';
 import Picker from './components/Picker';
 import Picture from './components/Picture';
+import Popover, {PopoverItem} from './components/Popover';
 import Prompter from './components/Prompter';
 import RevealBlock from './components/RevealBlock';
 import Reorderable from './components/Reorderable';
@@ -46,6 +48,14 @@ import {useMediaContext, initMediaProvider} from './components/UseMediaContext';
 import { flush } from 'react-native-media-query';
 import { AppRegistry } from 'react-native-web';
 import * as Utils from './utils';
+import {
+	createEscapeStack,
+	escapeStack,
+	initialLayersState,
+	LAYER_ACTION_TYPES,
+	layerActions,
+	layersReducer
+} from './layers';
 
 import styleConfig from './styles';
 import ThemeContext from './ThemeContext';
@@ -84,9 +94,12 @@ export {
 	Map,
 	Menu,
 	Modal,
+	NavBar,
 	PhotoInput,
 	Picker,
 	Picture,
+	Popover,
+	PopoverItem,
 	Prompter,
 	Reorderable,
 	RevealBlock,
@@ -106,6 +119,13 @@ export {
 	AppRegistry,
 
 	Utils,
+
+	createEscapeStack,
+	escapeStack,
+	initialLayersState,
+	LAYER_ACTION_TYPES,
+	layerActions,
+	layersReducer,
 
 	ThemeContext,
 	styleConfig,

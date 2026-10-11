@@ -845,3 +845,66 @@ function ContactForm() {
 ```
 
 This demonstrates how UI components integrate with structural components to create functional, well-spaced forms that follow the design system's spacing and layout principles.
+
+---
+
+## Popover
+
+A controlled panel anchored to its trigger, for menus, account panels, and
+collapsed navigation. The project decides whether it is open (usually through
+`layersReducer`, which keeps one popover open at a time); Popover reports why
+it should close.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `open` | `boolean` | `false` | Whether the panel is shown |
+| `onRequestOpen` | `function` | | Called when the trigger is pressed while closed |
+| `onRequestClose` | `function(reason)` | | `'escape'`, `'outside'`, `'blur'`, `'select'`, or `'toggle'` |
+| `renderTrigger` | `function(triggerProps)` | | Spread `triggerProps` onto a Button: they carry `id`, `aria-expanded`, `aria-controls`, and the toggle handler |
+| `align` | `'start' \| 'end'` | `'end'` | Which trigger edge the panel lines up with |
+| `width` | `number` | `280` | Panel width, capped at the viewport minus margins |
+| `closeOnSelect` | `boolean` | `true` | Close when a link or button inside is activated (submit buttons excepted) |
+| `accessibilityLabel` | `string` | | Name for the panel region |
+
+Behavior: focus moves to the first item when the panel opens; Escape closes
+it only when it is the topmost layer and returns focus to the trigger; an
+outside press or focus leaving closes it. `PopoverItem` renders a row with
+`href`, `onPress`, `current`, and `disabled`.
+
+```javascript
+<Popover
+  open={open}
+  onRequestOpen={() => setOpen(true)}
+  onRequestClose={() => setOpen(false)}
+  accessibilityLabel="Account"
+  renderTrigger={(triggerProps) => (
+    <Button {...triggerProps} color="secondary" size="small" label="Account" />
+  )}
+>
+  <PopoverItem href="/settings">Settings</PopoverItem>
+</Popover>
+```
+
+---
+
+## NavBar
+
+Site navigation built on `Header` and `Popover`. At and above `collapseBelow`
+the items sit inline with an optional account button; below it, one menu
+button opens the items and the account section. Both layouts render and
+switch with `showAt`/`hideAt` media classes, so nothing shifts on load. The
+banner is sticky and sits above page content.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `brand` | `node` | | Logo or wordmark, usually wrapped in a Link |
+| `items` | `{href, label, current?}[]` | `[]` | Navigation links |
+| `account` | `{label, content}` | | Account button text and panel content; use forms for actions that POST |
+| `collapseBelow` | `'medium' \| 'large' \| 'xlarge'` | `'medium'` | Breakpoint where the inline layout starts |
+| `openMenu` | `'navigation' \| 'account' \| null` | | Controlled open menu; omit to let NavBar manage it |
+| `onOpenMenu` / `onCloseMenu` | `function` | | Controlled callbacks |
+| `accessibilityLabel` | `string` | `'Main'` | Navigation landmark name |
+| `style` | `object` | | Passed to Header |
+
+Only one menu is ever open. Menus close on Escape, outside presses, focus
+leaving, choosing an item, and window resize.

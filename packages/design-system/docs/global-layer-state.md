@@ -5,9 +5,40 @@ dropdowns, and toasts. Materialize their React content in one host near the
 application root.
 
 Cinderblock remains state-management agnostic: it owns presentation,
-animation, focus, keyboard behavior, and lifecycle callbacks. The consuming
-application owns which layers are active, how they interact, and what product
-content they render.
+animation, focus, keyboard behavior, lifecycle callbacks, and a default layer
+policy written as a plain reducer. The consuming application owns where layer
+state is stored, what each layer means, and what product content it renders.
+
+## What lives where
+
+| Concern | Lives in | Provided as |
+|---|---|---|
+| Components and their accessibility (Modal, Prompter, Toaster, Popover, NavBar) | Cinderblock | Components |
+| Escape reaching only the topmost open layer | Cinderblock | `escapeStack`, used automatically by Modal and Popover |
+| Default coexistence rules (one modal, FIFO prompts, one popover, route and resize cleanup) | Cinderblock | `layersReducer`, `layerActions`, `initialLayersState` |
+| Where layer state lives (Redux, `useReducer`, another store) | Project | The project's store, with `layersReducer` plugged in |
+| What each modal or prompt is (`kind`, typed `payload`) and the content rendered for it | Project | Descriptor types and a kind-to-component registry |
+| Framework events (route changes, auth) | Project | Dispatch `closeTransientLayers()` from the router's events |
+| Policy that differs from the defaults | Project | Wrap `layersReducer`, or replace it |
+
+`layers.js` imports nothing, so a project can import
+`@cinderblock/design-system/layers` from its store without pulling in React
+Native Web.
+
+```js
+// Redux Toolkit
+import { layersReducer } from '@cinderblock/design-system/layers';
+configureStore({ reducer: { uiLayers: layersReducer } });
+
+// Or React state
+const [layers, dispatch] = useReducer(layersReducer, initialLayersState);
+dispatch(layerActions.openPopover({ id: 'account-menu' }));
+```
+
+Popovers store only an `id` in layer state. Their content stays with their
+trigger, so nothing rendered is ever stored. Give the Popover
+`open={layers.popover?.id === myId}` and dispatch `openPopover` and
+`closePopover` from its callbacks.
 
 ## The short version
 
@@ -21,8 +52,8 @@ content they render.
 - Let the root host map each `kind` to a feature component.
 - Model closing as a phase so exit animation can finish before the record is
   removed.
-- Keep product-specific coexistence and queue rules in the application, not
-  Cinderblock.
+- Start from Cinderblock's `layersReducer` for coexistence and queue rules;
+  wrap or replace it when a product needs different ones.
 
 ## Choose the narrowest appropriate owner
 
@@ -196,8 +227,10 @@ order and `z-index`:
 - Resize or orientation changes close positioned dropdowns, but should not
   silently discard a modal task.
 
-These are reasonable defaults, not Cinderblock requirements. Different
-products can implement different policies while using the same components.
+`layersReducer` implements these defaults, and `escapeStack` enforces the
+Escape rule across Modal and Popover. They are defaults, not requirements:
+different products can wrap or replace the reducer while using the same
+components.
 
 ## Accessibility responsibilities
 

@@ -7,6 +7,7 @@ import Button from './Button';
 import Touch from './Touch';
 import {MediaContext} from './UseMediaContext';
 import {EASE} from '../styles/designConstants';
+import {escapeStack} from '../layers';
 
 import {disableBodyScroll, enableBodyScroll} from 'body-scroll-lock';
 
@@ -89,6 +90,7 @@ class Modal extends React.Component {
 
 	componentWillUnmount() {
 		document.removeEventListener('keydown', this.onKeyDown, true);
+		this.unregisterEscape?.();
 		this.unlockBody();
 		this.restoreBackground();
 		this.restoreFocus();
@@ -128,13 +130,8 @@ class Modal extends React.Component {
 	onKeyDown(event) {
 		if (!this.props.visible || this.state.display === 'none') return;
 
-		if (event.key === 'Escape' && this.props.dismissable) {
-			event.preventDefault();
-			event.stopPropagation();
-			this.props.onRequestClose('escape');
-			return;
-		}
-
+		// Escape is arbitrated by the shared escape stack (see open()), so only
+		// the topmost layer responds when layers are nested.
 		if (event.key !== 'Tab') return;
 		const dialog = this.dialogRef.current;
 		const focusable = this.getFocusableElements();
@@ -198,6 +195,14 @@ class Modal extends React.Component {
 
 	open() {
 		if (!this.state.portalTarget) return;
+		this.unregisterEscape?.();
+		// A non-dismissable modal still occupies the top of the stack, so
+		// Escape cannot close a layer beneath it.
+		this.unregisterEscape = escapeStack.register({
+			onEscape: () => {
+				if (this.props.dismissable) this.props.onRequestClose('escape');
+			}
+		});
 		this.previouslyFocusedElement = document.activeElement;
 		this.makeBackgroundInert();
 		this.setState({display: 'flex'}, () => {
@@ -214,6 +219,8 @@ class Modal extends React.Component {
 
 	close() {
 		if (this.state.display === 'none') return;
+		this.unregisterEscape?.();
+		this.unregisterEscape = null;
 		Animated.timing(this.state.visibilityValue, {
 			toValue: 0,
 			easing: EASE,
