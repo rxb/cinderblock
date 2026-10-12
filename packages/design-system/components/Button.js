@@ -174,7 +174,12 @@ const Button = (props) => {
 			},
 			style
 		]
-		: [buttonActiveStyles, style];
+		: [
+			buttonActiveStyles,
+			// Loading shows its spinner instead; a plain disabled button dims.
+			disabled && !isLoading ? {cursor: 'default', opacity: 0.4} : null,
+			style
+		];
 
 	return(
 		<ActionComponent
